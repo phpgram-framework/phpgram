@@ -71,4 +71,16 @@ abstract class Router
 		$this->status=self::METHOD_NOT_ALLOWED;
 		return false;
 	}
+
+	public function getStatus(){
+		return $this->status;
+	}
+
+	public function getHandle(){
+		return $this->handle;
+	}
+
+	public function getParam(){
+		return $this->param;
+	}
 }

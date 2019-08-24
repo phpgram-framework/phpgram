@@ -1,9 +1,11 @@
 <?php
 namespace Gram\App;
-require_once(NAPFCONFIG . "routes/registermiddle.php");
+require_once(GRAMCONFIG . "routes/registermiddle.php");
 
 use Gram\Route\Route;
 use Gram\Route\Router\RouterRoute;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
 
 /**
  * Class App
@@ -34,10 +36,20 @@ class App
 		//pre psr 7
 		if(!$this->options['psr']){
 			$this->startOld();
+			return;
 		}
 
 		//psr 7
+		$psr17Factory=new Psr17Factory();
 
+		$request=new ServerRequestCreator($psr17Factory,$psr17Factory,$psr17Factory,$psr17Factory);
+		$request=$request->fromGlobals();
+
+		$router=new Route($this->options['routing']['routes']);
+		$caller=new CallableAdapter();
+		$response=$router->process($request,$caller);
+
+		echo $response->getBody();
 	}
 
 	//old pre psr 7

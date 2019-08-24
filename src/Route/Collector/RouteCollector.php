@@ -38,7 +38,7 @@ class RouteCollector extends Collector
 		$callback=self::route()->createCallbackForMVC(CNAMESPACE.$controller,$function);
 
 		if(!$callback){
-			self::route();
+			return self::route();
 		}
 
 		$handle['callback']=$callback;
@@ -63,7 +63,7 @@ class RouteCollector extends Collector
 		$callback=self::route()->createCallbackForMVC(CNAMESPACE.$controller,$function);
 
 		if(!$callback){
-			self::route();
+			return self::route();
 		}
 
 		$handle['callback']=$callback;
@@ -81,7 +81,7 @@ class RouteCollector extends Collector
 		$callback=self::route()->createCallbackFromCallable($callable);
 
 		if(!$callback){
-			self::route();
+			return self::route();
 		}
 
 		$handle['callback']=$callback;
@@ -93,19 +93,34 @@ class RouteCollector extends Collector
 
 	/**
 	 * Setzt die 404 Seite
-	 * @param array $handle
+	 * @param $controller
+	 * @param $function
 	 */
-	public static function notFound(Array $handle){
-		self::route()->map['er404']=$handle;
+	public static function notFound($controller,$function){
+		$callback=self::route()->createCallbackForMVC(CNAMESPACE.$controller,$function);
+
+		if(!$callback){
+			return;
+		}
+
+		self::route()->map['er404']=$callback;
 	}
 
 	/**
 	 * Setze die Method ist not allowed Seite
 	 * Diese wird aufgerufen wenn die Route mit der falschen Methode z. B. post anstatt get aufgerufen wird
-	 * @param array $handle
+	 * @param $controller
+	 * @param $function
 	 */
-	public static function notAllowed(array $handle){
-		self::route()->map['erNotAllowed']=$handle;
+	public static function notAllowed($controller,$function){
+
+		$callback=self::route()->createCallbackForMVC(CNAMESPACE.$controller,$function);
+
+		if(!$callback){
+			return;
+		}
+
+		self::route()->map['erNotAllowed']=$callback;
 	}
 
 	public static function getInstance() {

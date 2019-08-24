@@ -7,7 +7,7 @@ const DS = DIRECTORY_SEPARATOR;
 
 //Allgemeine Ordner Diese nicht ändern!
 define("APPPATH",ROOTPATH.DS."app".DS);
-define("NAPFCONFIG",ROOTPATH.DS."config".DS);
+define("GRAMCONFIG",ROOTPATH.DS."config".DS);
 define("RESOURCES",ROOTPATH.DS."resources".DS);
 
 //Templates

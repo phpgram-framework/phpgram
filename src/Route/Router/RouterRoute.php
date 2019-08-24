@@ -53,33 +53,19 @@ class RouterRoute extends Router
 		//Versuche die Route zu suchen
 		if(!$this->tryDispatch($uri,$this->routemap)){
 			$map=$this->routemap->getMap();
-			//$this->handle=$map['er404'];
+			$this->handle['callback']=$map['er404'];
 			return false;
 		}
 
 		//Prüfe die Methode
 		if($this->options['checkRm'] && !$this->checkMethod($httpMethod)){
 			$map=$this->routemap->getMap();
-			//$this->handle=$map['erNotAllowed'];
+			$this->handle['callback']=$map['erNotAllowed'];
 			return false;
 		}
 
 		$this->status=self::OK;
 		return true;
-	}
-
-	/**
-	 * Ein Rotuer für Psr Requests
-	 * @param ServerRequestInterface $request
-	 * @return array
-	 */
-	public function psrRun(ServerRequestInterface $request){
-		$httpMethod = $request->getMethod();
-		$uri = $request->getUri()->getPath();
-
-		$this->run($uri, $httpMethod);
-
-		return array('status'=>$this->status,'handle'=>$this->handle,'param'=>$this->param);
 	}
 
 	/**

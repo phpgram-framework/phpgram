@@ -17,7 +17,7 @@ class Lang
 	 * Läd die Sprachdatei
 	 */
     private function getLangData(){
-    	self::$langs=loadJSON(NAPFCONFIG."text".DS.self::$lang.DS.self::$side.".json");
+    	self::$langs=loadJSON(GRAMCONFIG."text".DS.self::$lang.DS.self::$side.".json");
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Lang
 	 * @return mixed|string
 	 */
 	public function getStdLang(){
-    	$langs=loadJSON(NAPFCONFIG."text/suplangs.json");
+    	$langs=loadJSON(GRAMCONFIG."text/suplangs.json");
     	return $langs["stdlang"];
 	}
 
@@ -75,7 +75,7 @@ class Lang
 	 * @return mixed|array
 	 */
 	public function getAvaLang(){
-    	$langs=loadJSON(NAPFCONFIG."text/suplangs.json");
+    	$langs=loadJSON(GRAMCONFIG."text/suplangs.json");
     	unset($langs["stdlang"]);	//Index der Standardsprache wird hier nicht gebraucht
 		return $langs;
 	}
@@ -90,7 +90,7 @@ class Lang
 	 * @return bool|int|string
 	 */
 	public function getLangById($id,$q=false){
-		$langs=loadJSON(NAPFCONFIG."text/suplangs.json");
+		$langs=loadJSON(GRAMCONFIG."text/suplangs.json");
 
 		//Gibt namen der Sprache zurück
 		if(!$q){
