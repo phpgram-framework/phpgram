@@ -9,6 +9,13 @@
 			"email": "j.heinemann1@web.de"
 		}
 	],
+	"keywords": [
+		"gram",
+		"phpgram",
+		"php",
+		"framework"
+	],
+
 	"support": {
 		"issues": "https://gitlab.com/grammm/php-gram/phpgram/issues",
 		"source": "https://gitlab.com/grammm/php-gram/phpgram"
