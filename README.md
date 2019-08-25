@@ -1,6 +1,6 @@
 # php gram
 
-The vendor lib for phpgram
+A very fast and lightweight Php Framework for small to enterprise applications.
 
 ## Umfasst folgende Dinge:
 - [Routing nach dem Vorbild von nikic/Fastroute](docs/Routing/index.md)
