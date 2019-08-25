@@ -1,8 +1,8 @@
 {
-	"name":"phpgram/lib",
+	"name":"phpgram/phpgram",
 	"license": "MIT",
 	"version": "1.0.1",
-	"description": "The vendor lib for phpgram",
+	"description": "A very fast and lightweight Php Framework for small to enterprise applications.",
 	"authors": [
 		{
 			"name": "Jörn Heinemann",
@@ -10,8 +10,8 @@
 		}
 	],
 	"support": {
-		"issues": "https://gitlab.com/grammm/php-gram/php-gram-lib/issues",
-		"source": "https://gitlab.com/grammm/php-gram/php-gram-lib"
+		"issues": "https://gitlab.com/grammm/php-gram/phpgram/issues",
+		"source": "https://gitlab.com/grammm/php-gram/phpgram"
 	},
 	"minimum-stability": "dev",
 	"require": {
