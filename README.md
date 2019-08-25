@@ -1,4 +1,4 @@
-# php gram
+# phpgram
 
 A very fast and lightweight Php Framework for small to enterprise applications.
 
