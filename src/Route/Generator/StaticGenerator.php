@@ -1,21 +1,22 @@
 <?php
 namespace Gram\Route\Generator;
+use Gram\Route\Route;
 
-
-class StaticGenerator
+class StaticGenerator implements Generator
 {
-	public function generate(array $routes){
-		$staticroutes=array();
-		$statichandler=array();
+	private $staticroutes=array();
 
+	public function generate(array $routes){
 		foreach ($routes as $i=>$route) {
-			$staticroutes[$i]=$route['route'];
-			$statichandler[$i]=$route['handle'];
+			$this->mapRoute($route);
 		}
 
 		return array(
-			'staticroutes'=>$staticroutes,
-			'statichandler'=>$statichandler
+			'staticroutes'=>$this->staticroutes
 		);
+	}
+
+	private function mapRoute(Route $route){
+		$this->staticroutes[$route->path]=$route->handle;
 	}
 }

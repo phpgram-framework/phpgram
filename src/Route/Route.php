@@ -1,39 +1,52 @@
 <?php
 namespace Gram\Route;
-use Gram\Route\Router\RouterRoute;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Gram\Route\Collector\MiddlewareCollector;
 
-/**
- * Class Route
- * @package Gram\Route
- * @author Jörn Heinemann
- */
-class Route implements MiddlewareInterface
+class Route
 {
-	private $options;
+	public $path,$handle,$method,$varcount,$path_Old;
 
-	public function __construct($options){
-		$this->options=$options;
+	private static $placeholders=array(
+		'/\/{(a)}/'=>'/(\w*)',	//Alphanumerisch
+		'/\/{(id)}/'=>'/(\d+)',	//Nur Zahlen
+		'/\/{(auml)}/'=>'/([0-9,a-z,A-Z_äÄöÖüÜß]+)'	//Umlaute
+	);
+	public static $userplaceholders=array();
+
+
+	public function __construct(string $path,$handle,string $method){
+		$this->handle=$handle;
+		$this->method=$method;
+
+		$this->handle['method']=$method;	//speichere Method für Dispatcher
+		$this->path=$path;
+		$this->path_Old=$path;
+
+		$this->parsePlaceholders();
 	}
 
-	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface{
-		$httpMethod = $request->getMethod();
-		$uri = $request->getUri()->getPath();
+	public function addMiddleware(array $middleware,$type){
+		//eine Middleware kann selber keine weiteren hinzufügen
+		if($this->method===''){
+			return;
+		}
 
-		$router=new RouterRoute($this->options);
-		$router->run($uri,$httpMethod);
+		//füge die Middleware nach vorne, damit diese route nicht überschrieben werden kann mit anderen middlewares
+		MiddlewareCollector::middle($type)->add($this->path_Old,$middleware,true);
+	}
 
-		$status=$router->getStatus();
-		$handle=$router->getHandle();
-		$param=$router->getParam();
+	private function parsePlaceholders(){
+		//wandle Platzhalter um
+		$allPlaceHolders=array_merge(self::$placeholders,self::$userplaceholders);
 
-		$request=$request->withAttribute("handle",$handle);
-		$request=$request->withAttribute("param",$param);
-		$request=$request->withAttribute("status",$status);
+		$this->varcount=0;
+		foreach ($allPlaceHolders as $pattern=>$placeHolder) {
+			$this->path = preg_replace($pattern, $placeHolder, $this->path,-1,$countvar);
+			$this->varcount+=$countvar; //zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
+		}
 
-		return $handler->handle($request);
+		//wandle alles andere um
+		$this->path = preg_replace('/\{(.*?)}/', '(.*?)', $this->path,-1,$countvar);	//Alles
+		$this->varcount+=$countvar;
 	}
 }

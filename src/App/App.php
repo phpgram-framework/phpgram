@@ -1,11 +1,9 @@
 <?php
 namespace Gram\App;
-require_once(GRAMCONFIG . "routes/registermiddle.php");
-
-use Gram\Route\Route;
-use Gram\Route\Router\RouterRoute;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7Server\ServerRequestCreator;
+use Gram\Route\Router;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class App
@@ -15,15 +13,11 @@ use Nyholm\Psr7Server\ServerRequestCreator;
  */
 class App
 {
-	private $handle,$result,$options;
-
 	private $path,$method; //old pre psr 7
 
-	private static $middlewares=array(), $stdbeforemiddle=array(), $stdaftermiddle=array();
-
-	public function __construct(array $options){
-		$this->options=$options;
-	}
+	public static $options;
+	private static $_instance;
+	public static $responseFactory,$streamFactory;
 
 	/**
 	 * Start der Seite
@@ -31,41 +25,79 @@ class App
 	 * Führt zuerst die Middlewares aus die mit beforeM gekennzeichnet sind (diese sollen vor dem Seitenaufruf erfolgen
 	 * Danach wird der eigentliche Seitencontroller und deren Funktion aufgerufen
 	 * Zum Schluss werden noch alle Middlewares durchgegangen die mit afterM gekennzeichnet sind
+	 * @param ServerRequestInterface $request
 	 */
-	public function start(){
-		//pre psr 7
-		if(!$this->options['psr']){
-			$this->startOld();
-			return;
+	public function start(ServerRequestInterface $request){
+		$uri=$request->getUri()->getPath();
+		$method=$request->getMethod();
+
+		//before
+
+		$router2=new Router(Router::BEFORE_MIDDLEWARE);
+
+		if(isset($router2->getMap()->getMap()['std'])){
+			$stdBefore=$router2->getMap()->getMap()['std'];
+		}else{
+			$stdBefore=array();
 		}
 
-		//psr 7
-		$psr17Factory=new Psr17Factory();
+		$router2->run($uri);
 
-		$request=new ServerRequestCreator($psr17Factory,$psr17Factory,$psr17Factory,$psr17Factory);
-		$request=$request->fromGlobals();
+		if(isset($router2->getHandle()['callback'])){
+			$mstack=$router2->getHandle()['callback'];
+		}else{
+			$mstack=array();
+		}
 
-		$router=new Route($this->options['routing']['routes']);
-		$caller=new CallableAdapter();
-		$response=$router->process($request,$caller);
-
-		echo $response->getBody();
-	}
-
-	//old pre psr 7
-	public function startOld(){
-		$this->parseUrl();
-		$router = new RouterRoute($this->options['routing']['routes']);
-		$route = $router->normalRun($this->path,$this->method);
+		$stack=array_merge($stdBefore,$mstack);
 
 
-		$this->handle=(object)$route['handle'];	//hier sind alle Anweisungen von der definieren Route drin
+		if(!empty($stack)){
+			$caller2=new CallableCreator(null,$stack);
+			$callable2=$caller2->getCallable();
 
-		$callback=$this->handle->callback();
+			foreach ($callable2 as $item) {
 
-		$this->result=call_user_func_array($callback,$route['param']);
+				debug_page($item);
 
-		echo $this->result;
+				echo $item->callback(array(),$request);
+			}
+		}
+		
+
+		
+		//request
+
+
+		$router=new Router(Router::REQUEST_ROUTER);
+
+		$router->run($uri,$method);
+
+		$request=$request->withAttribute("handle",$router->getHandle());
+		$request=$request->withAttribute("param",$router->getParam());
+
+
+		$handle=$request->getAttribute("handle");
+		$param=$request->getAttribute("param");
+
+		$caller = new CallableCreator($handle['callback']);
+
+		echo $callable=$caller->getCallable()->callback($param,$request);
+
+
+		//after
+/*
+
+		$router2=new Router(Router::AFTER_MIDDLEWARE);
+
+		$router2->run($uri);
+
+
+		$caller2=new CallableCreator(null,$router2->getHandle()['callback']);
+		$callable2=$caller2->getCallable();
+
+		//debug_page($callable2);
+*/
 	}
 
 	/**
@@ -81,7 +113,7 @@ class App
 		if(!isset($url['path']) || $url['path']=="/"){
 			$this->path="/";
 		}else{
-			$this->path=rtrim(urldecode($url['path']),"/");
+			$this->path=rtrim($url['path'],"/");
 		}
 		$GLOBALS['url']=$uri;	//für referer
 
@@ -89,19 +121,14 @@ class App
 	}
 
 
-	/**
-	 * Hier werden die verfügbaren Middlewares gespeichert
-	 * @param array $handle
-	 */
-	public static function registerMiddle($handle=array()){
-		array_push(self::$middlewares,$handle);
-	}
+	public static function init(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory) {
+		if(!isset(self::$_instance)) {
+			self::$_instance = new self();
+		}
 
-	/**
-	 * Die Standard Output Middleware. Diese wird aufgerufen wenn keine Outputmiddleware angegeben wurde
-	 * @param array $handle
-	 */
-	public static function setStandardOut($handle=array()){
-		self::$stdaftermiddle=$handle;
+		self::$responseFactory=$responseFactory;
+		self::$streamFactory=$streamFactory;
+
+		return self::$_instance;
 	}
 }

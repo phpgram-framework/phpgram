@@ -1,6 +1,6 @@
 <?php
 namespace Gram\Route\Generator;
-
+use Gram\Route\Route;
 /**
  * Class DynamicGenerator
  * @package Gram\Route\Generator
@@ -9,13 +9,11 @@ namespace Gram\Route\Generator;
  * Wird von den Collector Klassen aufgerufen um die Routes und Handler zusammen zufassen
  * Anlehnung an: http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  */
-class DynamicGenerator
+class DynamicGenerator implements Generator
 {
-	private $number=0,$chunkcount=0,$maxChunkSize,$routeCollector,$handleCollector,$routeList,$handlerList,$route;
+	const CHUNKSIZE = 10;
 
-	public function __construct($maxChunk){
-		$this->maxChunkSize=$maxChunk;
-	}
+	private $number=0,$chunkcount=0,$routeCollector,$handleCollector,$routeList,$handlerList;
 
 	/**
 	 * Sammle solange Routes bis die Sammelmenge (chunk) erreicht ist (routeCollector())
@@ -27,16 +25,18 @@ class DynamicGenerator
 	 * @return array
 	 * Gebe Route und Handlerliste zurück
 	 */
-	public function generateChunk(array $routes){
-		foreach ($routes as $this->route) {
+	public function generate(array $routes){
+		$chunkSize=$this->getChunkSize(count($routes));	//passe die chunk größe an
+
+		foreach ($routes as $route) {
 			//sammle solange Routes zum gruppieren bis chunk erreicht ist
-			if($this->chunkcount<$this->maxChunkSize-1){
-				$this->routeCollector();
+			if($this->chunkcount<$chunkSize-1){
+				$this->routeCollector($route);
 				++$this->chunkcount;
 				continue;
 			}
 
-			$this->routeCollector();	//letzte Route für die liste noch hinzufügen
+			$this->routeCollector($route);	//letzte Route für die liste noch hinzufügen
 
 			$this->chunkRoutes();	//routes chunken
 		}
@@ -49,6 +49,26 @@ class DynamicGenerator
 			'regexes'=>$this->routeList,
 			'dynamichandler'=>$this->handlerList
 		);
+	}
+
+	/**
+	 * Gibt die tatsächliche Chunkgröße an
+	 * 1. Ermittle wie viele Routes gechunkt werden sollen
+	 * 2. Errechne die Anzahl an Chunks die mit der Standardgröße erstellt werden könnten. (Runde die Anzahl)
+	 * 3. Damit keine kleinen Chunks über bleiben:
+	 * - Errechne die neue Chunkgröße, sodass alle Chunks immer voll sind:
+	 * - indem die Anzahl an Routes / mit der Anzahl an Chunks aufgerundet wird
+	 * - bsp.: Anzahl = 11, Chunksize = 10
+	 * -> 21/10 = 2,1 -> runden: 2 -> die Anzahl an Chunks mit einer Größe von 10
+	 * -> 21/2 = 10,5 -> aufrunden: 11 -> Größe an Chunks die am Ende immer voll sind
+	 * @param $count
+	 * Wie viele Routes gechunkt werden sollen
+	 * @return int
+	 */
+	private function getChunkSize($count){
+		$approxChunks = max(1, round($count/self::CHUNKSIZE));	//wie viele Chunks lassen sich erstellen (muss min. einen geben)
+
+		return (int) ceil($count / $approxChunks);		//die tatsächliche Größe, um die Anzahl an Chunks zu minimieren
 	}
 
 	/**
@@ -76,11 +96,13 @@ class DynamicGenerator
 	 * Route /video/add steht an 2. Stelle -> /video/add()
 	 * Route /video/added steht an 4. Stelle -> /video/added()()()
 	 * -> Placeholder werden aufgefüllt
+	 * @param Route $route
 	 */
-	private function routeCollector(){
-		$this->number=max($this->number,$this->route['vars']);	//passe Placeholderanzahl an
-		$this->routeCollector[]=$this->route['route'].str_repeat('()', $this->number - $this->route['vars']);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
+	private function routeCollector(Route $route){
+		$varcount = $route->varcount;
+		$this->number=max($this->number,$varcount);	//passe Placeholderanzahl an
+		$this->routeCollector[]= $route->path.str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
 		++$this->number;	//erhöhe da die nächste Route einen Playerholder mehr braucht
-		$this->handleCollector[$this->number]=$this->route['handle'];	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
+		$this->handleCollector[$this->number]=array("handle"=>$route->handle,"varcount"=>$varcount);	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
 	}
 }

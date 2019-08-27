@@ -3,49 +3,43 @@ namespace Gram\Route\Collector;
 
 class MiddlewareCollector extends Collector
 {
-	private static $_instance,$type;
+	private static $_before_instance,$_after_instance,$_lastinstance;
 
-	public static function before($route,array $stack){
-		//nur hinzufügen wenn die before Middlewares benötigt werden
-		if(self::$type=="before"){
-			self::middle()->set($route,$stack);
-		}
+	public function add($route,array $stack,$atFirst=false){
+		$handle['callback']=$stack;
+		$handle['routingTyp']="middleware";
 
-		return self::middle();
+		$this->set($route,$handle,"",$atFirst);	//im stack sind alle middlewares drin die für diese route ausgeführt werden sollen
 	}
 
-	public static function after($route,array $stack){
-		if(self::$type=="after"){
-			self::middle()->set($route,$stack);
-		}
-
-		return self::middle();
+	public function addStd(array $stack){
+		$this->map['std']=$stack;
 	}
 
-	public static function getInstance() {
-		return new MiddlewareCollector;
+	public static function middle($typ="") {
+		if($typ=="before"){
+			self::$_lastinstance=self::before();
+			return self::before();
+		}
+		if($typ=="after"){
+			self::$_lastinstance=self::after();
+			return self::after();
+		}
+
+		return self::$_lastinstance;
 	}
 
-	public static function middle($start=false,$typ="",$paths=array(),$placeholders=array()) {
-		if(!isset(self::$_instance)) {
-			self::$_instance = self::getInstance();
-			self::$userplaceholders=$placeholders;
-			self::$type=$typ;
-
-			if(!empty($paths)){
-				//Hole die Routes aus den Config Dateien
-				foreach ($paths as $path) {
-					if (file_exists($path)) {
-						include_once($path);
-					}
-				}
-			}
+	public static function before(){
+		if(!isset(self::$_before_instance)){
+			self::$_before_instance=new self();
 		}
+		return self::$_before_instance;
+	}
 
-		if($start){
-			self::$_instance->trigger();
+	public static function after(){
+		if(!isset(self::$_after_instance)){
+			self::$_after_instance=new self();
 		}
-
-		return self::$_instance;
+		return self::$_after_instance;
 	}
 }

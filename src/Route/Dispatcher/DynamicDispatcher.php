@@ -1,6 +1,7 @@
 <?php
 namespace Gram\Route\Dispatcher;
 use Gram\Route\Map\Map;
+use Gram\Route\Route;
 
 /**
  * Class DynamicDispatcher
@@ -13,12 +14,16 @@ use Gram\Route\Map\Map;
  */
 class DynamicDispatcher implements Dispatcher
 {
-	private $regex,$handler;
+	private $regex=array(),$handler=array();
 
 	public function __construct(Map $map){
 		$map=$map->getMap();
-		$this->regex=$map['regexes'];
-		$this->handler=$map['dynamichandler'];
+
+		//nur Generieren wenn dynamich Routes da sind
+		if(isset($map['regexes']) && $map['dynamichandler']){
+			$this->regex=$map['regexes'];
+			$this->handler=$map['dynamichandler'];
+		}
 	}
 
 	/**
@@ -45,11 +50,15 @@ class DynamicDispatcher implements Dispatcher
 				continue;	//wenn Route nicht Dabei ist nächsten Chunk prüfen
 			}
 
-			//wenn Route im Chunk war
-			$handle = $this->handler[$i][count($matches)];
-			unset($matches[0]);	//erstes Element (der komplette Match) entfernen
+			//wenn Regex im Chunk war
+			$route = $this->handler[$i][count($matches)];
 
-			return array(self::FOUND,$handle,$matches);
+			$var=array();
+			for($i = 0; $i < $route['varcount']; $i++) {
+				$var[$i]=$matches[$i+1]; //erstes Element (der komplette Match) nicht mit berücksichtigen
+			}
+
+			return array(self::FOUND,$route['handle'],$var);
 		}
 		return array(self::NOT_FOUND);
 	}

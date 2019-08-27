@@ -1,5 +1,6 @@
 <?php
 namespace Gram\Route\Map;
+use Gram\App\App;
 use Gram\Route\Collector\RouteCollector;
 
 /**
@@ -10,12 +11,28 @@ use Gram\Route\Collector\RouteCollector;
  */
 class RouteMap extends Map
 {
-	public function __construct($options){
-		parent::init($options);
+	protected static $callbacks=array(),$cachefile=null;	//Alle Route Sammler
+
+	public function __construct(){
+		$this->cache=self::$cachefile;
 	}
 
 	protected function createMap(){
-		$routes=RouteCollector::route(true,$this->options['definePaths'],$this->options['userPlaceholders']);
+		$routes=RouteCollector::route();	//init Collector
+
+		//Durchlaufe alle Routesammler
+		foreach (self::$callbacks as $callback) {
+			call_user_func($callback);
+		}
+
+		$routes->trigger();
 		$this->map=$routes->map();
+	}
+
+	public static function map(callable $routes,$type="",$caching=false,$cache=""){
+		self::$callbacks[]=$routes;
+		if($caching){
+			self::$cachefile=$cache;
+		}
 	}
 }

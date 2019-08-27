@@ -9,14 +9,12 @@ if(!function_exists('debug_console')){
 	 * Einfache Debugausgabe in die js Console
 	 */
 	function debug_console($data) {
-		if(DEBUGMODE){
-			if (is_array($data))
+		if (is_array($data))
 			$output = "<script>console.log('Debugausgabe: ".implode(',', $data). "');</script>";
 		else
 			$output = "<script>console.log('Debugausgabe: ".$data."');</script>";
 
 		echo $output;
-		}
 	}
 }
 

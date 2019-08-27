@@ -2,16 +2,11 @@
 namespace Gram\Route\Collector;
 use Gram\Route\Generator\DynamicGenerator;
 use Gram\Route\Generator\StaticGenerator;
-use Gram\Route\Handler\CallbackHandler;
-use Gram\Route\Handler\ClassHandler;
+use Gram\Route\Route;
 
 abstract class Collector
 {
-	protected static $placeholders=array(
-		'/\/{(a)}/'=>'/(\w*)',	//Alphanumerisch
-		'/\/{(id)}/'=>'/(\d+)'	//Nur Zahlen
-	),$userplaceholders=array();
-	protected $map=array(),$dynamicroutes=array(),$staticroutes=array();
+	protected $map=array(),$dynamicroutes=array(),$staticroutes=array(),$prefix='';
 
 	/**
 	 * Gibt alle verfügbaren Routes zurück
@@ -24,75 +19,79 @@ abstract class Collector
 	/**
 	 * Sammelt erst alle Routes die geadded werden
 	 * Wandelt die Userplaceholder in Regex um und zählt wie viele Varaiblen die Route parsen soll
-	 * @param string $route
+	 * @param string $path
 	 * Die Route von den Configseiten
 	 * @param $handle
 	 * Was bei einem Fund gemacht werden soll
+	 * @param $method
+	 * @param bool $atFirst
+	 * @return Route
 	 */
-	protected function set($route,$handle){
-		//wandle Platzhalter um
-		$allPlaceHolders=array_merge(self::$placeholders,self::$userplaceholders);
+	protected function set($path,$handle,$method,$atFirst=false){
+		$path=$this->prefix.$path;	//setze mögliches Gruppenprefix vorweg
 
-		$varcount=0;
-		foreach ($allPlaceHolders as $pattern=>$placeHolder) {
-			$route = preg_replace($pattern, $placeHolder, $route,-1,$countvar);
-			$varcount+=$countvar; //zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
-		}
+		$route=new Route($path,$handle,$method);	//erstelle neue Route mit allen Parametern
 
-		$route = preg_replace('/\/{(.*?)}/', '/(.*?)', $route,-1,$countvar);	//Alles
-		$varcount+=$countvar;
-
-
-		if($varcount===0){
+		if($route->varcount===0){
 			//Eine Staticroute
-			$this->staticroutes[]=array(
-				"route"=>$route,
-				"handle"=>$handle
-			);
+			if($atFirst){
+				array_unshift($this->staticroutes,$route);
+			}else{
+				$this->staticroutes[]=$route;
+			}
 		}else{
 			//Eine Route mit Parametern
-			$this->dynamicroutes[]=array(
-				"route"=>$route,
-				"handle"=>$handle,
-				"vars"=>$varcount
-			);
+			if($atFirst){
+				array_unshift($this->dynamicroutes,$route);
+			}else{
+				$this->dynamicroutes[]=$route;
+			}
 		}
+
+		return $route;
+	}
+
+	/**
+	 * Erfasst eine Gruppe.
+	 * Gruppen brauchen ein Prefix und ein Callback (eine Minimap mit Routes)
+	 * Das derzeitige Prefix wird gespeichert und wird zu dem übergebenen
+	 * Rufe das callback auf mit dem Sammler auf.
+	 * Stelle dann bei jeder neu hinzugefügten Route des callbacks das Prefix voran
+	 * Danach setze das Prefix wieder auf das alte
+	 * Bei nested Groups wird diese Funktion rekursiv aufgerufen und somit erhalten die Routes immer das richtige prefix
+	 * @param string $prefix
+	 * Prefix das vor die Routes gestellt werden soll
+	 * @param callable $callback
+	 * Die Minimap mit den Sammlern
+	 */
+	public function setGroup($prefix,callable $callback){
+		$currentprefix = $this->prefix;
+		$this->prefix= $this->prefix.$prefix;
+
+		call_user_func($callback);
+		$this->prefix=$currentprefix;
 	}
 
 	/**
 	 * Fasst die gesammelten Routes mit den Generatoren zusammen
 	 */
-	protected function trigger(){
-		$staticgenerator = new StaticGenerator();
-		$dynamicgenerator=new DynamicGenerator(REGEXCHUNK);
+	public function trigger(){
+		$static=array();
+		$dynamic=array();
+
+		if(!empty($this->staticroutes)){
+			$staticgenerator = new StaticGenerator();
+			$static=$staticgenerator->generate($this->staticroutes);
+		}
+		if(!empty($this->dynamicroutes)){
+			$dynamicgenerator=new DynamicGenerator();
+			$dynamic=$dynamicgenerator->generate($this->dynamicroutes);
+		}
+
 		$this->map=array_merge(
 			$this->map,
-			$staticgenerator->generate($this->staticroutes),
-			$dynamicgenerator->generateChunk($this->dynamicroutes)
+			$static,
+			$dynamic
 		);
-	}
-
-	protected function createCallbackForMVC($controller,$function){
-		$callback = new ClassHandler();
-		try{
-			$callback->set($controller,$function);
-		}catch (\Exception $e){
-			echoExep($e);
-			return false;
-		}
-
-		return $callback;
-	}
-
-	protected function createCallbackFromCallable(callable $callable){
-		$callback= new CallbackHandler();
-		try{
-			$callback->set($callable);
-		}catch (\Exception $e){
-			echoExep($e);
-			return false;
-		}
-
-		return $callback;
 	}
 }
