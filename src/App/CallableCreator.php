@@ -1,13 +1,27 @@
 <?php
 namespace Gram\App;
-use Gram\Handler\ControllerHandler;
-use Gram\Handler\ClassHandler;
-use Gram\Handler\CallbackHandler;
+
+
+use Gram\Callback\Callback;
+use Gram\Callback\CallbackCallback;
+use Gram\Callback\ClassCallback;
+use Gram\Callback\ControllerCallback;
+use Gram\Callback\MiddlewareCallback;
 
 class CallableCreator
 {
 	private $callable=null;
 
+	/**
+	 * CallableCreator constructor.
+	 * Prüft ob etwas ein Callable bzw ein Stack mit Callable ist
+	 * Stack sind Middlewares, die einzelnen Elemente ztu Callable umformen
+	 * Normales Callable prüfen ob es aus einem Array besteht (class und function) -> classhandler erstellen
+	 * sonst etweder ein ControllerHandler erstellen (ein Art ClassHandler) oder
+	 * wenn es eine Function war im Callable handler speichern
+	 * @param $possibleCallable
+	 * @param array $stack
+	 */
 	public function __construct($possibleCallable,$stack=array()){
 		if(!empty($stack)){
 			//Middleware Stack zu Callables machen
@@ -26,12 +40,14 @@ class CallableCreator
 	}
 
 	private function createCallbackFromStack_helper($possibleCallable){
-		$creator = new self($possibleCallable);
-		return $creator->getCallable();
+		$callback = new MiddlewareCallback();
+		$callback->set($possibleCallable);
+
+		return $callback;
 	}
 
 	private function createCallbackForMVC($controller){
-		$callback = new ControllerHandler();
+		$callback = new ControllerCallback();
 		try{
 			$callback->setC($controller);
 		}catch (\Exception $e){
@@ -43,7 +59,7 @@ class CallableCreator
 	}
 
 	private function createCallbackForClass($class,$function){
-		$callback = new ClassHandler();
+		$callback = new ClassCallback();
 		try{
 			$callback->set($class,$function);
 		}catch (\Exception $e){
@@ -55,7 +71,7 @@ class CallableCreator
 	}
 
 	private function createCallbackFromCallable(callable $callable){
-		$callback= new CallbackHandler();
+		$callback= new CallbackCallback();
 		try{
 			$callback->set($callable);
 		}catch (\Exception $e){
@@ -70,7 +86,7 @@ class CallableCreator
 	 * Prüfe ob der Controller callable ist,
 	 * wenn ja benutze den Callable Handler und nicht den Controller Handler
 	 * @param $callback
-	 * @return bool|CallbackHandler|ControllerHandler
+	 * @return bool|CallbackCallback|ControllerCallback
 	 */
 	protected function createCallback($callback){
 		if(is_callable($callback)){
@@ -80,8 +96,9 @@ class CallableCreator
 		}
 	}
 
+
 	/**
-	 * @return bool|ClassHandler|null
+	 * @return bool|Callback|ClassCallback|ControllerCallback|MiddlewareCallback|CallbackCallback
 	 */
 	public function getCallable(){
 		return $this->callable;

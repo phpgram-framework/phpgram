@@ -1,12 +1,22 @@
 <?php
 namespace Gram\Route\Collector;
-use Gram\Route\Generator\DynamicGenerator;
-use Gram\Route\Generator\StaticGenerator;
+use Gram\Route\Interfaces\Collector;
+use Gram\Route\Interfaces\Generator;
+use Gram\Route\Interfaces\Components\DynamicGenerator;
+use Gram\Route\Interfaces\Components\StaticGenerator;
 use Gram\Route\Route;
 
-abstract class Collector
+/**
+ * Class BaseCollector
+ * @package Gram\Route\Collector
+ * @author Jörn Heinemann
+ * Fasst die Funktionen der Collectoren zusammen
+ */
+abstract class BaseCollector implements Collector
 {
 	protected $map=array(),$dynamicroutes=array(),$staticroutes=array(),$prefix='';
+
+	private static $staticGenerator,$dynamicGenerator;
 
 	/**
 	 * Gibt alle verfügbaren Routes zurück
@@ -25,14 +35,17 @@ abstract class Collector
 	 * Was bei einem Fund gemacht werden soll
 	 * @param $method
 	 * @param bool $atFirst
+	 * Soll die Route ganz am Anfang des Route Arrays eingefügt werden
+	 * z. B. für Middlewares die von einer Route hinzugefügt wurden (Middleware nur für eine bestimmte Route)
+	 * diese würden sonst nicht matchen wenn andere Middlewares vorher stehen
 	 * @return Route
 	 */
-	protected function set($path,$handle,$method,$atFirst=false){
+	public function set($path,$handle,$method,$atFirst=false){
 		$path=$this->prefix.$path;	//setze mögliches Gruppenprefix vorweg
 
 		$route=new Route($path,$handle,$method);	//erstelle neue Route mit allen Parametern
 
-		if($route->varcount===0){
+		if(count($route->vars)===0){
 			//Eine Staticroute
 			if($atFirst){
 				array_unshift($this->staticroutes,$route);
@@ -76,22 +89,23 @@ abstract class Collector
 	 * Fasst die gesammelten Routes mit den Generatoren zusammen
 	 */
 	public function trigger(){
-		$static=array();
-		$dynamic=array();
-
-		if(!empty($this->staticroutes)){
-			$staticgenerator = new StaticGenerator();
-			$static=$staticgenerator->generate($this->staticroutes);
-		}
-		if(!empty($this->dynamicroutes)){
-			$dynamicgenerator=new DynamicGenerator();
-			$dynamic=$dynamicgenerator->generate($this->dynamicroutes);
-		}
-
 		$this->map=array_merge(
 			$this->map,
-			$static,
-			$dynamic
+			$this->generate(self::$staticGenerator,$this->staticroutes),
+			$this->generate(self::$dynamicGenerator,$this->dynamicroutes)
 		);
+	}
+
+	private function generate(Generator $generator,array $routes=array()){
+		if(!empty($routes)){
+			$routes= $generator->generate($routes);
+		}
+
+		return $routes;
+	}
+
+	public static function setGenerator(StaticGenerator $staticGenerator, DynamicGenerator $dynamicGenerator){
+		self::$staticGenerator=$staticGenerator;
+		self::$dynamicGenerator=$dynamicGenerator;
 	}
 }

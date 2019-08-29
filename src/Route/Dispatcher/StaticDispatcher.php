@@ -1,12 +1,18 @@
 <?php
 namespace Gram\Route\Dispatcher;
-use Gram\Route\Map\Map;
+use Gram\Route\Interfaces\Map;
 
-class StaticDispatcher implements Dispatcher
+/**
+ * Class StaticDispatcher
+ * @package Gram\Route\Dispatcher
+ * @author Jörn Heinemann
+ * Dispatcher Klasse für Routes ohne Variablen
+ */
+class StaticDispatcher implements \Gram\Route\Interfaces\Components\StaticDispatcher
 {
 	private $routes=array();
 
-	public function __construct(Map $map){
+	public function setMap(Map $map){
 		$map=$map->getMap();
 		if(isset($map['staticroutes'])){
 			$this->routes=$map['staticroutes'];

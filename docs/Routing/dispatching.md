@@ -7,19 +7,19 @@ Es gibt zwei Dispatcher:
 - Klasse: 
 ```php
 <?php 
-namespace Gram\Lib\Route\Dispatcher;
+namespace Gram\Route\Dispatcher;
 class StaticDispatcher implements Dispatcher
 {
 	
 }
 ```
-1. Durchläuft die Static Routes (siehe Route Creation) mit einer Schleife
+1. Prüft ob es die Rpute als Index in dem Route Array gibt
 2. Wenn die Static Route mit der Request Url übereinstimmt gebe den Handler ohne Parameter zurück
 ## Dynamic Dispatcher
 - Klasse: 
 ```php
 <?php 
-namespace Gram\Lib\Route\Dispatcher;
+namespace Gram\Route\Dispatcher;
 class DynamicDispatcher implements Dispatcher
 {
 	

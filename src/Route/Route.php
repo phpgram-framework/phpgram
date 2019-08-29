@@ -1,20 +1,14 @@
 <?php
 namespace Gram\Route;
 use Gram\Route\Collector\MiddlewareCollector;
+use Gram\Route\Interfaces\Parser;
 
 class Route
 {
-	public $path,$handle,$method,$varcount,$path_Old;
+	public $path,$handle,$method,$vars,$path_Old;
+	private static $parser;
 
-	private static $placeholders=array(
-		'/\/{(a)}/'=>'/(\w*)',	//Alphanumerisch
-		'/\/{(id)}/'=>'/(\d+)',	//Nur Zahlen
-		'/\/{(auml)}/'=>'/([0-9,a-z,A-Z_äÄöÖüÜß]+)'	//Umlaute
-	);
-	public static $userplaceholders=array();
-
-
-	public function __construct(string $path,$handle,string $method){
+	public function __construct(string $path,$handle,$method){
 		$this->handle=$handle;
 		$this->method=$method;
 
@@ -22,31 +16,48 @@ class Route
 		$this->path=$path;
 		$this->path_Old=$path;
 
-		$this->parsePlaceholders();
+		$this->createRoute();
+	}
+
+	private function parseRoute(Parser $parser){
+		return $parser->parse($this->path);
+	}
+
+	private function createRoute(){
+		$data=$this->parseRoute(self::$parser);	//die geparste Route
+		$url="";
+		$var=array();
+		foreach ($data[0] as $datum) {
+			if(is_string($datum)){
+				//füge es einfach der url wieder zu
+				$url.=preg_quote($datum, '~');
+				continue;
+			}
+
+			//füge var hinzu
+			if(is_array($datum)){
+				$var[]=$datum[0];	//varaiblen name
+				$url.='('.$datum[1].')';
+			}
+		}
+
+		$this->path=$url;
+		$this->vars=$var;
 	}
 
 	public function addMiddleware(array $middleware,$type){
 		//eine Middleware kann selber keine weiteren hinzufügen
 		if($this->method===''){
-			return;
+			return $this;
 		}
 
 		//füge die Middleware nach vorne, damit diese route nicht überschrieben werden kann mit anderen middlewares
 		MiddlewareCollector::middle($type)->add($this->path_Old,$middleware,true);
+
+		return $this;
 	}
 
-	private function parsePlaceholders(){
-		//wandle Platzhalter um
-		$allPlaceHolders=array_merge(self::$placeholders,self::$userplaceholders);
-
-		$this->varcount=0;
-		foreach ($allPlaceHolders as $pattern=>$placeHolder) {
-			$this->path = preg_replace($pattern, $placeHolder, $this->path,-1,$countvar);
-			$this->varcount+=$countvar; //zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
-		}
-
-		//wandle alles andere um
-		$this->path = preg_replace('/\{(.*?)}/', '(.*?)', $this->path,-1,$countvar);	//Alles
-		$this->varcount+=$countvar;
+	public static function setParser(Parser $parser){
+		self::$parser=$parser;
 	}
 }

@@ -2,7 +2,7 @@
 namespace Gram\Route\Generator;
 use Gram\Route\Route;
 
-class StaticGenerator implements Generator
+class StaticGenerator implements \Gram\Route\Interfaces\Components\StaticGenerator
 {
 	private $staticroutes=array();
 
@@ -11,9 +11,13 @@ class StaticGenerator implements Generator
 			$this->mapRoute($route);
 		}
 
-		return array(
+		$return = array(
 			'staticroutes'=>$this->staticroutes
 		);
+
+		$this->staticroutes=array();	//zurück setzen
+
+		return $return;
 	}
 
 	private function mapRoute(Route $route){

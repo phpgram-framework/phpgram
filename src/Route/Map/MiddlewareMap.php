@@ -1,6 +1,5 @@
 <?php
 namespace Gram\Route\Map;
-use Gram\App\App;
 use Gram\Route\Collector\MiddlewareCollector;
 
 /**
@@ -9,7 +8,7 @@ use Gram\Route\Collector\MiddlewareCollector;
  * @author Jörn Heinemann
  * Die Map für die Middleware
  */
-class MiddlewareMap extends Map
+class MiddlewareMap extends BaseMap implements \Gram\Route\Interfaces\Components\MiddlewareMap
 {
 	protected $typ;
 	protected static $callbacks=array(),$cachefile=null;
@@ -34,5 +33,9 @@ class MiddlewareMap extends Map
 		if($caching){
 			self::$cachefile[$typ]=$cache;
 		}
+	}
+
+	public function getStd(){
+		return $this->getValue('std');
 	}
 }

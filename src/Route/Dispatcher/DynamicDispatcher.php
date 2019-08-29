@@ -1,7 +1,6 @@
 <?php
 namespace Gram\Route\Dispatcher;
-use Gram\Route\Map\Map;
-use Gram\Route\Route;
+use Gram\Route\Interfaces\Map;
 
 /**
  * Class DynamicDispatcher
@@ -10,13 +9,15 @@ use Gram\Route\Route;
  * Sucht den richtigen Handler, anhand der aufgerufenen Url, in der übergebenen Regexliste
  * Arbeitet nach dem Group Count Based (GCB) Prinzip
  * Wird von den Router Klassen aufgerufen um ein Request durch zuführen
- * Anlehnung an: http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
+ * Anlehnung an:
+ * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
+ * https://github.com/nikic/FastRoute
  */
-class DynamicDispatcher implements Dispatcher
+class DynamicDispatcher implements \Gram\Route\Interfaces\Components\DynamicDispatcher
 {
 	private $regex=array(),$handler=array();
 
-	public function __construct(Map $map){
+	public function setMap(Map $map){
 		$map=$map->getMap();
 
 		//nur Generieren wenn dynamich Routes da sind
@@ -54,11 +55,11 @@ class DynamicDispatcher implements Dispatcher
 			$route = $this->handler[$i][count($matches)];
 
 			$var=array();
-			for($i = 0; $i < $route['varcount']; $i++) {
-				$var[$i]=$matches[$i+1]; //erstes Element (der komplette Match) nicht mit berücksichtigen
+			foreach ($route[1] as $j=>$item) {
+				$var[$item]=$matches[$j+1];
 			}
 
-			return array(self::FOUND,$route['handle'],$var);
+			return array(self::FOUND,$route[0],$var);	//[status,handler,vars}
 		}
 		return array(self::NOT_FOUND);
 	}

@@ -1,5 +1,5 @@
 <?php
-namespace Gram\Handler;
+namespace Gram\Callback;
 
 /**
  * Class ControllerHandler
@@ -8,7 +8,7 @@ namespace Gram\Handler;
  * Konvertiert folgendes Muster: Controller@function zu class= Controller Function = function
  * Erstellt dann den Handler mit dem ClassHandler
  */
-class ControllerHandler extends ClassHandler
+class ControllerCallback extends ClassCallback
 {
 	/**
 	 * Nimmt einen Controller entgegen

@@ -1,6 +1,5 @@
 <?php
 namespace Gram\Route\Map;
-use Gram\App\App;
 use Gram\Route\Collector\RouteCollector;
 
 /**
@@ -9,7 +8,7 @@ use Gram\Route\Collector\RouteCollector;
  * @author Jörn Heinemann
  * Die Map für die normalen Routes
  */
-class RouteMap extends Map
+class RouteMap extends BaseMap implements \Gram\Route\Interfaces\Components\RouteMap
 {
 	protected static $callbacks=array(),$cachefile=null;	//Alle Route Sammler
 
@@ -34,5 +33,13 @@ class RouteMap extends Map
 		if($caching){
 			self::$cachefile=$cache;
 		}
+	}
+
+	public function get404(){
+		return parent::getValue('er404');
+	}
+
+	public function get405(){
+		return parent::getValue('er405');
 	}
 }

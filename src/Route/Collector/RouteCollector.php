@@ -8,37 +8,26 @@ namespace Gram\Route\Collector;
  * Erstellt die auf zurufenden Routes in einer Liste
  * Wird nur aufgerufen wenn kein Cache vorliegt
  */
-class RouteCollector extends Collector
+class RouteCollector extends BaseCollector implements \Gram\Route\Interfaces\Components\RouteCollector
 {
 	private static $_instance;
 
 	/**
-	 * Fügt eine Webroute hinzu
+	 * Fügt eine Route hinzu
 	 * @param string $route
 	 * Welche Route
 	 * @param $controller
 	 * Welcher Controller soll angesprochen werden
 	 * @param string $method
 	 * Wie soll die RouteCollector aufgerufen werden
+	 * @param $routingTyp
+	 * Später können dann Outputstrategien für diesen Typ fest gelegt werden
+	 * z. B. typ = 'web' -> content ausgeben oder typ = 'api' -> als json return
 	 * @return bool|\Gram\Route\Route
 	 */
-	public function add($route,$controller,$method='get'){
+	public function add($route,$controller,$routingTyp,$method='get'){
 		$handle['callback']=$controller;
-		$handle['routingTyp']="web";
-
-		return $this->set($route,$handle,$method);
-	}
-
-	/**
-	 * Fügt eine Api RouteCollector hinzu. Kaum ein unterschied zu add()
-	 * @param $route
-	 * @param $controller
-	 * @param string $method
-	 * @return bool|\Gram\Route\Route
-	 */
-	public function api($route,$controller,$method='get'){
-		$handle['callback']=$controller;
-		$handle['routingTyp']="api";
+		$handle['routingTyp']=$routingTyp;	//speichere Routingtyp für (Output) Strategie
 
 		return $this->set($route,$handle,$method);
 	}
@@ -49,8 +38,9 @@ class RouteCollector extends Collector
 	 * @param string $function
 	 */
 	public function notFound($controller,$function=""){
-		if($function===""){
+		if($function==""){
 			$this->map['er404']=$controller;
+			return;
 		}
 
 		$this->map['er404']=array($controller,$function);
@@ -63,13 +53,12 @@ class RouteCollector extends Collector
 	 * @param $function
 	 */
 	public function notAllowed($controller,$function=""){
-		$this->map['erNotAllowed']=$controller;
-
 		if($function===""){
-			$this->map['erNotAllowed']=$controller;
+			$this->map['er405']=$controller;
+			return;
 		}
 
-		$this->map['erNotAllowed']=array($controller,$function);
+		$this->map['er405']=array($controller,$function);
 	}
 
 	/**

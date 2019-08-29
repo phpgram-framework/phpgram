@@ -1,7 +1,7 @@
 <?php
 namespace Gram\Route\Collector;
 
-class MiddlewareCollector extends Collector
+class MiddlewareCollector extends BaseCollector implements \Gram\Route\Interfaces\Components\MiddlewareCollector
 {
 	private static $_before_instance,$_after_instance,$_lastinstance;
 

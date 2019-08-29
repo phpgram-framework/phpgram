@@ -7,17 +7,19 @@ use Gram\Route\Route;
  * @author Jörn Heinemann
  * Erstellt Routelisten mit Group Count Based (GCB)
  * Wird von den Collector Klassen aufgerufen um die Routes und Handler zusammen zufassen
- * Anlehnung an: http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
+ * Anlehnung an:
+ * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
+ * https://github.com/nikic/FastRoute
  */
-class DynamicGenerator implements Generator
+class DynamicGenerator implements \Gram\Route\Interfaces\Components\DynamicGenerator
 {
 	const CHUNKSIZE = 10;
 
 	private $number=0,$chunkcount=0,$routeCollector,$handleCollector,$routeList,$handlerList;
 
 	/**
-	 * Sammle solange Routes bis die Sammelmenge (chunk) erreicht ist (routeCollector())
-	 * Wenn diese erreicht ist fasse die Routes zu einer Regex zusammen (chunkRoutes())
+	 * Sammle solange Routes bis die Sammelmenge (chunk) erreicht ist ( @see DynamicGenerator::routeCollector() )
+	 * Wenn diese erreicht ist fasse die Routes zu einer Regex zusammen ( @see DynamicGenerator::chunkRoutes() )
 	 * @param array $routes
 	 * Die zu chunkenden Routes. Array muss die Route, den Handler und die Anzahl an erwarteten Vartaiblen beinhalten und
 	 * wie folgt aufgebaut sein:
@@ -45,10 +47,33 @@ class DynamicGenerator implements Generator
 			$this->chunkRoutes();	//letze routes chunken
 		}
 
-		return array(
+		return $this->prepReturn();
+	}
+
+	/**
+	 * Setzt alles wieder zurück, da die Klasse ein Singleton ist
+	 * @return array
+	 */
+	private function prepReturn(){
+		$return = array(
 			'regexes'=>$this->routeList,
 			'dynamichandler'=>$this->handlerList
 		);
+
+		$this->routeList=array();
+		$this->handlerList=array();
+
+		$this->reset();
+
+		return $return;
+	}
+
+	private function reset(){
+		//Sammler wieder zurück stellen
+		$this->routeCollector=array();
+		$this->handleCollector=array();
+		$this->chunkcount=0;
+		$this->number=0;	//Für die Placeholder
 	}
 
 	/**
@@ -80,11 +105,7 @@ class DynamicGenerator implements Generator
 		$this->routeList[] = '~^(?|' . implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
 		$this->handlerList[]=$this->handleCollector;	//übergibt die handler für die Routeliste
 
-		//Sammler wieder zurück stellen
-		$this->routeCollector=array();
-		$this->handleCollector=array();
-		$this->chunkcount=0;
-		$this->number=0;	//Für die Placeholder
+		$this->reset();
 	}
 
 	/**
@@ -99,10 +120,10 @@ class DynamicGenerator implements Generator
 	 * @param Route $route
 	 */
 	private function routeCollector(Route $route){
-		$varcount = $route->varcount;
+		$varcount = count($route->vars);	//zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
 		$this->number=max($this->number,$varcount);	//passe Placeholderanzahl an
 		$this->routeCollector[]= $route->path.str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
 		++$this->number;	//erhöhe da die nächste Route einen Playerholder mehr braucht
-		$this->handleCollector[$this->number]=array("handle"=>$route->handle,"varcount"=>$varcount);	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
+		$this->handleCollector[$this->number]=array($route->handle,$route->vars);	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
 	}
 }

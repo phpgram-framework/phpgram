@@ -1,7 +1,7 @@
 # Routing
 - Es können nur Klassen mit dem Namespace App\Http\Controller oder App\Http\Middleware geroutet werden
-- [Psr-7](https://www.php-fig.org/psr/psr-7/) und [Psr-15](https://www.php-fig.org/psr/psr-15/) sind (noch) nicht implementiert
-- Der Router kann in einer Configdatei (/config/routes/config.router.php) angepasst werden
+- [Psr-7](https://www.php-fig.org/psr/psr-7/) und [Psr-15](https://www.php-fig.org/psr/psr-15/) sind implementiert
+
 ## Request
 1. Der Request kommt über App Klasse an
 2. Dort wird dieser Verarbeitet und Middleware und Router aufgerufen

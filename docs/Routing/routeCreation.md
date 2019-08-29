@@ -15,7 +15,7 @@
 - Klasse: 
 ```php
 <?php 
-namespace Gram\Lib\Route\Generator;
+namespace Gram\Route\Generator;
 class StaticGenerator
 {
 	
@@ -44,7 +44,7 @@ class StaticGenerator
 - Klasse: 
 ```php
 <?php 
-namespace Gram\Lib\Route\Generator;
+namespace Gram\Route\Generator;
 class DynamicGenerator
 {
 	

@@ -1,5 +1,9 @@
 <?php
 namespace Gram\App;
+use Gram\Middleware\Handler\CallbackHandler;
+use Gram\Middleware\Handler\NotFoundHandler;
+use Gram\Middleware\Handler\QueueHandler;
+use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Router;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,10 +18,18 @@ use Psr\Http\Message\StreamFactoryInterface;
 class App
 {
 	private $path,$method; //old pre psr 7
+	private $request,$uri;
+
 
 	public static $options;
 	private static $_instance;
-	public static $responseFactory,$streamFactory;
+	private static $responseFactory, $streamFactory;
+
+	/**
+	 * App constructor.
+	 * Private da die App nur mit init gestartet werden darf
+	 */
+	private function __construct(){}
 
 	/**
 	 * Start der Seite
@@ -28,76 +40,71 @@ class App
 	 * @param ServerRequestInterface $request
 	 */
 	public function start(ServerRequestInterface $request){
-		$uri=$request->getUri()->getPath();
-		$method=$request->getMethod();
+		$this->request=$request;
 
-		//before
+		//bereite Queue vor
+		$fallback = new CallbackHandler(self::$responseFactory,self::$streamFactory);	//erstellt das callable aus dem requests
 
-		$router2=new Router(Router::BEFORE_MIDDLEWARE);
+		$this->uri = $request->getUri()->getPath();
 
-		if(isset($router2->getMap()->getMap()['std'])){
-			$stdBefore=$router2->getMap()->getMap()['std'];
-		}else{
-			$stdBefore=array();
+		$queue = new QueueHandler($fallback);	//default Fallback
+
+		//___________________________________________________________________________
+
+		//Erstelle Middleware Stack
+
+		//erstelle Before Middleware
+		$this->buildStack($queue,new Router(Router::BEFORE_MIDDLEWARE));
+
+		//füge Route in der mitte hinzu
+		$queue->add(new RouteMiddleware(
+			new Router(Router::REQUEST_ROUTER),		//router für den request
+			new NotFoundHandler(self::$responseFactory,self::$streamFactory)	//error handler
+		));
+
+		//erstelle After Middleware
+		$this->buildStack($queue,new Router(Router::AFTER_MIDDLEWARE));
+
+		//______________________________________________________________________________
+
+		//Starte den Stack und erstelle Response
+
+		$response = $queue->handle($request);
+
+		$content = $response->getBody()->__toString();
+
+		echo $content;	//TODO Strategies zum Output verwenden z. B. echo, return json, return xml, etc.
+	}
+
+	private function buildStack(QueueHandler $queueHandler,Router $router){
+		$std=array();
+		$mstack=array();
+		$callable=array();
+
+		//hole die Standard Middlewares, die imemr ausgeführt werden sollen
+		if(isset($router->getMap()->getMap()['std'])){
+			$std=$router->getMap()->getMap()['std'];
 		}
 
-		$router2->run($uri);
+		//hole die Dynamischen Middlewares die nur bei bestimmten Seiten ausgeführt werden sollen
+		$router->run($this->uri);
 
-		if(isset($router2->getHandle()['callback'])){
-			$mstack=$router2->getHandle()['callback'];
-		}else{
-			$mstack=array();
+		if(isset($router->getHandle()['callback'])){
+			$mstack=$router->getHandle()['callback'];
 		}
 
-		$stack=array_merge($stdBefore,$mstack);
-
+		//verbinde beide zu einem Stack
+		$stack=array_merge($std,$mstack);
 
 		if(!empty($stack)){
-			$caller2=new CallableCreator(null,$stack);
-			$callable2=$caller2->getCallable();
-
-			foreach ($callable2 as $item) {
-
-				debug_page($item);
-
-				echo $item->callback(array(),$request);
-			}
+			$creator=new CallableCreator(null,$stack);
+			$callable=$creator->getCallable();
 		}
-		
 
-		
-		//request
-
-
-		$router=new Router(Router::REQUEST_ROUTER);
-
-		$router->run($uri,$method);
-
-		$request=$request->withAttribute("handle",$router->getHandle());
-		$request=$request->withAttribute("param",$router->getParam());
-
-
-		$handle=$request->getAttribute("handle");
-		$param=$request->getAttribute("param");
-
-		$caller = new CallableCreator($handle['callback']);
-
-		echo $callable=$caller->getCallable()->callback($param,$request);
-
-
-		//after
-/*
-
-		$router2=new Router(Router::AFTER_MIDDLEWARE);
-
-		$router2->run($uri);
-
-
-		$caller2=new CallableCreator(null,$router2->getHandle()['callback']);
-		$callable2=$caller2->getCallable();
-
-		//debug_page($callable2);
-*/
+		//füge den Stack dem Queue Handler hinzu
+		foreach ($callable as $item) {
+			$queueHandler->add($item->callback());
+		}
 	}
 
 	/**
@@ -121,13 +128,15 @@ class App
 	}
 
 
-	public static function init(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory) {
+	public static function init(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory,$options=array()) {
 		if(!isset(self::$_instance)) {
 			self::$_instance = new self();
 		}
 
 		self::$responseFactory=$responseFactory;
 		self::$streamFactory=$streamFactory;
+
+		Router::setOptions($options);
 
 		return self::$_instance;
 	}

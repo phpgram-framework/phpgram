@@ -1,6 +1,5 @@
 <?php
-namespace Gram\Route\Generator;
-
+namespace Gram\Route\Interfaces;
 
 interface Generator
 {

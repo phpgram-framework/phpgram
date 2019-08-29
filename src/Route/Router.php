@@ -1,10 +1,12 @@
 <?php
 namespace Gram\Route;
-use Gram\Route\Map\MiddlewareMap;
-use Gram\Route\Map\RouteMap;
-use Gram\Route\Dispatcher\Dispatcher;
-use Gram\Route\Dispatcher\StaticDispatcher;
-use Gram\Route\Dispatcher\DynamicDispatcher;
+use Gram\Route\Interfaces\Components\MiddlewareMap;
+use Gram\Route\Interfaces\Components\RouteMap;
+use Gram\Route\Interfaces\Dispatcher;
+use Gram\Route\Interfaces\Components\DynamicDispatcher;
+use Gram\Route\Interfaces\Components\StaticDispatcher;
+use Gram\Route\Interfaces\Map;
+use Gram\Route\Collector\BaseCollector;
 
 class Router
 {
@@ -16,20 +18,14 @@ class Router
 	const OK = 200;
 
 	private $routertyp,$checkMethod,$map,$uri,$handle,$param=array(),$status;
-	private static $routemap=null;
+	private static $routemap,$beforemap,$aftermap,$routeinitmap=false;
+
+	//Options
+	private static $dynamicDispatcher,$staticDispatcher;
 
 	public function __construct(int $routertyp,$checkMethod=true){
 		$this->routertyp=$routertyp;
 		$this->checkMethod=$checkMethod;
-
-		/*
-		 * Routemap immer erstellen, da diese weitere Middleware definitionen haben kann,
-		 * die sonst nicht geladen werden wenn middleware vor dem router aufgerufen wird
-		 */
-		if(!isset(self::$routemap)){
-			self::$routemap=new RouteMap();
-			self::$routemap->getMap();
-		}
 
 		//suche Map zum Dispatchen
 		switch ($routertyp){
@@ -37,10 +33,10 @@ class Router
 				$this->map=self::$routemap;
 				break;
 			case self::BEFORE_MIDDLEWARE:
-				$this->map=new MiddlewareMap('before');
+				$this->map=self::$beforemap;
 				break;
 			case self::AFTER_MIDDLEWARE:
-				$this->map=new MiddlewareMap('after');
+				$this->map=self::$aftermap;
 		}
 	}
 
@@ -61,30 +57,36 @@ class Router
 
 	private function disptach(){
 		//Prüfe zuerst die Static Routes
-		if($this->doDisptach(new StaticDispatcher($this->map))){
+		if($this->doDisptach(self::$staticDispatcher)){
 			return true;
 		}
 
 		//Danach die dynamischen
-		if($this->doDisptach(new DynamicDispatcher($this->map))){
+		if($this->doDisptach(self::$dynamicDispatcher)){
 			return true;
 		}
 
 		$this->status=self::NOT_FOUND;
 
-		if(isset($this->map->getMap()['er404'])){
-			$this->handle['callback']=$this->map->getMap()['er404'];
+		if($this->map instanceof RouteMap){
+			$map=$this->map->get404();
+
+			if(isset($map)){
+				$this->handle['callback']=$map;
+			}
 		}
+
 		return false;
 	}
 
 	private function doDisptach(Dispatcher $dispatcher){
+		$dispatcher->setMap($this->map);
 		$response = $dispatcher->dispatch($this->uri);
 
 		if($response[0]===Dispatcher::FOUND){
 			$this->handle=$response[1];
 			$this->param=$response[2];
-
+			$this->status=self::OK;
 			return true;
 		}
 
@@ -100,7 +102,15 @@ class Router
 		}
 
 		$this->status=self::METHOD_NOT_ALLOWED;
-		$this->handle['callback']=$this->map->getMap()['erNotAllowed'];
+
+		if($this->map instanceof RouteMap){
+			$map=$this->map->get405();
+
+			if(isset($map)){
+				$this->handle['callback']=$map;
+			}
+		}
+
 		return false;
 	}
 
@@ -125,10 +135,49 @@ class Router
 		return $this->status;
 	}
 
+
 	/**
-	 * @return MiddlewareMap
+	 * @return Map
 	 */
 	public function getMap(){
 		return $this->map;
+	}
+
+	public static function setDispatcher(StaticDispatcher $staticDispatcher,DynamicDispatcher $dynamicDispatcher){
+		self::$staticDispatcher=$staticDispatcher;
+		self::$dynamicDispatcher=$dynamicDispatcher;
+	}
+
+	public static function setMaps(RouteMap $routeMap,MiddlewareMap $before,MiddlewareMap $after){
+		self::$routemap=$routeMap;
+
+		/*
+		 * Routemap immer erstellen, da diese weitere Middleware definitionen haben kann,
+		 * die sonst nicht geladen werden wenn middleware vor dem router aufgerufen wird
+		 */
+		if(!self::$routeinitmap){
+			self::$routemap->initMap();
+			self::$routeinitmap=true;
+		}
+
+		self::$beforemap=$before;
+		self::$aftermap=$after;
+	}
+
+	public static function setOptions($options=array()){
+		$options +=array(
+			'disdynamic'=>'Gram\\Route\Dispatcher\\DynamicDispatcher',
+			'disstatic'=>'Gram\\Route\\Dispatcher\\StaticDispatcher',
+			'gendynamic'=>'Gram\\Route\\Generator\\DynamicGenerator',
+			'genstatic'=>'Gram\\Route\\Generator\\StaticGenerator',
+			'parser'=>'Gram\\Route\\Parser\\StdParser',
+			'routemap'=>'Gram\\Route\\Map\\RouteMap',
+			'middlemap'=>'Gram\\Route\\Map\\MiddlewareMap',
+		);
+
+		Route::setParser(new $options['parser']);
+		BaseCollector::setGenerator(new $options['genstatic'],new $options['gendynamic']);
+		self::setDispatcher(new $options['disstatic'],new $options['disdynamic']);
+		self::setMaps(new $options['routemap'],new $options['middlemap']('before'),new $options['middlemap']('after'));
 	}
 }

@@ -1,6 +1,5 @@
 <?php
-namespace Gram\Route\Dispatcher;
-
+namespace Gram\Route\Interfaces;
 /**
  * Interface Dispatcher
  * @package Gram\Route\Dispatcher
@@ -13,4 +12,5 @@ interface Dispatcher
 	const NOT_FOUND = 0;
 
 	public function dispatch($uri);
+	public function setMap(Map $map);
 }

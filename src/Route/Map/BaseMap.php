@@ -1,6 +1,5 @@
 <?php
 namespace Gram\Route\Map;
-
 /**
  * Class Map
  * @package Gram\Route\Map
@@ -8,17 +7,11 @@ namespace Gram\Route\Map;
  * Die Abstracte Klasse von der alle Map Klassen erben müssen
  * Maps sind dazu da die verfügbaren Routes mit den Handlern zu holen und zu erstellen
  */
-abstract class Map
+abstract class BaseMap
 {
 	protected $map=array(),$options=array(),$cache=null;
 
-	/**
-	 * Sucht die passende Map von Routes und Handlern
-	 * Diese kann auch gecacht sein
-	 * @return array
-	 */
-	public function getMap(){
-		//wenn map noch nicht gesetzt wurde
+	public function initMap(){
 		if(empty($this->map)){
 			//prüfe ob es einen cache gibt und cache falls es keinen gibt
 			if(isset($this->cache)){
@@ -26,8 +19,19 @@ abstract class Map
 			}else{
 				$this->createMap();
 			}
-		}
 
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Sucht die passende Map von Routes und Handlern
+	 * Diese kann auch gecacht sein
+	 * @return array
+	 */
+	public function getMap(){
+		$this->initMap();
 		return $this->map;
 	}
 
@@ -46,6 +50,13 @@ abstract class Map
 				'<?php return ' . var_export($this->map, true) . ';'
 			);
 		}
+	}
+
+	public function getValue(string $key){
+		if(isset($this->map[$key])){
+			return $this->map[$key];
+		}
+		return false;
 	}
 
 	/**

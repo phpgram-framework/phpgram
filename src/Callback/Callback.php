@@ -1,8 +1,8 @@
 <?php
-namespace Gram\Handler;
+namespace Gram\Callback;
 
 
-interface Handler
+interface Callback
 {
 	public function callback($param=array(),$request);
 

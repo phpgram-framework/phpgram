@@ -1,5 +1,5 @@
 <?php
-namespace Gram\Handler;
+namespace Gram\Callback;
 
 /**
  * Class CallbackHandler
@@ -7,7 +7,7 @@ namespace Gram\Handler;
  * @author Jörn Heinemann
  * Speichert ein Callable und gibt es wieder zurück
  */
-class CallbackHandler implements Handler
+class CallbackCallback implements Callback
 {
 	protected $callback;
 
@@ -15,11 +15,13 @@ class CallbackHandler implements Handler
 	 * Führe das Callback aus
 	 * @param array $param
 	 * @param $request
-	 * @return mixed
+	 * @return mixed|string
 	 */
 	public function callback($param=array(),$request){
 		$param[]=$request;	//letzter parameter ist immer der request bei functions
-		return call_user_func_array($this->callback,$param);
+		$return= call_user_func_array($this->callback,$param);
+
+		return ($return===null)?'':$return;	//default: immer einen String zurück geben
 	}
 
 	/**
