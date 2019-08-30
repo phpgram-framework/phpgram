@@ -8,7 +8,7 @@ use Gram\Route\Interfaces\Components\StaticDispatcher;
 use Gram\Route\Interfaces\Map;
 use Gram\Route\Collector\BaseCollector;
 
-class Router
+class Router implements \Gram\Route\Interfaces\Router
 {
 	const REQUEST_ROUTER=1;
 	const BEFORE_MIDDLEWARE=2;

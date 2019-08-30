@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Gram\Route\Router;
+use Gram\Route\Interfaces\Router;
 
 class RouteMiddleware implements MiddlewareInterface
 {
