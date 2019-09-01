@@ -6,11 +6,12 @@ namespace Gram\Route\Interfaces;
  * @author Jörn Heinemann
  * Ein Interface das alle Dispatcher implementieren müssen
  */
-interface Dispatcher
+interface DispatcherInterface
 {
 	const FOUND=1;
 	const NOT_FOUND = 0;
 
+	public function setData(array $routes);
 	public function dispatch($uri);
-	public function setMap(Map $map);
+	public function dispatchDynamic($uri, array $routes,array $handler);
 }

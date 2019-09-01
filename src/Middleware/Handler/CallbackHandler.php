@@ -13,7 +13,7 @@ class CallbackHandler extends Handler
 		$param=$request->getAttribute('param');
 		$status=$request->getAttribute('status');
 
-		$caller = new CallableCreator($handle['callback']);
+		$caller = new CallableCreator($handle['callable']);
 
 		$content=$caller->getCallable()->callback($param,$request);
 

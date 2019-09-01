@@ -1,7 +1,8 @@
 <?php
 namespace Gram\Route\Interfaces;
 
-interface Generator
+interface GeneratorInterface
 {
 	public function generate(array $routes);
+	public function generateDynamic(array $routes);
 }

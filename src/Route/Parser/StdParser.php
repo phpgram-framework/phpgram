@@ -1,11 +1,11 @@
 <?php
 namespace Gram\Route\Parser;
-use Gram\Route\Interfaces\Parser;
+use Gram\Route\Interfaces\ParserInterface;
 /**
  * Class StdParser
  * @package Gram\Route\Parser
  */
-class StdParser implements Parser
+class StdParser implements ParserInterface
 {
 	/**
 	 * @copyright Nikita Popov (FastRoute <https://github.com/nikic/FastRoute>)

@@ -1,6 +1,5 @@
 <?php
 namespace Gram\Route\Dispatcher;
-use Gram\Route\Interfaces\Map;
 
 /**
  * Class DynamicDispatcher
@@ -13,20 +12,8 @@ use Gram\Route\Interfaces\Map;
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
-class DynamicDispatcher implements \Gram\Route\Interfaces\Components\DynamicDispatcher
+class DynamicDispatcher extends Dispatcher
 {
-	private $regex=array(),$handler=array();
-
-	public function setMap(Map $map){
-		$map=$map->getMap();
-
-		//nur Generieren wenn dynamich Routes da sind
-		if(isset($map['regexes']) && $map['dynamichandler']){
-			$this->regex=$map['regexes'];
-			$this->handler=$map['dynamichandler'];
-		}
-	}
-
 	/**
 	 * Suche jede Gruppenregex ab
 	 * Wenn die richtige Routeregex gefunden wird der Handler
@@ -40,27 +27,29 @@ class DynamicDispatcher implements \Gram\Route\Interfaces\Components\DynamicDisp
 	 * Sonst gebe Not_Found Fehler zurück
 	 * @param string $uri
 	 * Die Uri die geprüft werden soll (hier als Url behandelt)
+	 * @param array $routes
+	 * @param array $handler
 	 * @return array
 	 */
-	public function dispatch($uri){
+	public function dispatchDynamic($uri,array $routes,array $handler){
 		//durchlaufe die Regexlisten
 		//$i = welche Regexliste
 		//count($matches) = nummer des handlers
-		foreach($this->regex as $i=>$regex) {
+		foreach($routes as $i=>$regex) {
 			if(!preg_match($regex,$uri,$matches)){
 				continue;	//wenn Route nicht Dabei ist nächsten Chunk prüfen
 			}
 
 			//wenn Regex im Chunk war
-			$route = $this->handler[$i][count($matches)];
+			$route = $handler[$i][count($matches)];
 
 			$var=array();
 			foreach ($route[1] as $j=>$item) {
 				$var[$item]=$matches[$j+1];
 			}
 
-			return array(self::FOUND,$route[0],$var);	//[status,handler,vars}
+			return [self::FOUND,$route[0],$var];	//[status,handler,vars}
 		}
-		return array(self::NOT_FOUND);
+		return [self::NOT_FOUND];
 	}
 }

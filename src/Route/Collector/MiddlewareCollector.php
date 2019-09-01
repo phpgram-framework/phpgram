@@ -1,45 +1,35 @@
 <?php
 namespace Gram\Route\Collector;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 
-class MiddlewareCollector extends BaseCollector implements \Gram\Route\Interfaces\Components\MiddlewareCollector
+class MiddlewareCollector implements MiddlewareCollectorInterface
 {
-	private static $_before_instance,$_after_instance,$_lastinstance;
+	private $std=[],$route=[],$group=[];
 
-	public function add($route,array $stack,$atFirst=false){
-		$handle['callback']=$stack;
-		$handle['routingTyp']="middleware";
-
-		$this->set($route,$handle,"",$atFirst);	//im stack sind alle middlewares drin die für diese route ausgeführt werden sollen
+	public function addStd($middleware, $order = null){
+		$this->std[]=$middleware;
+		return $this;
 	}
 
-	public function addStd(array $stack){
-		$this->map['std']=$stack;
+	public function addRoute($routeid, $middleware, $order = null){
+		$this->route[$routeid][]=$middleware;
 	}
 
-	public static function middle($typ="") {
-		if($typ=="before"){
-			self::$_lastinstance=self::before();
-			return self::before();
-		}
-		if($typ=="after"){
-			self::$_lastinstance=self::after();
-			return self::after();
-		}
-
-		return self::$_lastinstance;
+	public function addGroup($groupid, $middleware, $order = null){
+		$this->group[$groupid][]=$middleware;
 	}
 
-	public static function before(){
-		if(!isset(self::$_before_instance)){
-			self::$_before_instance=new self();
-		}
-		return self::$_before_instance;
+	public function getStdMiddleware(){
+		return $this->std;
 	}
 
-	public static function after(){
-		if(!isset(self::$_after_instance)){
-			self::$_after_instance=new self();
-		}
-		return self::$_after_instance;
+	public function getGroup($id){
+		if(isset($this->group[$id]))
+			return $this->group[$id];
+	}
+
+	public function getRoute($id){
+		if(isset($this->route[$id]))
+			return $this->route[$id];
 	}
 }

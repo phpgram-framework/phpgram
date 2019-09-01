@@ -2,11 +2,11 @@
 namespace Gram\Route\Interfaces;
 
 
-interface Router
+interface RouterInterface
 {
 	public function run($uri,$httpMethod=null);
 	public function getStatus();
 	public function getHandle();
 	public function getParam();
-	public function getMap();
+	public function getCollector();
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Gram\Route\Interfaces;
 
-interface Parser
+interface ParserInterface
 {
 	const DEFAULT_REGEX = '[^/]+';
 

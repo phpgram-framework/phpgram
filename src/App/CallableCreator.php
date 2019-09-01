@@ -20,30 +20,13 @@ class CallableCreator
 	 * sonst etweder ein ControllerHandler erstellen (ein Art ClassHandler) oder
 	 * wenn es eine Function war im Callable handler speichern
 	 * @param $possibleCallable
-	 * @param array $stack
 	 */
-	public function __construct($possibleCallable,$stack=array()){
-		if(!empty($stack)){
-			//Middleware Stack zu Callables machen
-			$this->callable=$this->createCallbackFromStack($stack);
+	public function __construct($possibleCallable){
+		if(!is_array($possibleCallable)){
+			$this->callable=$this->createCallback($possibleCallable);
 		}else{
-			if(!is_array($possibleCallable)){
-				$this->callable=$this->createCallback($possibleCallable);
-			}else{
-				$this->callable=$this->createCallbackForClass($possibleCallable[0],$possibleCallable[1]);
-			}
+			$this->callable=$this->createCallbackForClass($possibleCallable[0],$possibleCallable[1]);
 		}
-	}
-
-	private function createCallbackFromStack(array $stack){
-		return array_map(array($this,'createCallbackFromStack_helper'),$stack);
-	}
-
-	private function createCallbackFromStack_helper($possibleCallable){
-		$callback = new MiddlewareCallback();
-		$callback->set($possibleCallable);
-
-		return $callback;
 	}
 
 	private function createCallbackForMVC($controller){

@@ -4,7 +4,10 @@ use Gram\Middleware\Handler\CallbackHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\Handler\QueueHandler;
 use Gram\Middleware\RouteMiddleware;
+use Gram\Route\Collector\MiddlewareCollector;
+use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -17,11 +20,9 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 class App
 {
-	private $path,$method; //old pre psr 7
-	private $request,$uri;
+	private $request,$router=null,$middlewareCollector=null,$strategyCollector=null;
 
-
-	public static $options;
+	public static $options=[];
 	private static $_instance;
 	private static $responseFactory, $streamFactory;
 
@@ -30,6 +31,36 @@ class App
 	 * Private da die App nur mit init gestartet werden darf
 	 */
 	private function __construct(){}
+
+	public function getRouter(){
+		if(!isset($this->router)){
+
+			$this->router = new Router(
+				true,
+				self::$options,
+				$this->getMWCollector(),
+				$this->getStrategyCollector()
+			);
+		}
+
+		return $this->router;
+	}
+
+	public function getMWCollector(){
+		if(!isset($this->middlewareCollector)){
+			$this->middlewareCollector = new MiddlewareCollector();
+		}
+
+		return $this->middlewareCollector;
+	}
+
+	public function getStrategyCollector(){
+		if(!isset($this->strategyCollector)){
+			$this->strategyCollector = new StrategyCollector();
+		}
+
+		return $this->strategyCollector;
+	}
 
 	/**
 	 * Start der Seite
@@ -45,25 +76,25 @@ class App
 		//bereite Queue vor
 		$fallback = new CallbackHandler(self::$responseFactory,self::$streamFactory);	//erstellt das callable aus dem requests
 
-		$this->uri = $request->getUri()->getPath();
-
 		$queue = new QueueHandler($fallback);	//default Fallback
 
 		//___________________________________________________________________________
 
-		//Erstelle Middleware Stack
+		$routingMiddleware = new RouteMiddleware(
+			$this->getRouter(),		//router für den request
+			new NotFoundHandler(self::$responseFactory,self::$streamFactory),	//error handler
+			$queue,
+			$this->getMWCollector(),
+			$this->getStrategyCollector()
+		);
 
-		//erstelle Before Middleware
-		$this->buildStack($queue,new Router(Router::BEFORE_MIDDLEWARE));
+		//Erstelle Middleware Stack
+		//Über die Routing Middleware, da diese die Funktion auch noch braucht
+
+		$routingMiddleware->buildStack(true);
 
 		//füge Route in der mitte hinzu
-		$queue->add(new RouteMiddleware(
-			new Router(Router::REQUEST_ROUTER),		//router für den request
-			new NotFoundHandler(self::$responseFactory,self::$streamFactory)	//error handler
-		));
-
-		//erstelle After Middleware
-		$this->buildStack($queue,new Router(Router::AFTER_MIDDLEWARE));
+		$queue->add($routingMiddleware);
 
 		//______________________________________________________________________________
 
@@ -76,68 +107,20 @@ class App
 		echo $content;	//TODO Strategies zum Output verwenden z. B. echo, return json, return xml, etc.
 	}
 
-	private function buildStack(QueueHandler $queueHandler,Router $router){
-		$std=array();
-		$mstack=array();
-		$callable=array();
-
-		//hole die Standard Middlewares, die imemr ausgeführt werden sollen
-		if(isset($router->getMap()->getMap()['std'])){
-			$std=$router->getMap()->getMap()['std'];
-		}
-
-		//hole die Dynamischen Middlewares die nur bei bestimmten Seiten ausgeführt werden sollen
-		$router->run($this->uri);
-
-		if(isset($router->getHandle()['callback'])){
-			$mstack=$router->getHandle()['callback'];
-		}
-
-		//verbinde beide zu einem Stack
-		$stack=array_merge($std,$mstack);
-
-		if(!empty($stack)){
-			$creator=new CallableCreator(null,$stack);
-			$callable=$creator->getCallable();
-		}
-
-		//füge den Stack dem Queue Handler hinzu
-		foreach ($callable as $item) {
-			$queueHandler->add($item->callback());
-		}
-	}
-
-	/**
-	 * Hole die Url
-	 * und löscht den letzen /
-	 * Ohne Psr
-	 */
-	private function parseUrl(){
-		$uri=$_SERVER['REQUEST_URI'];
-		$url=parse_url($uri);
-
-		//Startseite
-		if(!isset($url['path']) || $url['path']=="/"){
-			$this->path="/";
-		}else{
-			$this->path=rtrim($url['path'],"/");
-		}
-		$GLOBALS['url']=$uri;	//für referer
-
-		$this->method=$_SERVER['REQUEST_METHOD'];
-	}
-
-
-	public static function init(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory,$options=array()) {
+	public static function init($options=[]) {
 		if(!isset(self::$_instance)) {
 			self::$_instance = new self();
 		}
 
-		self::$responseFactory=$responseFactory;
-		self::$streamFactory=$streamFactory;
-
-		Router::setOptions($options);
+		if(!empty($options)){
+			self::$options=$options;
+		}
 
 		return self::$_instance;
+	}
+
+	public static function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory){
+		self::$responseFactory=$responseFactory;
+		self::$streamFactory=$streamFactory;
 	}
 }

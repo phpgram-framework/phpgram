@@ -11,7 +11,7 @@ use Gram\Route\Route;
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
-class DynamicGenerator implements \Gram\Route\Interfaces\Components\DynamicGenerator
+class DynamicGenerator extends Generator
 {
 	const CHUNKSIZE = 10;
 
@@ -27,7 +27,7 @@ class DynamicGenerator implements \Gram\Route\Interfaces\Components\DynamicGener
 	 * @return array
 	 * Gebe Route und Handlerliste zurück
 	 */
-	public function generate(array $routes){
+	public function generateDynamic(array $routes){
 		$chunkSize=$this->getChunkSize(count($routes));	//passe die chunk größe an
 
 		foreach ($routes as $route) {
@@ -47,31 +47,16 @@ class DynamicGenerator implements \Gram\Route\Interfaces\Components\DynamicGener
 			$this->chunkRoutes();	//letze routes chunken
 		}
 
-		return $this->prepReturn();
-	}
-
-	/**
-	 * Setzt alles wieder zurück, da die Klasse ein Singleton ist
-	 * @return array
-	 */
-	private function prepReturn(){
-		$return = array(
+		return [
 			'regexes'=>$this->routeList,
 			'dynamichandler'=>$this->handlerList
-		);
-
-		$this->routeList=array();
-		$this->handlerList=array();
-
-		$this->reset();
-
-		return $return;
+		];
 	}
 
 	private function reset(){
 		//Sammler wieder zurück stellen
-		$this->routeCollector=array();
-		$this->handleCollector=array();
+		$this->routeCollector=[];
+		$this->handleCollector=[];
 		$this->chunkcount=0;
 		$this->number=0;	//Für die Placeholder
 	}
@@ -124,6 +109,6 @@ class DynamicGenerator implements \Gram\Route\Interfaces\Components\DynamicGener
 		$this->number=max($this->number,$varcount);	//passe Placeholderanzahl an
 		$this->routeCollector[]= $route->path.str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
 		++$this->number;	//erhöhe da die nächste Route einen Playerholder mehr braucht
-		$this->handleCollector[$this->number]=array($route->handle,$route->vars);	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
+		$this->handleCollector[$this->number]=[$route->handle,$route->vars];	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
 	}
 }

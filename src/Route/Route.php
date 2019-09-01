@@ -1,30 +1,40 @@
 <?php
 namespace Gram\Route;
-use Gram\Route\Collector\MiddlewareCollector;
-use Gram\Route\Interfaces\Parser;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\ParserInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 
 class Route
 {
-	public $path,$handle,$method,$vars,$path_Old;
-	private static $parser;
+	public $path,$handle,$vars,$parser,$stack,$strategyCollector,$groupid,$routeid;
 
-	public function __construct(string $path,$handle,$method){
-		$this->handle=$handle;
-		$this->method=$method;
-
+	public function __construct(
+		string $path,
+		$method,
+		$routegroupid,
+		$routeid,
+		ParserInterface $parser,
+		MiddlewareCollectorInterface $stack,
+		StrategyCollectorInterface $strategyCollector
+	){
 		$this->handle['method']=$method;	//speichere Method für Dispatcher
-		$this->path=$path;
-		$this->path_Old=$path;
+		$this->handle['groupid']=$routegroupid;
+		$this->handle['routeid']=$routeid;
 
-		$this->createRoute();
+		$this->path=$path;
+		$this->groupid=$routegroupid;
+		$this->routeid=$routeid;
+		$this->parser=$parser;
+		$this->stack=$stack;
+		$this->strategyCollector=$strategyCollector;
 	}
 
-	private function parseRoute(Parser $parser){
+	private function parseRoute(ParserInterface $parser){
 		return $parser->parse($this->path);
 	}
 
-	private function createRoute(){
-		$data=$this->parseRoute(self::$parser);	//die geparste Route
+	public function createRoute(){
+		$data=$this->parseRoute($this->parser);	//die geparste Route
 		$url="";
 		$var=array();
 		foreach ($data[0] as $datum) {
@@ -45,19 +55,15 @@ class Route
 		$this->vars=$var;
 	}
 
-	public function addMiddleware(array $middleware,$type){
-		//eine Middleware kann selber keine weiteren hinzufügen
-		if($this->method===''){
-			return $this;
-		}
-
-		//füge die Middleware nach vorne, damit diese route nicht überschrieben werden kann mit anderen middlewares
-		MiddlewareCollector::middle($type)->add($this->path_Old,$middleware,true);
+	public function addMiddleware($middleware,$order=null){
+		$this->stack->addRoute($this->routeid,$middleware,$order);
 
 		return $this;
 	}
 
-	public static function setParser(Parser $parser){
-		self::$parser=$parser;
+	public function addStrategy($strategy){
+		$this->strategyCollector->addRoute($this->routeid,$strategy);
+
+		return $this;
 	}
 }
