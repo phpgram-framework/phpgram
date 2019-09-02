@@ -10,7 +10,7 @@ use Gram\Route\RouteGroup;
 
 class RouteCollector implements CollectorInterface
 {
-	private $routes=[],$basepath='',$prefix='',$er404,$er405;
+	private $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
 	private $handler=[],$routeid=0,$routegroupid=0;
 	private $parser,$generator,$caching,$cache,$stack,$strategyCollector;
 
@@ -33,12 +33,12 @@ class RouteCollector implements CollectorInterface
 	public function add(string $path,$handler,array $method):Route{
 		$path=$this->basepath.$this->prefix.$path;
 
-		$this->handler[$this->routegroupid][$this->routeid]=$handler;
+		$this->handler[$this->routeid]=$handler;
 
 		$route = new Route(
 			$path,
 			$method,
-			$this->routegroupid,
+			$this->routegroupsids,
 			$this->routeid,
 			$this->parser,
 			$this->stack,
@@ -54,17 +54,18 @@ class RouteCollector implements CollectorInterface
 
 	public function addGroup($prefix,callable $groupcollector):RouteGroup{
 		$pre = $this->prefix;
-		$oldgroup=$this->routegroupid;
+		$oldgroupids=$this->routegroupsids;
 
 		$this->prefix=$this->prefix.$prefix;
-		$this->routegroupid=max(max(array_keys($this->handler)),$this->routegroupid)+1;
+		$this->routegroupid=$this->routegroupid+1;
+		$this->routegroupsids[]=$this->routegroupid;
 
 		$group = new RouteGroup($this->prefix,$this->routegroupid,$this->stack,$this->strategyCollector);
 
 		call_user_func($groupcollector);
 
 		$this->prefix=$pre;
-		$this->routegroupid=$oldgroup;
+		$this->routegroupsids=$oldgroupids;
 
 		return $group;
 	}

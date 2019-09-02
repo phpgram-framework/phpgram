@@ -100,10 +100,9 @@ class Router implements RouterInterface
 	}
 
 	private function buildHandle(CollectorInterface $collector){
-		$routegroup=$this->handle['groupid'];
 		$routeid=$this->handle['routeid'];
 
-		$this->handle['callable'] = $collector->getHandle()[$routegroup][$routeid];
+		$this->handle['callable'] = $collector->getHandle()[$routeid];
 	}
 
 	/**

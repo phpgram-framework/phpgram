@@ -67,11 +67,13 @@ class RouteMiddleware implements MiddlewareInterface
 				$this->queueHandler->add($callable);
 			}
 		}else{
-			$grouMw=$this->middlewareCollector->getGroup($this->groupid);
-			//Füge Routegroup Mw hinzu
-			if ($grouMw!==null){
-				foreach ($grouMw as $item) {
-					$this->queueHandler->add($item);
+			foreach ($this->groupid as $item) {
+				$grouMw=$this->middlewareCollector->getGroup($item);
+				//Füge Routegroup Mw hinzu
+				if ($grouMw!==null){
+					foreach ($grouMw as $item2) {
+						$this->queueHandler->add($item2);
+					}
 				}
 			}
 
