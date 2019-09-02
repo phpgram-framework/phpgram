@@ -4,12 +4,17 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 
 ## Umfasst folgende Dinge:
 - [Routing nach dem Vorbild von nikic/Fastroute](docs/Routing/index.md)
-- Request Response via [Psr-7], Middleware via [Psr-15], Request, Response Factory via [Psr-17]
+- Request Response via [Psr-7](https://www.php-fig.org/psr/psr-7/), Middleware via [Psr-15](https://www.php-fig.org/psr/psr-15/), Request, Response Factory via [Psr-17](https://www.php-fig.org/psr/psr-17/)
 - Controller Support
 
-[Psr-7]:(https://www.php-fig.org/psr/psr-7/)
-[Psr-15]:(https://www.php-fig.org/psr/psr-15/)
-[Psr-17]:(https://www.php-fig.org/psr/psr-17/)
+
+## Install
+
+Via Composer
+
+``` bash
+$ composer require phpgram/phpgram
+```
 
 ## Credits
 ### Router
