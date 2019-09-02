@@ -43,7 +43,7 @@ class DynamicDispatcher extends Dispatcher
 			//wenn Regex im Chunk war
 			$route = $handler[$i][count($matches)];
 
-			$var=array();
+			$var=[];
 			foreach ($route[1] as $j=>$item) {
 				$var[$item]=$matches[$j+1];
 			}

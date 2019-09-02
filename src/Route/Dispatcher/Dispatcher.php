@@ -12,7 +12,7 @@ abstract class Dispatcher implements DispatcherInterface
 
 	public function dispatch($uri){
 		if(isset($this->routes['static'][$uri])){
-			return array(self::FOUND,$this->routes['static'][$uri],array());
+			return [self::FOUND,$this->routes['static'][$uri],[]];
 		}
 
 		//wenn es keine Dnymic Routes gibt

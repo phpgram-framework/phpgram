@@ -1,12 +1,9 @@
 <?php
 namespace Gram\App;
-
-
 use Gram\Callback\Callback;
 use Gram\Callback\CallbackCallback;
 use Gram\Callback\ClassCallback;
 use Gram\Callback\ControllerCallback;
-use Gram\Callback\MiddlewareCallback;
 
 class CallableCreator
 {
@@ -81,7 +78,7 @@ class CallableCreator
 
 
 	/**
-	 * @return bool|Callback|ClassCallback|ControllerCallback|MiddlewareCallback|CallbackCallback
+	 * @return bool|Callback|ClassCallback|ControllerCallback|CallbackCallback
 	 */
 	public function getCallable(){
 		return $this->callable;

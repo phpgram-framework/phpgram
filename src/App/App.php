@@ -7,7 +7,6 @@ use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
