@@ -5,10 +5,7 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 ## Umfasst folgende Dinge:
 - [Routing nach dem Vorbild von nikic/Fastroute](docs/Routing/index.md)
 - Request Response via [Psr 7], Middleware via [Psr 15], Request, Response Factory via [Psr 17]
-- Controller Support, das return wird dann zu einem Response
-- Eigene Middleware Maps erstellen für spezifische Requests 
-   - z. B.: "/" -> Login ohne Fehlermeldung anzeigen
-   - "/{all}" -> Alles danach Login mit Fehlermeldung anzeigen
+- Controller Support
 
 [Psr 7]:(https://www.php-fig.org/psr/psr-7/)
 [Psr 15]:(https://www.php-fig.org/psr/psr-15/)
