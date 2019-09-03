@@ -1,10 +1,10 @@
 <?php
 namespace Gram\Callback;
-
+use Psr\Http\Message\ServerRequestInterface;
 
 interface Callback
 {
-	public function callback($param=array(),$request);
+	public function callback($param=[],ServerRequestInterface $request);
 
 	public function set();
 }

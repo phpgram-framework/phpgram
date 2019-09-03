@@ -1,5 +1,6 @@
 <?php
 namespace Gram\Callback;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class CallbackHandler
@@ -17,7 +18,8 @@ class CallbackCallback implements Callback
 	 * @param $request
 	 * @return mixed|string
 	 */
-	public function callback($param=array(),$request){
+	public function callback($param=[],ServerRequestInterface $request)
+	{
 		$param[]=$request;	//letzter parameter ist immer der request bei functions
 		$return= call_user_func_array($this->callback,$param);
 
@@ -28,7 +30,8 @@ class CallbackCallback implements Callback
 	 * @param null $callback
 	 * @throws \Exception
 	 */
-	public function set($callback=null){
+	public function set($callback=null)
+	{
 		if(!is_callable($callback)){
 			throw new \Exception("Kein Callable!");
 		}

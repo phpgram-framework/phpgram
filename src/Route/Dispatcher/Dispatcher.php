@@ -6,11 +6,13 @@ abstract class Dispatcher implements DispatcherInterface
 {
 	private $routes;
 
-	public function setData(array $routes){
+	public function setData(array $routes)
+	{
 		$this->routes=$routes;
 	}
 
-	public function dispatch($uri){
+	public function dispatch($uri)
+	{
 		if(isset($this->routes['static'][$uri])){
 			return [self::FOUND,$this->routes['static'][$uri],[]];
 		}
@@ -26,6 +28,4 @@ abstract class Dispatcher implements DispatcherInterface
 			$this->routes['dynamic']['dynamichandler']
 		);
 	}
-
-
 }

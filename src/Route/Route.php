@@ -29,11 +29,13 @@ class Route
 		$this->strategyCollector=$strategyCollector;
 	}
 
-	private function parseRoute(ParserInterface $parser){
+	private function parseRoute(ParserInterface $parser)
+	{
 		return $parser->parse($this->path);
 	}
 
-	public function createRoute(){
+	public function createRoute()
+	{
 		$data=$this->parseRoute($this->parser);	//die geparste Route
 		$url="";
 		$var=array();
@@ -55,13 +57,15 @@ class Route
 		$this->vars=$var;
 	}
 
-	public function addMiddleware($middleware,$order=null){
+	public function addMiddleware($middleware,$order=null)
+	{
 		$this->stack->addRoute($this->routeid,$middleware,$order);
 
 		return $this;
 	}
 
-	public function addStrategy($strategy){
+	public function addStrategy($strategy)
+	{
 		$this->strategyCollector->addRoute($this->routeid,$strategy);
 
 		return $this;

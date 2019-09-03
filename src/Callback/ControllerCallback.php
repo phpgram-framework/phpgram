@@ -1,5 +1,6 @@
 <?php
 namespace Gram\Callback;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class ControllerHandler
@@ -10,6 +11,15 @@ namespace Gram\Callback;
  */
 class ControllerCallback extends ClassCallback
 {
+	public function callback($param=[],ServerRequestInterface $request)
+	{
+		$callback=array(new $this->class($request),$this->function);
+
+		$return= call_user_func_array($callback,$param);
+
+		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+	}
+
 	/**
 	 * Nimmt einen Controller entgegen
 	 * trennt den Controller in Klasse und Funktion
@@ -17,7 +27,8 @@ class ControllerCallback extends ClassCallback
 	 * @param string $controller
 	 * @throws \Exception
 	 */
-	public function setC($controller=""){
+	public function setC($controller="")
+	{
 		if($controller===""){
 			throw new \Exception("Keinen Controller angegeben");
 		}

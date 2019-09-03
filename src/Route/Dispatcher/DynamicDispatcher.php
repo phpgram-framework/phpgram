@@ -31,7 +31,8 @@ class DynamicDispatcher extends Dispatcher
 	 * @param array $handler
 	 * @return array
 	 */
-	public function dispatchDynamic($uri,array $routes,array $handler){
+	public function dispatchDynamic($uri,array $routes,array $handler)
+	{
 		//durchlaufe die Regexlisten
 		//$i = welche Regexliste
 		//count($matches) = nummer des handlers

@@ -30,7 +30,8 @@ class RouteCollector implements CollectorInterface
 		$this->strategyCollector=$strategyCollector;
 	}
 
-	public function add(string $path,$handler,array $method):Route{
+	public function add(string $path,$handler,array $method):Route
+	{
 		$path=$this->basepath.$this->prefix.$path;
 
 		$this->handler[$this->routeid]=$handler;
@@ -52,7 +53,8 @@ class RouteCollector implements CollectorInterface
 		return $route;
 	}
 
-	public function addGroup($prefix,callable $groupcollector):RouteGroup{
+	public function addGroup($prefix,callable $groupcollector):RouteGroup
+	{
 		$pre = $this->prefix;
 		$oldgroupids=$this->routegroupsids;
 
@@ -70,7 +72,8 @@ class RouteCollector implements CollectorInterface
 		return $group;
 	}
 
-	public function getData(){
+	public function getData()
+	{
 		if(file_exists($this->cache)){
 			return require $this->cache;
 		}
@@ -87,55 +90,68 @@ class RouteCollector implements CollectorInterface
 		return $data;
 	}
 
-	public function getHandle(){
+	public function getHandle()
+	{
 		return $this->handler;
 	}
 
-	public function get404(){
+	public function get404()
+	{
 		return $this->er404;
 	}
 
-	public function get405(){
+	public function get405()
+	{
 		return $this->er405;
 	}
 
-	public function get(string $route,$handler){
+	public function get(string $route,$handler)
+	{
 		return $this->add($route,$handler,['GET']);
 	}
 
-	public function post(string $route,$handler){
+	public function post(string $route,$handler)
+	{
 		return $this->add($route,$handler,['POST']);
 	}
 
-	public function getpost(string $route,$handler){
+	public function getpost(string $route,$handler)
+	{
 		return $this->add($route,$handler,['GET','POST']);
 	}
 
-	public function head(string $route,$handler){
+	public function head(string $route,$handler)
+	{
 		return $this->add($route,$handler,['HEAD']);
 	}
 
-	public function delete(string $route,$handler){
+	public function delete(string $route,$handler)
+	{
 		return $this->add($route,$handler,['DELETE']);
 	}
 
-	public function put(string $route,$handler){
+	public function put(string $route,$handler)
+	{
 		return $this->add($route,$handler,['PUT']);
 	}
 
-	public function patch(string $route,$handler){
+	public function patch(string $route,$handler)
+	{
 		return $this->add($route,$handler,['PATCH']);
 	}
 
-	public function setBase(string $base){
+	public function setBase(string $base)
+	{
 		$this->basepath=$base;
 	}
 
-	public function set404($handle){
+	public function set404($handle)
+	{
 		$this->er404=$handle;
 	}
 
-	public function set405($handle){
+	public function set405($handle)
+	{
 		$this->er405=$handle;
 	}
 }

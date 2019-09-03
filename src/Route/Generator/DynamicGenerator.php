@@ -27,7 +27,8 @@ class DynamicGenerator extends Generator
 	 * @return array
 	 * Gebe Route und Handlerliste zurück
 	 */
-	public function generateDynamic(array $routes){
+	public function generateDynamic(array $routes)
+	{
 		$chunkSize=$this->getChunkSize(count($routes));	//passe die chunk größe an
 
 		foreach ($routes as $route) {
@@ -53,7 +54,8 @@ class DynamicGenerator extends Generator
 		];
 	}
 
-	private function reset(){
+	private function reset()
+	{
 		//Sammler wieder zurück stellen
 		$this->routeCollector=[];
 		$this->handleCollector=[];
@@ -75,7 +77,8 @@ class DynamicGenerator extends Generator
 	 * Wie viele Routes gechunkt werden sollen
 	 * @return int
 	 */
-	private function getChunkSize($count){
+	private function getChunkSize($count)
+	{
 		$approxChunks = max(1, round($count/self::CHUNKSIZE));	//wie viele Chunks lassen sich erstellen (muss min. einen geben)
 
 		return (int) ceil($count / $approxChunks);		//die tatsächliche Größe, um die Anzahl an Chunks zu minimieren
@@ -86,7 +89,8 @@ class DynamicGenerator extends Generator
 	 * Muster: (?| Routes mit | dazwischen )
 	 * Speichere Handler an die gleiche Nummer wie die Routeliste
 	 */
-	private function chunkRoutes(){
+	private function chunkRoutes()
+	{
 		$this->routeList[] = '~^(?|' . implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
 		$this->handlerList[]=$this->handleCollector;	//übergibt die handler für die Routeliste
 
@@ -104,7 +108,8 @@ class DynamicGenerator extends Generator
 	 * -> Placeholder werden aufgefüllt
 	 * @param Route $route
 	 */
-	private function routeCollector(Route $route){
+	private function routeCollector(Route $route)
+	{
 		$varcount = count($route->vars);	//zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
 		$this->number=max($this->number,$varcount);	//passe Placeholderanzahl an
 		$this->routeCollector[]= $route->path.str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben

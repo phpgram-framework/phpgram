@@ -1,7 +1,6 @@
 <?php
 namespace Gram\Middleware;
-use Gram\Middleware\Handler\Handler;
-use Gram\Middleware\Handler\QueueHandler;
+use Gram\App\QueueHandler;
 use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,7 +16,7 @@ class RouteMiddleware implements MiddlewareInterface
 
 	public function __construct(
 		Router $router,
-		Handler $notFoundHandler,
+		RequestHandlerInterface $notFoundHandler,
 		QueueHandler $queueHandler,
 		MiddlewareCollectorInterface $middlewareCollector,
 		StrategyCollectorInterface $strategyCollector
@@ -31,7 +30,8 @@ class RouteMiddleware implements MiddlewareInterface
 
 	/// macht den request (normales routing)
 
-	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface{
+	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+	{
 		$uri=$request->getUri()->getPath();
 		$method=$request->getMethod();
 
@@ -43,6 +43,7 @@ class RouteMiddleware implements MiddlewareInterface
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request=$request
 			->withAttribute('handle',$handle)
+			->withAttribute('callable',$handle['callable'])
 			->withAttribute('status',$status)
 			->withAttribute('param',$this->router->getParam());
 
@@ -56,10 +57,25 @@ class RouteMiddleware implements MiddlewareInterface
 
 		$this->buildStack();
 
+		//Prüfe ob es eine Route Strategie gibt
+		$strategy= $this->strategyCollector->getRoute($this->routeid);
+		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
+		if($strategy===null){
+			foreach ($this->groupid as $item) {
+				$check = $this->strategyCollector->getGroup($item);
+				if($check!==null){
+					$strategy=$check;
+				}
+			}
+		}
+
+		$request=$request->withAttribute('strategy',$strategy);
+
 		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
 	}
 
-	public function buildStack($addstd=false){
+	public function buildStack($addstd=false)
+	{
 		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
 		if($addstd===true){
 			foreach ($this->middlewareCollector->getStdMiddleware() as $item) {

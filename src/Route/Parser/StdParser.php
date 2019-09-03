@@ -22,21 +22,23 @@ REGEX;
 	/**
 	 * @copyright Phil Bennett philipobenito@gmail.com (thephpleague <https://route.thephpleague.com/>)
 	 */
-	private static $placeholders=array(
+	private static $placeholders=[
 		'/{(.+?):n}/'=>'{$1:[0-9]+}',		//Zahlen
 		'/{(.+?):a}/'=>'{$1:[0-9,a-z,A-Z_äÄöÖüÜß]+}',	//Umlaute und dash
 		'/{(.+?):all}/'=>'{$1:.+?}'	//matche alles sowie den backslash
-	);
+	];
 
 	private $uri;
 
-	public function parse(string $route){
+	public function parse(string $route)
+	{
 		$this->uri=$route;
 
 		return $this->parsePlaceholders();
 	}
 
-	private function parsePlaceholders(){
+	private function parsePlaceholders()
+	{
 		/**
 		 * @copyright Phil Bennett philipobenito@gmail.com (thephpleague <https://route.thephpleague.com/>)
 		 */
@@ -63,7 +65,8 @@ REGEX;
 		return $routeDatas;
 	}
 
-	private function createVars($route){
+	private function createVars($route)
+	{
 		/**
 		 * @copyright Nikita Popov (FastRoute <https://github.com/nikic/FastRoute>)
 		 */
@@ -71,7 +74,7 @@ REGEX;
 			'~' . self::VARIABLE_REGEX . '~x', $route, $matches,
 			PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 		)) {
-			return array($route);
+			return [$route];
 		}
 
 		$offset = 0;
@@ -94,7 +97,8 @@ REGEX;
 		return $routeData;
 	}
 
-	public static function addDataTyp(string $typ,string $regex){
+	public static function addDataTyp(string $typ,string $regex)
+	{
 		/**
 		 * @copyright Phil Bennett philipobenito@gmail.com (thephpleague <https://route.thephpleague.com/>)
 		 */

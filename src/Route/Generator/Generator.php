@@ -10,7 +10,8 @@ abstract class Generator implements GeneratorInterface
 	private $dynamic=[];
 	private $static=[];
 
-	public function generate(array $routes){
+	public function generate(array $routes)
+	{
 		foreach ($routes as $i=>$route) {
 			$this->mapRoute($route);
 		}
@@ -20,7 +21,8 @@ abstract class Generator implements GeneratorInterface
 		return ['static'=>$this->static,'dynamic'=>$this->dynamic];
 	}
 
-	private function mapRoute(Route $route){
+	private function mapRoute(Route $route)
+	{
 		$route->createRoute();	//parse die Route
 
 		//Ordne die Route in Static und Dynamic

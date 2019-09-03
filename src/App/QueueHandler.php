@@ -1,5 +1,5 @@
 <?php
-namespace Gram\Middleware\Handler;
+namespace Gram\App;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -7,14 +7,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class QueueHandler implements RequestHandlerInterface
 {
-	private $previous,$stack;
+	private $stack, $previous;
 
-	public function __construct(RequestHandlerInterface $previous){
+	public function __construct(RequestHandlerInterface $previous)
+	{
 		$this->previous=$previous;	//der rücksprung handler mit dem diese klasse aufgerufen wird
 	}
 
-	public function add(MiddlewareInterface $middleware){
+	public function add(MiddlewareInterface $middleware)
+	{
 		$this->stack[]=$middleware;	//nach jedem durchlauf wird ein element vom stack genommen
+	}
+
+	public function getPre()
+	{
+		return $this->previous;
 	}
 
 	/**
@@ -22,11 +29,12 @@ class QueueHandler implements RequestHandlerInterface
 	 * Alle Middlewares rufen diese Function dieses Objekts (this) wieder auf. Wenn ein Event eingetreten ist
 	 * wird ein anderer Handler aufgerufen und dieses Response zürck gegeben.
 	 * Sonst laufe durch den ganzen Middleware stack und führe den letzten Handler aus
-	 * hier ist das der @see CallbackHandler
+	 * hier ist das der @see ResponseHandler
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface
 	 */
-	public function handle(ServerRequestInterface $request): ResponseInterface{
+	public function handle(ServerRequestInterface $request): ResponseInterface
+	{
 		//wenn es keine Middleware gibt gebe das Ergebnis des handlers aus der zuletzt getriggert werden soll
 
 		if(count($this->stack)===0){

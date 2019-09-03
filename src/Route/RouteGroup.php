@@ -18,13 +18,15 @@ class RouteGroup
 		$this->strategyCollector=$strategyCollector;
 	}
 
-	public function addMiddleware($middleware,$order=null){
+	public function addMiddleware($middleware,$order=null)
+	{
 		$this->stack->addGroup($this->groupid,$middleware,$order);
 
 		return $this;
 	}
 
-	public function addStrategy($strategy){
+	public function addStrategy($strategy)
+	{
 		$this->strategyCollector->addGroup($this->groupid,$strategy);
 
 		return $this;

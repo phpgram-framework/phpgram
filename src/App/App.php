@@ -1,12 +1,13 @@
 <?php
 namespace Gram\App;
-use Gram\Middleware\Handler\CallbackHandler;
+use Gram\Middleware\Handler\ResponseHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
-use Gram\Middleware\Handler\QueueHandler;
 use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
+use Gram\Strategy\StdAppStrategy;
+use Gram\Strategy\StrategyInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -21,17 +22,19 @@ class App
 {
 	private $request,$router=null,$middlewareCollector=null,$strategyCollector=null;
 
-	public static $options=[];
-	private static $_instance;
+	private static $_instance,$stdStrategy=null,$options=[];
 	private static $responseFactory, $streamFactory;
 
 	/**
 	 * App constructor.
 	 * Private da die App nur mit init gestartet werden darf
 	 */
-	private function __construct(){}
+	private function __construct()
+	{
+	}
 
-	public function getRouter(){
+	public function getRouter()
+	{
 		if(!isset($this->router)){
 
 			$this->router = new Router(
@@ -45,7 +48,8 @@ class App
 		return $this->router;
 	}
 
-	public function getMWCollector(){
+	public function getMWCollector()
+	{
 		if(!isset($this->middlewareCollector)){
 			$this->middlewareCollector = new MiddlewareCollector();
 		}
@@ -53,7 +57,8 @@ class App
 		return $this->middlewareCollector;
 	}
 
-	public function getStrategyCollector(){
+	public function getStrategyCollector()
+	{
 		if(!isset($this->strategyCollector)){
 			$this->strategyCollector = new StrategyCollector();
 		}
@@ -69,11 +74,14 @@ class App
 	 * Zum Schluss werden noch alle Middlewares durchgegangen die mit afterM gekennzeichnet sind
 	 * @param ServerRequestInterface $request
 	 */
-	public function start(ServerRequestInterface $request){
+	public function start(ServerRequestInterface $request)
+	{
 		$this->request=$request;
 
+		$stdStrategy= self::$stdStrategy ?? new StdAppStrategy();
+
 		//bereite Queue vor
-		$fallback = new CallbackHandler(self::$responseFactory,self::$streamFactory);	//erstellt das callable aus dem requests
+		$fallback = new ResponseHandler(self::$responseFactory,self::$streamFactory,$stdStrategy);	//erstellt das callable aus dem requests
 
 		$queue = new QueueHandler($fallback);	//default Fallback
 
@@ -81,7 +89,7 @@ class App
 
 		$routingMiddleware = new RouteMiddleware(
 			$this->getRouter(),		//router für den request
-			new NotFoundHandler(self::$responseFactory,self::$streamFactory),	//error handler
+			new NotFoundHandler($fallback),	//error handler
 			$queue,
 			$this->getMWCollector(),
 			$this->getStrategyCollector()
@@ -101,25 +109,33 @@ class App
 
 		$response = $queue->handle($request);
 
-		$content = $response->getBody()->__toString();
+		$emitter = new Emitter();
 
-		echo $content;	//TODO Strategies zum Output verwenden z. B. echo, return json, return xml, etc.
+		$emitter->emit($response);
 	}
 
-	public static function init($options=[]) {
+	public static function app()
+	{
 		if(!isset(self::$_instance)) {
 			self::$_instance = new self();
-		}
-
-		if(!empty($options)){
-			self::$options=$options;
 		}
 
 		return self::$_instance;
 	}
 
-	public static function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory){
+	public static function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory)
+	{
 		self::$responseFactory=$responseFactory;
 		self::$streamFactory=$streamFactory;
+	}
+
+	public static function setStrategy(StrategyInterface $stdStrategy=null)
+	{
+		self::$stdStrategy=$stdStrategy;
+	}
+
+	public static function setOptions(array $options=[])
+	{
+		self::$options=$options;
 	}
 }

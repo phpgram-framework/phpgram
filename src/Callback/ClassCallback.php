@@ -1,5 +1,6 @@
 <?php
 namespace Gram\Callback;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class ClassHandler
@@ -20,14 +21,10 @@ class ClassCallback implements Callback
 	 * @return mixed|string
 	 * Gebe das fertige Callback zurück (als Array für call_user_function)
 	 */
-	public function callback($param=array(),$request){
-		//prüfe ob die Klasse ein Controller ist, wenn ja gebe das Request Object an den Konstruktor
-		if(!$this instanceof ControllerCallback){
-			$callback = array(new $this->class,$this->function);
-			$param[]=$request; //letzer param ist dann der request
-		}else{
-			$callback=array(new $this->class($request),$this->function);
-		}
+	public function callback($param=[],ServerRequestInterface $request)
+	{
+		$callback = array(new $this->class,$this->function);
+		$param[]=$request; //letzer param ist dann der request
 
 		$return= call_user_func_array($callback,$param);
 
@@ -41,7 +38,8 @@ class ClassCallback implements Callback
 	 * @param string $function
 	 * @throws \Exception
 	 */
-	public function set($class="",$function=""){
+	public function set($class="",$function="")
+	{
 		if($class==="" || $function===""){
 			throw new \Exception("Keine Klasse oder Funktion angegeben");
 		}

@@ -22,8 +22,7 @@ class Router implements RouterInterface
 		$options=[],
 		?MiddlewareCollectorInterface $middlewareCollector = null,
 		?StrategyCollectorInterface $strategyCollector = null
-	)
-	{
+	){
 		$this->checkMethod=$checkMethod;
 
 		$options +=[
@@ -50,7 +49,8 @@ class Router implements RouterInterface
 		$this->dispatcher= new $options['dispatcher'];
 	}
 
-	public function run($uri,$httpMethod=null){
+	public function run($uri,$httpMethod=null)
+	{
 		$this->uri=urldecode($uri);	//umlaute filtern
 
 		if(!$this->dispatch($this->dispatcher,$this->collector)){
@@ -68,7 +68,8 @@ class Router implements RouterInterface
 	}
 
 
-	private function dispatch(DispatcherInterface $dispatcher,CollectorInterface $collector){
+	private function dispatch(DispatcherInterface $dispatcher,CollectorInterface $collector)
+	{
 		$dispatcher->setData($collector->getData());
 
 		$response = $dispatcher->dispatch($this->uri);
@@ -85,7 +86,8 @@ class Router implements RouterInterface
 		return false;
 	}
 
-	private function checkMethod($httpMethod, CollectorInterface $collector){
+	private function checkMethod($httpMethod, CollectorInterface $collector)
+	{
 		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
 		foreach ((array)$this->handle['method'] as $item) {
 			if(strtolower($httpMethod)===strtolower($item)){
@@ -99,7 +101,8 @@ class Router implements RouterInterface
 		return false;
 	}
 
-	private function buildHandle(CollectorInterface $collector){
+	private function buildHandle(CollectorInterface $collector)
+	{
 		$routeid=$this->handle['routeid'];
 
 		$this->handle['callable'] = $collector->getHandle()[$routeid];
@@ -108,28 +111,32 @@ class Router implements RouterInterface
 	/**
 	 * @return mixed
 	 */
-	public function getHandle(){
+	public function getHandle()
+	{
 		return $this->handle;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getParam(){
+	public function getParam()
+	{
 		return $this->param;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getStatus(){
+	public function getStatus()
+	{
 		return $this->status;
 	}
 
 	/**
 	 * @return CollectorInterface
 	 */
-	public function getCollector(){
+	public function getCollector()
+	{
 		return $this->collector;
 	}
 }

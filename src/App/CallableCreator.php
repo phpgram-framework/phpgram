@@ -4,6 +4,8 @@ use Gram\Callback\Callback;
 use Gram\Callback\CallbackCallback;
 use Gram\Callback\ClassCallback;
 use Gram\Callback\ControllerCallback;
+use Gram\Callback\HandlerCallback;
+use Gram\Middleware\Handler\HandlerInterface;
 
 class CallableCreator
 {
@@ -18,15 +20,19 @@ class CallableCreator
 	 * wenn es eine Function war im Callable handler speichern
 	 * @param $possibleCallable
 	 */
-	public function __construct($possibleCallable){
-		if(!is_array($possibleCallable)){
+	public function __construct($possibleCallable)
+	{
+		if(is_object($possibleCallable)){
+			$this->callable=$this->createHandlerCallback($possibleCallable);
+		}else if(!is_array($possibleCallable)){
 			$this->callable=$this->createCallback($possibleCallable);
 		}else{
 			$this->callable=$this->createCallbackForClass($possibleCallable[0],$possibleCallable[1]);
 		}
 	}
 
-	private function createCallbackForMVC($controller){
+	private function createCallbackForMVC($controller)
+	{
 		$callback = new ControllerCallback();
 		try{
 			$callback->setC($controller);
@@ -38,7 +44,8 @@ class CallableCreator
 		return $callback;
 	}
 
-	private function createCallbackForClass($class,$function){
+	private function createCallbackForClass($class,$function)
+	{
 		$callback = new ClassCallback();
 		try{
 			$callback->set($class,$function);
@@ -50,10 +57,24 @@ class CallableCreator
 		return $callback;
 	}
 
-	private function createCallbackFromCallable(callable $callable){
+	private function createCallbackFromCallable(callable $callable)
+	{
 		$callback= new CallbackCallback();
 		try{
 			$callback->set($callable);
+		}catch (\Exception $e){
+			echoExep($e);
+			return false;
+		}
+
+		return $callback;
+	}
+
+	private function createHandlerCallback(HandlerInterface $handler)
+	{
+		$callback = new HandlerCallback();
+		try{
+			$callback->set($handler);
 		}catch (\Exception $e){
 			echoExep($e);
 			return false;
@@ -68,7 +89,8 @@ class CallableCreator
 	 * @param $callback
 	 * @return bool|CallbackCallback|ControllerCallback
 	 */
-	protected function createCallback($callback){
+	protected function createCallback($callback)
+	{
 		if(is_callable($callback)){
 			return $this->createCallbackFromCallable($callback);
 		}else{
@@ -78,9 +100,10 @@ class CallableCreator
 
 
 	/**
-	 * @return bool|Callback|ClassCallback|ControllerCallback|CallbackCallback
+	 * @return bool|Callback|ClassCallback|ControllerCallback|CallbackCallback|HandlerCallback
 	 */
-	public function getCallable(){
+	public function getCallable()
+	{
 		return $this->callable;
 	}
 }
