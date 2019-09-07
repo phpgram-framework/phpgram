@@ -26,6 +26,9 @@
 		"psr/http-server-middleware": "^1.0",
 		"psr/http-factory":"^1.0"
 	},
+	"require-dev": {
+		"phpunit/phpunit": "^8"
+	},
 	"autoload": {
 		"psr-4": {
 			"Gram\\":"src/"
@@ -33,6 +36,11 @@
 		"files": [
 			"src/general/gramHelpers.php"
 		]
+	},
+	"autoload-dev": {
+		"psr-4":{
+			"Gram\\Test\\":"test/"
+		}
 	},
 	"config": {
         "preferred-install": {
