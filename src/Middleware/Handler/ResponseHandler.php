@@ -1,5 +1,18 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Middleware\Handler;
+
 use Gram\App\CallableCreator;
 use Gram\Strategy\StrategyInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -8,6 +21,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * Class ResponseHandler
+ * @package Gram\Middleware\Handler
+ *
+ * Ein Standard Psr 15 Handler der Requests zu Response umbaut
+ *
+ * Wird als letztes im QueueHandler aufgerufen
+ *
+ * Kann auch von anderen Klassen aufgerufen werden um einen Response zu erstellen
+ */
 class ResponseHandler implements RequestHandlerInterface
 {
 	private $stdstrategy,$callable,$param,$request,$responseFactory,$streamFactory;

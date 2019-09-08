@@ -1,6 +1,17 @@
 <?php
 /**
- * @author Jörn Heinemann
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
+/**
  * Allgemeine Funktionen die keine Klasse brauchen
  */
 

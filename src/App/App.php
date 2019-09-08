@@ -1,5 +1,18 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\App;
+
 use Gram\Middleware\Handler\ResponseHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
@@ -14,16 +27,16 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class App
- * @package Napf
- * @author Jörn Heinemann
+ * @package Gram\App
+ *
  * Startet die Seite und führt die Middlewares aus
  */
 class App
 {
 	private $request,$router=null,$middlewareCollector=null,$strategyCollector=null;
+	private $responseFactory, $streamFactory,$stdStrategy=null,$options=[];
 
-	private static $_instance,$stdStrategy=null,$options=[];
-	private static $responseFactory, $streamFactory;
+	private static $_instance;
 
 	/**
 	 * App constructor.
@@ -33,13 +46,18 @@ class App
 	{
 	}
 
+	/**
+	 * Erstellt ein Routerobjekt zurück wenn es noch nicht erstellt wurde
+	 *
+	 * @return Router|null
+	 */
 	public function getRouter()
 	{
 		if(!isset($this->router)){
 
 			$this->router = new Router(
 				true,
-				self::$options,
+				$this->options,
 				$this->getMWCollector(),
 				$this->getStrategyCollector()
 			);
@@ -48,6 +66,11 @@ class App
 		return $this->router;
 	}
 
+	/**
+	 * Gibt einen Middlewarecollector zurück
+	 *
+	 * @return MiddlewareCollector|null
+	 */
 	public function getMWCollector()
 	{
 		if(!isset($this->middlewareCollector)){
@@ -57,6 +80,11 @@ class App
 		return $this->middlewareCollector;
 	}
 
+	/**
+	 * Gibt ein Strategy Collector zurück
+	 *
+	 * @return StrategyCollector|null
+	 */
 	public function getStrategyCollector()
 	{
 		if(!isset($this->strategyCollector)){
@@ -68,20 +96,28 @@ class App
 
 	/**
 	 * Start der Seite
-	 * Ruft den Router auf und nimmt die auszuführende Klasse mit der Funktion und den Middlewares entgegen
-	 * Führt zuerst die Middlewares aus die mit beforeM gekennzeichnet sind (diese sollen vor dem Seitenaufruf erfolgen
-	 * Danach wird der eigentliche Seitencontroller und deren Funktion aufgerufen
-	 * Zum Schluss werden noch alle Middlewares durchgegangen die mit afterM gekennzeichnet sind
+	 *
+	 * Erhält den Request
+	 *
+	 * Setzt alle wichtigen Handler und Middleware. Startet den QueueHandler der die Abfolge der Middlewares verwaltet
+	 *
+	 * Startet die Routing Middleware
+	 *
+	 * Diese prüft mit dem Middlewarecollector ob Std Middleware defineirt wurden
+	 * wenn ja werden diese dem QueueHandler hinzugefügt
+	 *
 	 * @param ServerRequestInterface $request
 	 */
 	public function start(ServerRequestInterface $request)
 	{
 		$this->request=$request;
 
-		$stdStrategy= self::$stdStrategy ?? new StdAppStrategy();
+		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
 
 		//bereite Queue vor
-		$fallback = new ResponseHandler(self::$responseFactory,self::$streamFactory,$stdStrategy);	//erstellt das callable aus dem requests
+		//Wird am Ende ausgeführt um den Response zu erstellen
+		//erhält Factory um Response zu erstellen
+		$fallback = new ResponseHandler($this->responseFactory,$this->streamFactory,$stdStrategy);
 
 		$queue = new QueueHandler($fallback);	//default Fallback
 
@@ -111,7 +147,7 @@ class App
 
 		$emitter = new Emitter();
 
-		$emitter->emit($response);
+		$emitter->emit($response);	//Gebe Header und Body vom Response aus
 	}
 
 	public static function app()
@@ -123,19 +159,92 @@ class App
 		return self::$_instance;
 	}
 
-	public static function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory)
+	//Optionen
+
+	public function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory)
 	{
-		self::$responseFactory=$responseFactory;
-		self::$streamFactory=$streamFactory;
+		$this->responseFactory=$responseFactory;
+		$this->streamFactory=$streamFactory;
 	}
 
-	public static function setStrategy(StrategyInterface $stdStrategy=null)
+	public function setStrategy(StrategyInterface $stdStrategy=null)
 	{
-		self::$stdStrategy=$stdStrategy;
+		$this->stdStrategy=$stdStrategy;
 	}
 
-	public static function setOptions(array $options=[])
+	public function setOptions(array $options=[])
 	{
-		self::$options=$options;
+		$this->options=$options;
+	}
+
+	//Routes
+
+	public function add(string $path,$handler,array $method)
+	{
+		return $this->getRouter()->getCollector()->add($path,$handler,$method);
+	}
+
+	public function addGroup($prefix,callable $groupcollector)
+	{
+		return $this->getRouter()->getCollector()->addGroup($prefix,$groupcollector);
+	}
+
+	public function get(string $route,$handler)
+	{
+		return $this->add($route,$handler,['GET']);
+	}
+
+	public function post(string $route,$handler)
+	{
+		return $this->add($route,$handler,['POST']);
+	}
+
+	public function getpost(string $route,$handler)
+	{
+		return $this->add($route,$handler,['GET','POST']);
+	}
+
+	public function head(string $route,$handler)
+	{
+		return $this->add($route,$handler,['HEAD']);
+	}
+
+	public function delete(string $route,$handler)
+	{
+		return $this->add($route,$handler,['DELETE']);
+	}
+
+	public function put(string $route,$handler)
+	{
+		return $this->add($route,$handler,['PUT']);
+	}
+
+	public function patch(string $route,$handler)
+	{
+		return $this->add($route,$handler,['PATCH']);
+	}
+
+	//Spezielle Routes
+
+	public function set404($handle)
+	{
+		$this->getRouter()->getCollector()->set404($handle);
+	}
+
+	public function set405($handle)
+	{
+		$this->getRouter()->getCollector()->set405($handle);
+	}
+
+	public function setBase(string $base)
+	{
+		$this->getRouter()->getCollector()->setBase($base);
+	}
+
+	//Middleware
+
+	public function addMiddle($middleware,$order=null)
+	{
+		return $this->getMWCollector()->addStd($middleware,$order);
 	}
 }

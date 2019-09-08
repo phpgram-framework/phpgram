@@ -1,8 +1,33 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Route\Generator;
+
 use Gram\Route\Interfaces\GeneratorInterface;
 use Gram\Route\Route;
 
+/**
+ * Class Generator
+ * @package Gram\Route\Generator
+ *
+ * Hauptgenerator wird für die static Routes genutzt
+ *
+ * Trennt zuerst die static von den dynamischen Routes
+ *
+ * Fügt die static Routes dem Array hinzu
+ *
+ * Führt danach den Dynamischen Generator aus
+ */
 abstract class Generator implements GeneratorInterface
 {
 	const CHUNKSIZE = 10;
@@ -21,6 +46,13 @@ abstract class Generator implements GeneratorInterface
 		return ['static'=>$this->static,'dynamic'=>$this->dynamic];
 	}
 
+	/**
+	 * Unterteile die Routes in static und dynamic
+	 *
+	 * Führe dazu den Routeparser im Route Objekt aus
+	 *
+	 * @param Route $route
+	 */
 	private function mapRoute(Route $route)
 	{
 		$route->createRoute();	//parse die Route

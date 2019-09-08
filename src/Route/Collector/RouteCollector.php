@@ -1,5 +1,18 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Route\Collector;
+
 use Gram\Route\Route;
 use Gram\Route\Interfaces\CollectorInterface;
 use Gram\Route\Interfaces\GeneratorInterface;
@@ -8,12 +21,33 @@ use Gram\Route\Interfaces\ParserInterface;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\RouteGroup;
 
+/**
+ * Class RouteCollector
+ * @package Gram\Route\Collector
+ *
+ * Wird genutzt um Routes zu definieren
+ *
+ * Wird beim Dispatchen aufgerufen und bereitet die Daten vor auf die der Dispatcher zugreift
+ *
+ * Benutzt Generatoren für die Daten
+ *
+ * Caching von Routes (sodass diese nicht generiert werden müssen) ist auch möglich
+ */
 class RouteCollector implements CollectorInterface
 {
 	private $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
 	private $handler=[],$routeid=0,$routegroupid=0;
 	private $parser,$generator,$caching,$cache,$stack,$strategyCollector;
 
+	/**
+	 * RouteCollector constructor.
+	 * @param ParserInterface $parser
+	 * @param GeneratorInterface $generator
+	 * @param MiddlewareCollectorInterface $stack
+	 * @param StrategyCollectorInterface $strategyCollector
+	 * @param bool $routecaching
+	 * @param null $routecache
+	 */
 	public function __construct(
 		ParserInterface $parser,
 		GeneratorInterface $generator,
@@ -30,6 +64,9 @@ class RouteCollector implements CollectorInterface
 		$this->strategyCollector=$strategyCollector;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function add(string $path,$handler,array $method):Route
 	{
 		$path=$this->basepath.$this->prefix.$path;
@@ -53,6 +90,9 @@ class RouteCollector implements CollectorInterface
 		return $route;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function addGroup($prefix,callable $groupcollector):RouteGroup
 	{
 		$pre = $this->prefix;
@@ -72,6 +112,9 @@ class RouteCollector implements CollectorInterface
 		return $group;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getData()
 	{
 		if(file_exists($this->cache)){

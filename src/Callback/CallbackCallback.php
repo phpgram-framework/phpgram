@@ -1,11 +1,24 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Callback;
+
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class CallbackHandler
  * @package Gram\Handler
- * @author Jörn Heinemann
+ *
  * Speichert ein Callable und gibt es wieder zurück
  */
 class CallbackCallback implements Callback
@@ -14,8 +27,9 @@ class CallbackCallback implements Callback
 
 	/**
 	 * Führe das Callback aus
+	 *
 	 * @param array $param
-	 * @param $request
+	 * @param ServerRequestInterface $request
 	 * @return mixed|string
 	 */
 	public function callback($param=[],ServerRequestInterface $request)

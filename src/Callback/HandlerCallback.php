@@ -1,9 +1,29 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Callback;
 
 use Gram\Middleware\Handler\HandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class HandlerCallback
+ * @package Gram\Callback
+ *
+ * Erstellt einen Handler für Middleware Klassen
+ *
+ * Dieser kann aufgerufen werden wenn die Middleware einen Fehler festgestellt hat und die Seite beenden will
+ */
 class HandlerCallback implements Callback
 {
 	private $handler;

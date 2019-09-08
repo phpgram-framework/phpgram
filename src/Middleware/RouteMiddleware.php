@@ -1,5 +1,18 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Middleware;
+
 use Gram\App\QueueHandler;
 use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
@@ -9,6 +22,20 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Gram\Route\Interfaces\RouterInterface as Router;
 
+/**
+ * Class RouteMiddleware
+ * @package Gram\Middleware
+ *
+ * Die Middleware die nach den Std Middleware ausgeführt wird
+ *
+ * Führt das Routing aus mithilfe des Routers
+ *
+ * Fügt nach dem Routing weitere Informationen dem Request hinzu
+ *
+ * Fügt weitere Middlewares von den Routes / Routegroups hinzu
+ *
+ * Zuerst werden die Group Middleware hinzugefügt dann die Route Middleware
+ */
 class RouteMiddleware implements MiddlewareInterface
 {
 	private $router,$notFoundHandler,$queueHandler,$middlewareCollector,$strategyCollector;

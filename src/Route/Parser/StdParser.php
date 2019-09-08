@@ -1,6 +1,7 @@
 <?php
 namespace Gram\Route\Parser;
 use Gram\Route\Interfaces\ParserInterface;
+
 /**
  * Class StdParser
  * @package Gram\Route\Parser

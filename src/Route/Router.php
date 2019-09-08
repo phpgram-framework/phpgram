@@ -1,5 +1,18 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\Route;
+
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Interfaces\CollectorInterface;
@@ -8,6 +21,18 @@ use Gram\Route\Interfaces\RouterInterface;
 use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
 
+/**
+ * Class Router
+ * @package Gram\Route
+ *
+ * Der Router der von der Routingmiddleware aufgerufen wird
+ *
+ * Kann auch ohne Psr 7 genutzt werden
+ *
+ * Verschiedene Optionen für Dispatcher, Generator, Parser und Collector sind setztbar
+ *
+ * Führt das dispatching aus
+ */
 class Router implements RouterInterface
 {
 	const NOT_FOUND = 404;
@@ -17,6 +42,13 @@ class Router implements RouterInterface
 	private $checkMethod,$uri,$handle,$param=[],$status;
 	private $collector,$dispatcher;
 
+	/**
+	 * Router constructor.
+	 * @param bool $checkMethod
+	 * @param array $options
+	 * @param MiddlewareCollectorInterface|null $middlewareCollector
+	 * @param StrategyCollectorInterface|null $strategyCollector
+	 */
 	public function __construct(
 		$checkMethod=true,
 		$options=[],
@@ -25,6 +57,7 @@ class Router implements RouterInterface
 	){
 		$this->checkMethod=$checkMethod;
 
+		//setze Standard Optionen
 		$options +=[
 			'caching'=>false,
 			'cache'=>null,
@@ -37,6 +70,7 @@ class Router implements RouterInterface
 		$middlewareCollector = $middlewareCollector ?? new MiddlewareCollector();
 		$strategyCollector = $strategyCollector ?? new StrategyCollector();
 
+		//Erstelle den Collector, der wird auch für andere Klassen verfügbar sein
 		$this->collector= new $options['collector'](
 			new $options['parser'],
 			new $options['generator'],
@@ -46,9 +80,12 @@ class Router implements RouterInterface
 			$options['cache']
 		);
 
-		$this->dispatcher= new $options['dispatcher'];
+		$this->dispatcher= new $options['dispatcher'];	//erstelle Dispatcher
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function run($uri,$httpMethod=null)
 	{
 		$this->uri=urldecode($uri);	//umlaute filtern
@@ -67,7 +104,17 @@ class Router implements RouterInterface
 		return true;
 	}
 
-
+	/**
+	 * Gebe dem Dispatcher die Daten vom Collector
+	 *
+	 * Wenn etwas gefunden setze handle und parameter und Status ok
+	 *
+	 * Wenn nicht setze Status 404 und gebe den 404 Handle zurück
+	 *
+	 * @param DispatcherInterface $dispatcher
+	 * @param CollectorInterface $collector
+	 * @return bool
+	 */
 	private function dispatch(DispatcherInterface $dispatcher,CollectorInterface $collector)
 	{
 		$dispatcher->setData($collector->getData());
@@ -86,6 +133,17 @@ class Router implements RouterInterface
 		return false;
 	}
 
+	/**
+	 * Prüfe die Request Method
+	 *
+	 * Wenn es die richtige ist gebe ok zurück
+	 *
+	 * Sonst 405 und den 405 Handle
+	 *
+	 * @param $httpMethod
+	 * @param CollectorInterface $collector
+	 * @return bool
+	 */
 	private function checkMethod($httpMethod, CollectorInterface $collector)
 	{
 		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
@@ -101,6 +159,11 @@ class Router implements RouterInterface
 		return false;
 	}
 
+	/**
+	 * Holt von der gefunden Route den Handle vom Collector
+	 *
+	 * @param CollectorInterface $collector
+	 */
 	private function buildHandle(CollectorInterface $collector)
 	{
 		$routeid=$this->handle['routeid'];

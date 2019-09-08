@@ -1,5 +1,18 @@
 <?php
+/**
+ * phpgram
+ *
+ * This File is part of the phpgram Micro Framework
+ *
+ * Web: https://gitlab.com/grammm/php-gram/phpgram
+ *
+ * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
+ *
+ * @author Jörn Heinemann <j.heinemann1@web.de>
+ */
+
 namespace Gram\App;
+
 use Gram\Callback\Callback;
 use Gram\Callback\CallbackCallback;
 use Gram\Callback\ClassCallback;
@@ -7,22 +20,34 @@ use Gram\Callback\ControllerCallback;
 use Gram\Callback\HandlerCallback;
 use Gram\Middleware\Handler\HandlerInterface;
 
+/**
+ * Class CallableCreator
+ * @package Gram\App
+ *
+ * Erstellt ein Callable aus etwas übergebenen
+ */
 class CallableCreator
 {
 	private $callable=null;
 
 	/**
 	 * CallableCreator constructor.
+	 *
 	 * Prüft ob etwas ein Callable bzw ein Stack mit Callable ist
-	 * Stack sind Middlewares, die einzelnen Elemente ztu Callable umformen
+	 *
+	 * Unterscheidet zwischen Handler (Handlerobjekt), Class und Function, Controller oder Function
+	 *
 	 * Normales Callable prüfen ob es aus einem Array besteht (class und function) -> classhandler erstellen
+	 *
 	 * sonst etweder ein ControllerHandler erstellen (ein Art ClassHandler) oder
+	 *
 	 * wenn es eine Function war im Callable handler speichern
+	 *
 	 * @param $possibleCallable
 	 */
 	public function __construct($possibleCallable)
 	{
-		if(is_object($possibleCallable)){
+		if(is_object($possibleCallable) && $possibleCallable instanceof HandlerInterface){
 			$this->callable=$this->createHandlerCallback($possibleCallable);
 		}else if(!is_array($possibleCallable)){
 			$this->callable=$this->createCallback($possibleCallable);
