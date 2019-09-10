@@ -23,7 +23,7 @@ namespace Gram\Route\Dispatcher;
  *
  * Wird von den Router Klassen aufgerufen um ein Request durch zuführen
  *
- * Anlehnung an:
+ * Based on:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */

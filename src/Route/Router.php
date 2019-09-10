@@ -61,7 +61,7 @@ class Router implements RouterInterface
 		$options +=[
 			'caching'=>false,
 			'cache'=>null,
-			'dispatcher'=>'Gram\\Route\Dispatcher\\DynamicDispatcher',
+			'dispatcher'=>'Gram\\Route\\Dispatcher\\DynamicDispatcher',
 			'generator'=>'Gram\\Route\\Generator\\DynamicGenerator',
 			'parser'=>'Gram\\Route\\Parser\\StdParser',
 			'collector'=>'Gram\\Route\\Collector\\RouteCollector'

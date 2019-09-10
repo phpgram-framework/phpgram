@@ -23,7 +23,7 @@ use Gram\Route\Route;
  *
  * Wird von den Collector Klassen aufgerufen um die Routes und Handler zusammen zufassen
  *
- * Anlehnung an:
+ * Based on:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
