@@ -1,79 +1,105 @@
 # Route Creation
-- Routes werden mit Collectors gesammelt und mit Generatoren zusammengefasst
-- Es gibt zwei Arten von Routes:
-	- Static
-	- dynamic
-1. Wenn du Routes zur Map zusammengefasst werden sollen rufe zuerst den Collector auf
-2. Dieser nimmt die defienierten Routes (aus dem Ordner config/routes) entgegen und sammelt sie
-3. Wenn die Route Placeholder hat -> wandle diese um und speichere die Anzahl, mit der Route und ihrem Handler, bei den Dynamischen Routes
-4. Wenn nicht bei den Static
-5. In den Arrays ist jeweils die Route und der Handler für diese Route zusammen drin
-6. Rufe zum Schluss die Generatoren für Static und dynamic auf
-## Static Creation
-- Eine Static Route ist eine Route ohne Placeholder z. B. /video/add
-## Static Generator
-- Klasse: 
-```php
-<?php 
-namespace Gram\Route\Generator;
-class StaticGenerator
-{
-	
-}
-```
-1. Laufe durch alle gesammelten Routes und 
-2. gebe die Routes und Handler in getrennten Arrays zurück
-## Dynamic Creation
-- Eine dynamische Route ist eine mit Placeholdern z. B. /video/{id}/watch
-- Problem: jede Route einzeln in einer Schleife ab zulaufen und per regex zu vergleichen kostet sehr viel Zeit
-- Lösung: Fasse die Routes in eine gemeinsame Regex zusammen: [Quelle: nikic Fastroute](http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html)
-- Weiteres Problem: Bei vielen Routes wird die Regex zu groß um sie noch verhältnismäßig zu prüfen
-- Lösung: die Regex chunken in 10er Gruppen. Somit müssen nur noch (Anzahl Routes)/10 preg_matches durchgeführt werden
-- Hier wird die Methode: Group Count Based (GCB) verwendet
-### GCB
-- Hier werden 10 Regex zu einer zusammengefasst
-- alle Chunks werden als Array abgespeichert
-- dieses wird dann vom Dispatcher durchlaufen
-- Um zu wissen welche Regex gefunden wurde wird die Anzahl der Matches als Index betrachtet
-- Dazu muss die Regex auch genügend Placeholder besitzen
-- Tut sie dies nicht werden die Fehlenden Placeholder mit Dummy Placeholdern: () aufgefüllt
-- bsp.: eine Route die an 5. Stelle steht mit einem Placeholder sieht dann so aus: `/video/(.*)()()()()`
-	- Wenn /video/(.*) gematcht wird hat die Regex 5 Matches
-	- Somit kann der Handler an 5. Stelle in der Handlerliste zurück gegeben werden (siehe Dynamic Dispatcher)
-## Dynamic Generator
-- Klasse: 
-```php
-<?php 
-namespace Gram\Route\Generator;
-class DynamicGenerator
-{
-	
-}
-```
-1. Laufe durch alle gesammelten dynamic Routes
-2. Sammle Routes und Handler in getrennten Arrays bis die maximale Chunksize erreicht wurde (Standard=10)
-3. Beim sammeln werden die Dummy Placeholder der Route angehängt (aktuelle Platznummer - eigene Placeholder)
-4. Wenn die Route mehr Placeholder besitzt als der aktuelle Platz der Regex wird diese Anzahl nun zur neuen Platznummer
-5. Erhöhe die Platznummer um 1 und speichere den Handler an der gleichen Stelle wie die Regex
-6. Wenn Chunk voll ist fasse die Routes zu einer Regex zusammen mit dem Muster: ````(?| Routes mit | dazwischen )````
-7. Speichere die zusammengefasste Regex erneut in ein Array
-8. Speichere die Handler zu den zusammengefassten Routes in ein Array
-9. Danach setze die Sammler und Counter zurück und beginne erneut zu sammeln
 
+- es werden ein Routecollector, Route, Routegroup und Generatoren benutzt
+
+## Route Collector
 ````php
 <?php
-// Beispiel für das Route chunking
-$this->routeList[] ='~^(?|' . implode('|', $this->routeCollector) . ')$~x';	//die gemeinsame Regex
-$this->handlerList[]=$this->handleCollector; //die Handler zu den Routes
+class RouteCollector implements CollectorInterface
 ````
+- Collectoren müssen ``Gram\Route\Interfaces\CollectorInterface`` implementieren
+- Collector sammelt definierte Routes in Routeobjekten und Routegruppen in Route Group Objekten
+- Diese Objekte bieten die Möglichkeit Middleware und Strategy der Route bzw. Gruppe hinzu zufügen
 
-<br>
+### Route adden
+- Method:
+````php
+<?php
+class RouteCollector implements CollectorInterface
+{
+	public function add(string $path,$handler,array $method):Route
+}
 
-[hier gehts weiter mit: Mapping](routemapping.md)
+````
+- Die Method muss ein neues Routeobjekt erzeugen und zurück geben
+- um Methoden an zugeben gibt es nochmal extra Methods die z. B. ``GET`` setzen
+
+1. Zu dem Path (Url path) werden basepath und Gruppen prefix hinzugefügt
+2. Das Handle wird in das Handle Array einsortiert an der Stelle der Routeid (für den Router)
+3. Ein neues Routeobjekt wird erstellt
+4. Das Routeobjekt wird in das Array mit den weiteren Routeobjekten einsortiert
+5. Die Routeid wird um eins erhöht
+6. das Routeobjekt wird zurück gegeben um Middleware oder Strategy hinzu zufügen
+
+- Dieser Vorgang wird bei jedem Seitenaufruf wiederholt
+
+### Route Objekt
+````php
+<?php
+class Route
+{
+	public function __construct(
+		string $path,
+		$method,
+		$routegroupid,
+		$routeid,
+		ParserInterface $parser,
+		MiddlewareCollectorInterface $stack,
+		StrategyCollectorInterface $strategyCollector
+    )
+    
+    public function addMiddleware($middleware,$order=null)
+    public function addStrategy($strategy)
+}
+````
+1. Wird in der Add Method im Collector erzeugt
+2. Enthält alle Informationen die die Generatoren brauchen um daraus die Routedata zu erstellen
+3. Enthält zusätzlich einen Middleware und Strategy Collector, sodass nach dem adfinieren einer Route eine Middleware bzw. Strategy zur richtigen Route hinzugefügt werden kann
+4. Desweiteren enthält das Routeobjekt eine create Method. Diese wird von den Generatoren aufgerufen um die Route zu parsen (nur wenn die Routes nicht gecacht wurden)
+
+### Routegroup
+````php
+<?php
+class RouteCollector implements CollectorInterface
+{
+	public function addGroup($prefix,callable $groupcollector):RouteGroup
+}
+````
+- mehrere Routes können zu einer Gruppe mit einem Prefix zusammengefasst werden
+- Middleware und Strategy die diesem Gruppen zugeordnet wird werden auch allen Routes in der Gruppe zugeordnet
+- Gruppen in Gruppen sind auch möglich
+- die Gruppen brauchen ein Prefix und ein callable in dem dann die Routes definiert werden
+
+1. Das akutelle prefix wird gesichert (für nested Routes)
+2. das Array mit den vorherige Gruppenids wird gesichert (um die Mw und Stategy der Gruppe zu zuordnen)
+3. das akutelle Prefix wird um das neue erweitert
+4. dem Gruppenid Array (das anzeigt in welchen Gruppen die Route drin ist) wird eine neue Gruppenid hinzugefügt
+5. ein neues RouteGroup Objekt wird erstellt (um Mw und Strategy der Gruppe hinzu zufügen nach dem definieren, so ähnlich wie beim Route Objekt)
+6. das Callable wird ausgeführt (im Callable können auch weitete Gruppen definiert werden, dann werden für diese Gruppen neue Werte erstellt, aber die alten Werte dieser Gruppe wurden bereits gespeichert)
+7. Das alte Prefix und das alte Gruppenid Array wird wieder hergestellt und das Gruppen Objekt wird zurück gegeben
+
+### Group Objekt
+````php
+<?php
+class RouteGroup
+{
+	public function __construct(
+		$prefix,
+		$groupid,
+		MiddlewareCollectorInterface $stack,
+		StrategyCollectorInterface $strategyCollector
+	)
+}
+````
+- wie beim Routeobjekt werden die Collectors übergeben
+- das Objekt wird nur zum hinzufügen von Mw und Strategy benutzt nicht zum speichern der Gruppen
+
+
+[hier gehts weiter mit: Route Generation](routegeneration.md)
 
 ### Inhalt Routing
 [1. Start](index.md) <br>
 [2. Router](router.md) <br>
 [3. Dispatching](dispatching.md) <br>
 [4. Route Creation](routeCreation.md) <br>
-[5. Mapping](routemapping.md)
+[5. Route Generation](routegeneration.md)

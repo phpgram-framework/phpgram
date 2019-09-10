@@ -7,6 +7,8 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 - Request Response via [Psr-7](https://www.php-fig.org/psr/psr-7/), Middleware via [Psr-15](https://www.php-fig.org/psr/psr-15/), Request, Response Factory via [Psr-17](https://www.php-fig.org/psr/psr-17/)
 - Controller Support
 
+## Doc
+- [hier](docs/index.md)
 
 ## Install
 

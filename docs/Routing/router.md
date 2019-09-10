@@ -3,43 +3,39 @@
 ```php
 <?php 
 namespace Gram\Route;
-class Router
+class Router implements RouterInterface
 {
-	const REQUEST_ROUTER=1;
-	const BEFORE_MIDDLEWARE=2;
-	const AFTER_MIDDLEWARE=3;
 	const NOT_FOUND = 404;
 	const METHOD_NOT_ALLOWED = 405;
 	const OK = 200;
-	
 }
 ```
+- Router müssen ``Gram\Route\Interfaces\RouterInterface`` implementieren
 
-## Routertypen
-- Es werden zwei Typen angeboten
-   - Middleware Router
-   - Request Router
+## Vorbereitung
+- Routes müssen vorher definiert sein (siehe [4. Route Creation](routeCreation.md))
 
-### RequestRouter
 
-1. Router wird mit der Url und der http Methode aufgerufen (run())
-2. Hole zuerst die Routes als Map (siehe Route Mapping)
-3. Führe dispatch() aus
-4. Diese druchläuft alle Dispatcher: den für die Static und den für die dynamischen Routes
-5. Wenn ein Dispatcher Erfolg hatte (siehe Dispatching) wird der Handler der Route zurück gegeben
-6. Wenn der Request Router aufgerufen wird -> prüfe Http Method. Wenn diese nicht stimmt gebe 405 aus
-7. Wenn die Dispatcher nichts gefunden haben -> gebe 404 aus.
+## Funktionsweise
+- Starte die run Method mit der Request Url und der Request Method
+````php
+<?php
+public function run($uri,$httpMethod=null)
+````
+1. Die Url wird dekodiert (zwecks Umlauten etc.)
+2. Übergebe die Werte des Collectors an den Dispatcher
+3. Der Dispatcher wird mit der Url aufgerufen und gibt ein Handle zurück, dass in den Routes definiert wurde und den Routestatus (siehe [Dispatcher](dispatching.md))
+4. Sollte die Route nicht gefunden worden sein wird der 404 Handle erstellt
+5. Die Method wird überprüft, soltle diese nicht mit der Route übereinstimmten wird der 405 Handle ausgegeben
+6. Sonst nehme den Handle vom Collector für die gefundene Route entgegen
+7. Speichere die gefunden Parameter der Route ab (solle es eine dynamic Route sein)
+8. Im Router kann dann auf die gefunden Varaiblen und Parameter zugegriffen werden
 
-# Middleware Router
-
-1. Funktionsweise genau wie der Request Router
-2. Middleware haben auch eigene Routes die dann mehre Seiten und Gruppen gleichzeitig abdecken
-
-[hier gehts weiter mit: Dispatching](dispatching.md)
+[hier gehts weiter mit: Dispatcher](dispatching.md)
 
 ### Inhalt Routing
 [1. Start](index.md) <br>
 [2. Router](router.md) <br>
 [3. Dispatching](dispatching.md) <br>
 [4. Route Creation](routeCreation.md) <br>
-[5. Mapping](routemapping.md)
+[5. Route Generation](routegeneration.md)
