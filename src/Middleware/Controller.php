@@ -23,6 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 abstract class Controller
 {
+	/** @var ServerRequestInterface */
 	protected $request;
 
 	public function setPsr(ServerRequestInterface $request)
