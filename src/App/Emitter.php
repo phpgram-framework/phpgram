@@ -48,10 +48,9 @@ class Emitter
 
 		if (null === $range || 'bytes' !== $range[0]) {
 			$this->emitBody($response);
-			return true;
+		}else{
+			$this->emitBodyRange($range, $response);
 		}
-
-		$this->emitBodyRange($range, $response);
 
 		exit();	//schließe die Seite, keine weitere Ausgabe mehr möglich
 	}
