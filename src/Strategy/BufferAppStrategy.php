@@ -13,7 +13,7 @@
 
 namespace Gram\Strategy;
 
-use Gram\Callback\Callback;
+use Gram\Callback\CallbackInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -30,7 +30,7 @@ class BufferAppStrategy extends StdAppStrategy
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(Callback $callback, array $param, ServerRequestInterface $request)
+	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request)
 	{
 		ob_start();
 		parent::invoke($callback,$param,$request);

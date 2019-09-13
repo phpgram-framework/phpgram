@@ -13,8 +13,8 @@
 
 namespace Gram\Middleware\Handler;
 
-use Gram\App\CallableCreator;
 use Gram\Strategy\StrategyInterface;
+use Gram\CallbackCreator\CallbackCreatorInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,14 +33,16 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ResponseHandler implements RequestHandlerInterface
 {
-	private $stdstrategy,$callable,$param,$request,$responseFactory,$streamFactory;
+	private $stdstrategy,$creator,$callable,$param,$request,$responseFactory,$streamFactory;
 
 	public function __construct(
 		ResponseFactoryInterface $responseFactory,
 		StreamFactoryInterface $streamFactory,
+		CallbackCreatorInterface $creator,
 		StrategyInterface $strategy
 	){
 		$this->stdstrategy=$strategy;
+		$this->creator=$creator;
 		$this->responseFactory=$responseFactory;
 		$this->streamFactory=$streamFactory;
 	}
@@ -53,27 +55,35 @@ class ResponseHandler implements RequestHandlerInterface
 		$this->callable= $request->getAttribute('callable');
 		$this->param=$request->getAttribute('param',[]);
 		$status=$request->getAttribute('status',200);
+		$reason = $request->getAttribute('reason','');
+		$header = $request->getAttribute('header',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
+		$creator = $request->getAttribute('creator',null) ?? $this->creator;
 
 		//erstelle head
 		$head=$strategy->getHeader();
 
 		//erstelle Body
-		$body=$this->streamFactory->createStream($this->createBody($strategy));
+		$body=$this->streamFactory->createStream($this->createBody($strategy,$creator));
 
-		$response=$this->responseFactory->createResponse($status);
+		$response=$this->responseFactory->createResponse($status,$reason);
 
 		$response=$response
 			->withBody($body)
 			->withHeader($head["name"],$head["value"]);
 
+		//Fügt Custom Header hinzu
+		foreach ($header as $item) {
+			$response=$response->withHeader($item["name"],$item['value']);
+		}
+
 		return $response;
 	}
 
-	protected function createBody(StrategyInterface $strategy)
+	protected function createBody(StrategyInterface $strategy,CallbackCreatorInterface $creator)
 	{
-		$caller = new CallableCreator($this->callable);
+		$creator->createCallback($this->callable);
 
-		return $strategy->invoke($caller->getCallable(),$this->param,$this->request);
+		return $strategy->invoke($creator->getCallable(),$this->param,$this->request);
 	}
 }

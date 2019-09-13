@@ -11,9 +11,9 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-namespace Gram\App;
+namespace Gram\CallbackCreator;
 
-use Gram\Callback\Callback;
+use Gram\Callback\CallbackInterface;
 use Gram\Callback\CallbackCallback;
 use Gram\Callback\ClassCallback;
 use Gram\Callback\ControllerCallback;
@@ -22,16 +22,16 @@ use Gram\Middleware\Handler\HandlerInterface;
 
 /**
  * Class CallableCreator
- * @package Gram\App
+ * @package Gram\CallbackCreator
  *
  * Erstellt ein Callable aus etwas übergebenen
  */
-class CallableCreator
+class CallbackCreator implements CallbackCreatorInterface
 {
 	private $callable=null;
 
 	/**
-	 * CallableCreator constructor.
+	 * @inheritdoc
 	 *
 	 * Prüft ob etwas ein Callable bzw ein Stack mit Callable ist
 	 *
@@ -45,15 +45,23 @@ class CallableCreator
 	 *
 	 * @param $possibleCallable
 	 */
-	public function __construct($possibleCallable)
+	public function createCallback($possibleCallable)
 	{
 		if(is_object($possibleCallable) && $possibleCallable instanceof HandlerInterface){
 			$this->callable=$this->createHandlerCallback($possibleCallable);
 		}else if(!is_array($possibleCallable)){
-			$this->callable=$this->createCallback($possibleCallable);
+			$this->callable=$this->createCallbackFor($possibleCallable);
 		}else{
 			$this->callable=$this->createCallbackForClass($possibleCallable[0],$possibleCallable[1]);
 		}
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getCallable():CallbackInterface
+	{
+		return $this->callable;
 	}
 
 	private function createCallbackForMVC($controller)
@@ -114,21 +122,12 @@ class CallableCreator
 	 * @param $callback
 	 * @return bool|CallbackCallback|ControllerCallback
 	 */
-	protected function createCallback($callback)
+	private function createCallbackFor($callback)
 	{
 		if(is_callable($callback)){
 			return $this->createCallbackFromCallable($callback);
 		}else{
 			return $this->createCallbackForMVC($callback);
 		}
-	}
-
-
-	/**
-	 * @return bool|Callback|ClassCallback|ControllerCallback|CallbackCallback|HandlerCallback
-	 */
-	public function getCallable()
-	{
-		return $this->callable;
 	}
 }

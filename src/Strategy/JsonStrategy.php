@@ -13,7 +13,7 @@
 
 namespace Gram\Strategy;
 
-use Gram\Callback\Callback;
+use Gram\Callback\CallbackInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -35,7 +35,7 @@ class JsonStrategy implements StrategyInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(Callback $callback, array $param, ServerRequestInterface $request)
+	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request)
 	{
 		$result = $callback->callback($param,$request);
 

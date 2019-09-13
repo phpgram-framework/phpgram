@@ -22,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Erstellt einen Handler aus einer Klasse und Funktion
  */
-class ClassCallback implements Callback
+class ClassCallback implements CallbackInterface
 {
 	protected $class,$function;
 

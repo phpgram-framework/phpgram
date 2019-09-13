@@ -24,7 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Dieser kann aufgerufen werden wenn die Middleware einen Fehler festgestellt hat und die Seite beenden will
  */
-class HandlerCallback implements Callback
+class HandlerCallback implements CallbackInterface
 {
 	private $handler;
 

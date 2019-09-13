@@ -13,6 +13,8 @@
 
 namespace Gram\App;
 
+use Gram\CallbackCreator\CallbackCreator;
+use Gram\CallbackCreator\CallbackCreatorInterface;
 use Gram\Middleware\Handler\ResponseHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
@@ -34,7 +36,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 class App
 {
 	private $request,$router=null,$middlewareCollector=null,$strategyCollector=null;
-	private $responseFactory, $streamFactory,$stdStrategy=null,$options=[];
+	private $responseFactory, $streamFactory,$stdStrategy=null,$callbackcreator=null,$options=[];
 
 	private static $_instance;
 
@@ -112,12 +114,14 @@ class App
 	{
 		$this->request=$request;
 
+		//setze Standard Objekte
+		$callbackcreator = $this->callbackcreator ?? new CallbackCreator();
 		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
 
 		//bereite Queue vor
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
-		$fallback = new ResponseHandler($this->responseFactory,$this->streamFactory,$stdStrategy);
+		$fallback = new ResponseHandler($this->responseFactory,$this->streamFactory,$callbackcreator,$stdStrategy);
 
 		$queue = new QueueHandler($fallback);	//default Fallback
 
@@ -170,6 +174,11 @@ class App
 	public function setStrategy(StrategyInterface $stdStrategy=null)
 	{
 		$this->stdStrategy=$stdStrategy;
+	}
+
+	public function setCallbackCreator(CallbackCreatorInterface $creator)
+	{
+		$this->callbackcreator=$creator;
 	}
 
 	public function setOptions(array $options=[])

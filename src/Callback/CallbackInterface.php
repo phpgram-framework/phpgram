@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Interface für die Callback Klassen die ein Callable erstellen und ausführen
  */
-interface Callback
+interface CallbackInterface
 {
 	public function callback($param=[],ServerRequestInterface $request);
 

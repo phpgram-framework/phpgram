@@ -13,7 +13,7 @@
 
 namespace Gram\Strategy;
 
-use Gram\Callback\Callback;
+use Gram\Callback\CallbackInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -36,10 +36,10 @@ interface StrategyInterface
 	 *
 	 * Erstelle dann je nach Strategy den Return für den Response
 	 *
-	 * @param Callback $callback
+	 * @param CallbackInterface $callback
 	 * @param array $param
 	 * @param ServerRequestInterface $request
 	 * @return mixed
 	 */
-	public function invoke(Callback $callback,array $param,ServerRequestInterface $request);
+	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request);
 }

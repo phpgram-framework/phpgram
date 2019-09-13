@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Speichert ein Callable und gibt es wieder zurück
  */
-class CallbackCallback implements Callback
+class CallbackCallback implements CallbackInterface
 {
 	protected $callback;
 
