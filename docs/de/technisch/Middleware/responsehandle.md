@@ -31,9 +31,9 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 	1. ``$request->getAttribute('creator',null) ?? $this->creator;`` wie das callable erstellt werden kann und wie es ausgeführt werden kann (wenn nichts gesetzt führe den Standard aus)
 2. hole von der Strategy den ``content-typ``
 3. erstelle den Inhalt des Stream mithilfe des Callback Creators und der Strategy
-	3. ``$creator->createCallback($this->callable);`` wandle das callable aus dem Request in ein richtiges um
-	3. ``$strategy->invoke($creator->getCallable(),$this->param,$this->request);`` rufe die Strategy mit dem umgewandelten Callback und den benötigen Parametern (die Route Parameter und der Request)
-	3. gebe den return der Strategy wieder zurück und setze den als Content für den Stream
+	1. ``$creator->createCallback($this->callable);`` wandle das callable aus dem Request in ein richtiges um
+	1. ``$strategy->invoke($creator->getCallable(),$this->param,$this->request);`` rufe die Strategy mit dem umgewandelten Callback und den benötigen Parametern (die Route Parameter und der Request)
+	1. gebe den return der Strategy wieder zurück und setze den als Content für den Stream
 4. erstelle mit dem Content den Stream mithilfe der Stream Factory
 5. erstelle den Response mithilfe der Response Factory, mit dem übergeben Status und Reason
 6. setze die gesammelten Header in den Response ein
