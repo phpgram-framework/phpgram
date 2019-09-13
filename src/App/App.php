@@ -11,6 +11,8 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
+/** @version 1.0.9 */
+
 namespace Gram\App;
 
 use Gram\CallbackCreator\CallbackCreator;
@@ -31,7 +33,7 @@ use Psr\Http\Message\StreamFactoryInterface;
  * Class App
  * @package Gram\App
  *
- * Startet die Seite und führt die Middlewares aus
+ * Startet die Seite und führt die Middleware aus
  */
 class App
 {
