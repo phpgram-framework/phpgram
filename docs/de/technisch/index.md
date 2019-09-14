@@ -26,7 +26,7 @@
 10. Sollte kein Fehler oder Event getriggert worden sein wird das [Routing](Routing/index.md) ausgeführt in der Routing Middleware
 11. ggf. werden die für die Route definierten Mw ausgeführt
 12. Der Response wird durch den ResponseHandler erstellt und zurück gegeben
-13. Der Response wird dem [Emmiter](App/emit.md) übergeben der den Header und den Body ausgibt
+13. Der Response wird dem [Emitter](App/emit.md) übergeben der den Header und den Body ausgibt
 
 
 ## Ablauf Kurzfassung
