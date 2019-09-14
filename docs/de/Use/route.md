@@ -69,7 +69,7 @@ StdParser::addDataTyp('lang','de|en');
 StdParser::addDataTyp('langs','es|ru|fr');
 ````
 - Custom Typen werden direkt im [Route Parser](../technisch/Routing/routegeneration.md) gesetzt
-- der Parser wandelt dann den ersten Parameter von ``addDataTy()`` in di Regex um die im zweiten Parameter definiert wurde
+- der Parser wandelt dann den ersten Parameter von ``addDataTyp()`` in die Regex um, die im zweiten Parameter definiert wurde
 - hier wird dann ``/{lang}`` in ``(de|en)`` umgewandelt => akzeptiere nur die Wörter de oder en
 
 ````php
@@ -164,14 +164,9 @@ use Gram\App\App;
 //Admin bereich
 App::app()->addGroup("/admin",function (){
 	//Route braucht keine Url wenn diese bei /admin ausgeführt werden soll
-	App::app()->get("",function (){
-		return "Admin Startseite";
-	});
-	
+	App::app()->get("","AdminIndexHandler");
 	//Normale Route
-	App::app()->get("/role",function (){
-		return "Hier können die Rollen verändert werden";
-	});
+	App::app()->get("/role","RoleHandler");
 	
 	//Nested Groups
 	//2. Group /settings
@@ -179,14 +174,9 @@ App::app()->addGroup("/admin",function (){
 		//3. Group /dep
 		App::app()->addGroup("/dep",function (){
 			//Routes
+			App::app()->get("","DepIndexHandler");
 			
-			App::app()->get("",function (){
-				return "Department Einstellungsbereich Startseite";
-			});
-			
-			App::app()->get("/{id}/edit",function ($id){
-				return "Einzelne Department bearbeiten id = $id";
-			});
+			App::app()->get("/{id}/edit","EditHandler");
 		});
 	});
 });
@@ -216,9 +206,9 @@ App::app()->get("/user/{id}",function ($id, ServerRequestInterface $request){
 ## Handler 
 
 - in den Beispielen wurde eine function als Handler benutzt um zu zeigen wie die Parameter zur Function kommen
-- es können alle Möglichen Muster in den Handler eingesetzt werden die der [Callback Creator](../technisch/CallbackCreator/index.md) zu einem [Callback](../technisch/Callback/index.md) umformen kann
+- es können alle möglichen Muster in den Handler eingesetzt werden, die der [Callback Creator](../technisch/CallbackCreator/index.md) zu einem [Callback](../technisch/Callback/index.md) umformen kann
 - Standardgemäß werden vier Arten unterstüzt: functions, Class function, Controller und HandlerInterface
-- weitere können mit eigenen Creators hinzu gefügt werden
+- weitere können, mit eigenen Creators, weitere Muster hinzu gefügt werden
 
 ````php
 <?php
@@ -257,7 +247,7 @@ App::app()->get("/user/{id}","ExampleController@exampleControllerMethod");
 - beide Routes geben: bei ``/user/hallo`` => ``Userid = hallo und die augerufene Url ist: /user/hallo`` aus
 - Class method funktioniert so wie bei den functions, der request wird auch hier als letzer Parameter übergeben
 - Bei Controllern wird nur der Route Parameter übergeben. 
-	- sieh [Controller Middleware](../technisch/Middleware/controllermw.md)
-	- Das Request Objekt wird in einer Method in der abstakten Klasse Controller gesetzt
+	- siehe [Controller Middleware](../technisch/Middleware/controllermw.md)
+	- Das Request Objekt wird in einer Method in der abstrakten Klasse Controller gesetzt
 	- Wenn Controller von dieser Klasse erben haben diese Zugriff auf die protected var $request
-- Handler können auf den Request greifen ihn aber nicht wirksam verändern	
+- Handler können auf den Request zugreifen ihn aber nicht wirksam verändern	
