@@ -4,7 +4,7 @@
 
 ## Vorbereitung
 
-1. Routes definieren: ``App::app()->add()`` (siehe [Route](../Use/index.md))
+1. Routes definieren: ``App::app()->add()`` (siehe [Route](../Use/route.md))
 2. ggf. Basepath für die Urls definieren: ``App::app()->setBase()``
 3. 404 und 405 Seiten für den Router setzen: ``App::app()->set404()`` und ``App::app()->set404``
 4. ggf. Standard [Middleware](Middleware/index.md) definieren: ``App::app()->addMiddle()``

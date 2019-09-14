@@ -1,5 +1,8 @@
 # Phpgram Doc
 
-## [DE Technische Doc](de/technisch/index.md)
+## DE
 
-## [EN]()
+- [Usage](de/Use/index.md)
+- [Technische Doc](de/technisch/index.md)
+
+## EN
