@@ -16,7 +16,7 @@ App::app()->add("/user",function (){
 },['GET']);
 ````
 
-- Im obrigen Beispiel wird die anonyme Funktion dann ausgeführt wenn der Path der Url ``/user`` lautet
+- Im obigen Beispiel wird die anonyme Funktion dann ausgeführt wenn der Path der Url ``/user`` lautet
 - Die Function ist der Handler und das Array gbit die Http Method (z. B. Get, Post etc) an. Es können auch mehre Methods angegeben werden
 - Für den Handler kann alles eingesetzt werden, das der [Callback Creator](../technisch/CallbackCreator/index.md) in ein [Callback](../technisch/Callback/index.md) umformen kann
 - der return wäre bei ``/user`` => ``User Index``
@@ -36,7 +36,7 @@ App::app()->add("/user/{id}",function ($id){
 
 - In diesem Beispiel wird hinter ``user`` ein Wert erwartet.
 - Für den Wert wird alles akzeptiert bis zum nächsten ``/``
-- Der [Route Parser](../technisch/Routing/routegeneration.md) extraiert die Parameter und wandelt diese in die Regex: ``[^/]+`` um
+- Der [Route Parser](../technisch/Routing/routegeneration.md) extrahiert die Parameter und wandelt diese in die Regex: ``[^/]+`` um
 - der Parameter wird direkt an die Funktion weiter gegeben
 - der return wäre bei ``/user/12aC`` => ``Userid = 12aC``
 - auf den Parameter kann auch schon im Request zugegriffen werden (siehe [Middleware](middleware.md))
@@ -91,7 +91,7 @@ App::app()->add("/page/{l:langs}/{id:n}",function ($l,$id){
 },['GET']);
 ````
 
-- ``:n`` ist hier ein Datentyp der bereits von anfang an definiert wurde. Dieser steht für Integer
+- ``:n`` ist hier ein Datentyp der bereits von Anfang an definiert wurde. Dieser steht für Integer
 - Das erste Beispiel gibt bei ``/page/de/21`` => ``Die Sprache ist: de und die Seite ist: 21`` aus
 - bei ``/page/ru/21`` => ``Die zu übersetzende Sprache ist: ru und die Seite ist: 21``
 - die Typen können dann erweitert werden z. B. mit ``pt`` sollten weitere Sprachen akzeptiert werden ohne die Platzhalter bei jeder einzelnen Route zu ändern
@@ -207,7 +207,7 @@ App::app()->get("/user/{id}",function ($id, ServerRequestInterface $request){
 
 - in den Beispielen wurde eine function als Handler benutzt um zu zeigen wie die Parameter zur Function kommen
 - es können alle möglichen Muster in den Handler eingesetzt werden, die der [Callback Creator](../technisch/CallbackCreator/index.md) zu einem [Callback](../technisch/Callback/index.md) umformen kann
-- Standardgemäß werden vier Arten unterstüzt: functions, Class function, Controller und HandlerInterface
+- Standardgemäß werden vier Arten unterstützt: functions, Class function, Controller und HandlerInterface
 - weitere können, mit eigenen Creators, weitere Muster hinzu gefügt werden
 
 ````php
