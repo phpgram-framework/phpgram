@@ -44,7 +44,7 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 - alle Attribute die in 1. aufgelistet wurden können von den Middleware verändert werden
 - param, status, reason, header strategy und creator haben Standardwerte
 - es muss immer ein callable gesetzt sein
-- callable kann alles sein was der Creator (ob Standard oder übergebener, eigens definierter) zu einem CallabackInterface umbauen kann
+- callable kann alles sein was der [Creator](../CallbackCreator/index.md) (ob Standard oder übergebener, eigens definierter) zu einem [CallabackInterface](../Callback/index.md) umbauen kann
 - normalerweise füllt die [Routing Middleware](routingmw.md) param, status und callable aus und für creator und strategy werden Standard in der Appklasse definiert
 
 <br>
