@@ -13,7 +13,7 @@ abstract class Controller
 ````
 - Controller bzw. Klassen die in den Routes so definiert wurden ``"Controller@Function"`` können von dieser Klasse erben
 - Beim Aufruf im [ResponseHandler](responsehandle.md) wird im [Callback](../Callback/index.md) die Method ``setPsr(ServerRequestInterface $request)`` aufgerufen
-- somit erhalten diese Klassen zugriff auf den Request ohne, dass dieser der aufzurufenden Method übergeben werden muss
+- somit erhalten diese Klassen Zugriff auf den Request ohne, dass dieser der aufzurufenden Method übergeben werden muss
 
 
 <br>
