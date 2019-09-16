@@ -1,8 +1,12 @@
 # Phpgram Doc
 
-## DE
+# DE
 
-- [Usage](de/Use/index.md)
-- [Technische Doc](de/technisch/index.md)
+## Version 1
 
-## EN
+- [Use](v1/de/Use/index.md)
+- [Technische Doc](v1/de/technisch/index.md)
+
+# EN
+
+## Version 1
