@@ -24,11 +24,11 @@ use Gram\Middleware\Handler\HandlerInterface;
  * Class CallableCreator
  * @package Gram\CallbackCreator
  *
- * Erstellt ein Callable aus etwas übergebenen
+ * Erstellt ein Callable aus etwas übergebenem
  */
 class CallbackCreator implements CallbackCreatorInterface
 {
-	private $callable=null;
+	protected $callable=null;
 
 	/**
 	 * @inheritdoc

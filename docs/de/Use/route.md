@@ -17,7 +17,7 @@ App::app()->add("/user",function (){
 ````
 
 - Im obigen Beispiel wird die anonyme Funktion dann ausgeführt wenn der Path der Url ``/user`` lautet
-- Die Function ist der Handler und das Array gbit die Http Method (z. B. Get, Post etc) an. Es können auch mehre Methods angegeben werden
+- Die Function ist der Handler und das Array gibt die Http Method (z. B. Get, Post etc) an. Es können auch mehre Methods angegeben werden
 - Für den Handler kann alles eingesetzt werden, das der [Callback Creator](../technisch/CallbackCreator/index.md) in ein [Callback](../technisch/Callback/index.md) umformen kann
 - der return wäre bei ``/user`` => ``User Index``
 

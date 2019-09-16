@@ -33,7 +33,6 @@ class ClassCallback implements CallbackInterface
 	 *
 	 * @param array $param
 	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
 	 * @return mixed|string
 	 *
 	 * Gebe das fertige Callback zurück (als Array für call_user_function)
