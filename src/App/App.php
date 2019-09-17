@@ -178,7 +178,7 @@ class App
 		$this->stdStrategy=$stdStrategy;
 	}
 
-	public function setCallbackCreator(CallbackCreatorInterface $creator)
+	public function setCallbackCreator(CallbackCreatorInterface $creator=null)
 	{
 		$this->callbackcreator=$creator;
 	}
@@ -256,6 +256,7 @@ class App
 
 	public function addMiddle($middleware,$order=null)
 	{
-		return $this->getMWCollector()->addStd($middleware,$order);
+		$this->getMWCollector()->addStd($middleware,$order);
+		return $this;
 	}
 }
