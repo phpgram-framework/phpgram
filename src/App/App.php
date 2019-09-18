@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-/** @version 1.0.9 */
+/** @version 1.0.10 */
 
 namespace Gram\App;
 
@@ -233,6 +233,16 @@ class App
 	public function patch(string $route,$handler)
 	{
 		return $this->add($route,$handler,['PATCH']);
+	}
+
+	public function options(string $route,$handler)
+	{
+		return $this->add($route,$handler,['OPTIONS']);
+	}
+
+	public function any(string $route,$handler)
+	{
+		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','OPTIONS']);
 	}
 
 	//Spezielle Routes
