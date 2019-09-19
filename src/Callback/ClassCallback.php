@@ -13,7 +13,6 @@
 
 namespace Gram\Callback;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -25,6 +24,9 @@ use Psr\Http\Message\ServerRequestInterface;
 class ClassCallback implements CallbackInterface
 {
 	protected $class,$function;
+
+	/** @var ServerRequestInterface */
+	protected $request;
 
 	/**
 	 * Baue das Callback zusammen und führe es aus
@@ -39,12 +41,19 @@ class ClassCallback implements CallbackInterface
 	 */
 	public function callback($param=[],ServerRequestInterface $request)
 	{
-		$callback = array(new $this->class,$this->function);
+		$this->request=$request;
+
+		$callback = [new $this->class,$this->function];
 		$param[]=$request; //letzer param ist dann der request
 
-		$return= call_user_func_array($callback,$param);
+		$return = call_user_func_array($callback,$param);
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+	}
+
+	public function getRequest(): ServerRequestInterface
+	{
+		return $this->request;
 	}
 
 	/**

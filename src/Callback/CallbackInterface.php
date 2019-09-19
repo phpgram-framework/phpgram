@@ -25,5 +25,7 @@ interface CallbackInterface
 {
 	public function callback($param=[],ServerRequestInterface $request);
 
+	public function getRequest():ServerRequestInterface;
+
 	public function set();
 }

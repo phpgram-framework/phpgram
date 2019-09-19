@@ -23,7 +23,11 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class CallbackCallback implements CallbackInterface
 {
+	/** @var \Closure */
 	protected $callback;
+
+	/** @var ServerRequestInterface */
+	public $request;
 
 	/**
 	 * Führe das Callback aus
@@ -34,10 +38,18 @@ class CallbackCallback implements CallbackInterface
 	 */
 	public function callback($param=[],ServerRequestInterface $request)
 	{
-		$param[]=$request;	//letzter parameter ist immer der request bei functions
-		$return= call_user_func_array($this->callback,$param);
+		$this->request = $request;
+
+		$callback = $this->callback->bindTo($this);	//Bindet die Funktion an diese Klasse, somit hat sie Zugriff auf den Request
+
+		$return = call_user_func_array($callback,$param);
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+	}
+
+	public function getRequest(): ServerRequestInterface
+	{
+		return $this->request;
 	}
 
 	/**

@@ -30,4 +30,9 @@ abstract class Controller
 	{
 		$this->request=$request;
 	}
+
+	public function getRequest()
+	{
+		return $this->request;
+	}
 }

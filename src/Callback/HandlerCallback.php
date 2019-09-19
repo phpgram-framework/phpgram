@@ -28,11 +28,20 @@ class HandlerCallback implements CallbackInterface
 {
 	private $handler;
 
+	public $request;
+
 	public function callback($param = [],ServerRequestInterface $request)
 	{
-		$return= call_user_func_array([$this->handler,'handle'],[$request]);
+		$this->request=$request;
+
+		$return = call_user_func_array([$this->handler,'handle'],[$request]);
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+	}
+
+	public function getRequest(): ServerRequestInterface
+	{
+		return $this->request;
 	}
 
 	/**

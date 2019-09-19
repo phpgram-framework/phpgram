@@ -26,20 +26,30 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ControllerCallback extends ClassCallback
 {
+	/**
+	 * @param array $param
+	 * @param ServerRequestInterface $request
+	 * @return mixed|string
+	 * @throws \Exception
+	 */
 	public function callback($param=[],ServerRequestInterface $request)
 	{
 		$class = new $this->class;
 
 		if ($class instanceof Controller){
 			$class->setPsr($request);	//gebe den Controllern die Psr Objekte
-			$callback=array($class,$this->function);
+			$callback = [$class,$this->function];
 
-			$return= call_user_func_array($callback,$param);
+			$return = call_user_func_array($callback,$param);
+
+			$this->request = $class->getRequest();	//nehme Request wieder entgegen
 
 			return ($return===null)?'':$return;	//default: immer einen String zurück geben
 		}
 
-		return parent::callback($param,$request);
+		$cn = get_class($class);
+
+		throw new \Exception("This Controller: $cn needs to extend from Gram\Middleware\Controller");
 	}
 
 	/**
