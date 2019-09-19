@@ -38,8 +38,9 @@
 
 ## Veränderungsmöglichkeiten
 
-- Solange der Request nicht beim ResponseHandler angekommen ist können diese Attribute verändert werden
-- In dem Handler der Route (siehe [Route Example](route.md)) z. B. Klassen oder Controller kann der Request nichtmehr verändert werden, da diese bereits im ResponseHandler ausgeführt werden
+- Solange der Request nicht beim ResponseHandler angekommen ist können alle Attribute verändert werden
+- In dem Handler der Route (siehe [Route Example](route.md)) z. B. Klassen oder Controller können: ``status``, ``header`` und ``reason`` verändert werden.
+- Die anderen Attribute können nicht verändert werden, da der Handler mit diesen ausgeführt wurde
 
 ### Middleware
 - jede Middleware hat vor dem ResponseHandler Zugriff auf den Request

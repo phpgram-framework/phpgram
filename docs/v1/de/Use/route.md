@@ -188,16 +188,15 @@ App::app()->addGroup("/admin",function (){
 
 ## Psr 7
 
-- der letzte Parameter der bei Functions und Class Methods (nicht bei Controller) ist das Request Objekt
-- darauf kann in der Function wie folgt zu gegriffen werden:
+- Controller und Functions können auf das Request Object mit: ``$this->request`` zugreifen und verändern
 
 ````php
 <?php
 use Gram\App\App;
 use Psr\Http\Message\ServerRequestInterface;
 
-App::app()->get("/user/{id}",function ($id, ServerRequestInterface $request){
-	return "Userid = $id und die aufgerufene Url ist: ".$request->getUri()->getPath();
+App::app()->get("/user/{id}",function ($id){
+	return "Userid = $id und die aufgerufene Url ist: ".$this->request->getUri()->getPath();
 });
 ````
 
@@ -236,6 +235,7 @@ class ExampleController extends Controller
 {
 	public function exampleControllerMethod($id)
 	{
+		$this->request = $this->request->withAttribute('status',401);	//Request verändern
 		return "Userid = $id und die aufgerufene Url ist: ".$this->request->getUri()->getPath();
 	}
 }
@@ -250,4 +250,4 @@ App::app()->get("/user/{id}","ExampleController@exampleControllerMethod");
 	- siehe [Controller Middleware](../technisch/Middleware/controllermw.md)
 	- Das Request Objekt wird in einer Method in der abstrakten Klasse Controller gesetzt
 	- Wenn Controller von dieser Klasse erben haben diese Zugriff auf die protected var $request
-- Handler können auf den Request zugreifen ihn aber nicht wirksam verändern	
+- Handler können auf den Request zugreifen und verändern
