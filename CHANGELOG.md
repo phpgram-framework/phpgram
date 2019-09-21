@@ -2,6 +2,12 @@
 
 # 1.1.x
 
+## 1.1.3
+
+- since 2019/09/21
+- JsonStrategy:
+	- Möglichkeit Json Optionen zu setzen über den Konstruktor
+
 ## 1.1.2
 
 - since 2019/09/21

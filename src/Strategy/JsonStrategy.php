@@ -24,6 +24,14 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class JsonStrategy implements StrategyInterface
 {
+	private $options, $depth;
+
+	public function __construct($options = 0, $depth = 512)
+	{
+		$this->options=$options;
+		$this->depth=$depth;
+	}
+	
 	/**
 	 * @inheritdoc
 	 */
@@ -43,7 +51,7 @@ class JsonStrategy implements StrategyInterface
 			return $result;
 		}
 
-		return json_encode($result);
+		return json_encode($result,$this->options,$this->depth);
 	}
 
 	/**
