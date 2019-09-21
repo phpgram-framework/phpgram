@@ -50,9 +50,7 @@
 
 		- ``[Header1,Header2]`` 
 
-		- Bsp.: 
-
-			- ``[["name"=>"Content-Length","value"=>3000],["name"=>"Header-Zwei","value"=>2]]``
+		- Bsp.: ``[["name"=>"Content-Length","value"=>3000],["name"=>"Header-Zwei","value"=>2]]``
 
 - ``'strategy'``
 
