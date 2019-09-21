@@ -5,7 +5,9 @@
 ## 1.1.2
 
 - since 2019/09/21
-- Router: der letzte ``/`` wird nun immer ignoriert, es sei denn es wurde in den Routeroptionen anders fest gelegt
+- Router: 
+    - der letzte ``/`` wird nun immer ignoriert, es sei denn es wurde in den Routeroptionen anders fest gelegt
+    - check Http Method lässt sich nun über Otionen oder im Request mit ``check_method`` aus stellen
 
 ## 1.1.1 
 
