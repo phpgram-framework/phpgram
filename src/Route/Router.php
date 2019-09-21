@@ -39,26 +39,25 @@ class Router implements RouterInterface
 	const METHOD_NOT_ALLOWED = 405;
 	const OK = 200;
 
-	private $checkMethod,$uri,$handle,$param=[],$status;
+	private $checkMethod,$uri,$handle,$param=[],$status,$slash_trim;
 	private $collector,$dispatcher;
 
 	/**
 	 * Router constructor.
-	 * @param bool $checkMethod
 	 * @param array $options
 	 * @param MiddlewareCollectorInterface|null $middlewareCollector
 	 * @param StrategyCollectorInterface|null $strategyCollector
 	 */
 	public function __construct(
-		$checkMethod=true,
 		$options=[],
 		?MiddlewareCollectorInterface $middlewareCollector = null,
 		?StrategyCollectorInterface $strategyCollector = null
 	){
-		$this->checkMethod=$checkMethod;
 
 		//setze Standard Optionen
 		$options +=[
+			'check_method'=>true,
+			'slash_trim'=>true,
 			'caching'=>false,
 			'cache'=>null,
 			'dispatcher'=>'Gram\\Route\\Dispatcher\\DynamicDispatcher',
@@ -66,6 +65,9 @@ class Router implements RouterInterface
 			'parser'=>'Gram\\Route\\Parser\\StdParser',
 			'collector'=>'Gram\\Route\\Collector\\RouteCollector'
 		];
+
+		$this->slash_trim = $options['slash_trim'];
+		$this->checkMethod = $options['check_method'];
 
 		$middlewareCollector = $middlewareCollector ?? new MiddlewareCollector();
 		$strategyCollector = $strategyCollector ?? new StrategyCollector();
@@ -88,7 +90,13 @@ class Router implements RouterInterface
 	 */
 	public function run($uri,$httpMethod=null)
 	{
-		$this->uri=urldecode($uri);	//umlaute filtern
+		$uri=urldecode($uri);	//umlaute filtern
+
+		if($this->slash_trim && $uri !=='/'){
+			$uri = rtrim($uri,'/');	//entferne letzen / von der Url
+		}
+
+		$this->uri = $uri;
 
 		if(!$this->dispatch($this->dispatcher,$this->collector)){
 			return false;

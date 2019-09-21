@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-/** @version 1.1.1 */
+/** @version 1.1.2 */
 
 namespace Gram\App;
 
@@ -60,7 +60,6 @@ class App
 		if(!isset($this->router)){
 
 			$this->router = new Router(
-				true,
 				$this->options,
 				$this->getMWCollector(),
 				$this->getStrategyCollector()
