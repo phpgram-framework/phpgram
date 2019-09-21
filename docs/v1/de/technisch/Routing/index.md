@@ -1,11 +1,15 @@
 # Routing
 - Unabhänig von Psr 7
+
 - kann auch für andere Methoden benutzt werden
 
 ## Umfasst:
 - Router
+
 - Dispatcher
+
 - Collector für Routes, Middleware und Strategy
+
 - Route Generator
 
 <br>

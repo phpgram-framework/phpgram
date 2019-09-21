@@ -23,13 +23,22 @@ class Router implements RouterInterface
 public function run($uri,$httpMethod=null)
 ````
 1. Die Url wird dekodiert (zwecks Umlauten etc.)
-2. Übergebe die Werte des Collectors an den Dispatcher
-3. Der Dispatcher wird mit der Url aufgerufen und gibt ein Handle zurück, dass in den Routes definiert wurde und den Routestatus (siehe [Dispatcher](dispatching.md))
-4. Sollte die Route nicht gefunden worden sein wird der 404 Handle erstellt
-5. Die Method wird überprüft, soltle diese nicht mit der Route übereinstimmten wird der 405 Handle ausgegeben
-6. Sonst nehme den Handle vom Collector für die gefundene Route entgegen
-7. Speichere die gefunden Parameter der Route ab (solle es eine dynamic Route sein)
-8. Im Router kann dann auf die gefunden Varaiblen und Parameter zugegriffen werden
+
+2. Sollte in den Optionen angegeben sein, dass der letzte ``/`` von der Url ignoriert werden soll wird dieser entfernt
+
+3. Übergebe die Werte des Collectors an den Dispatcher
+
+4. Der Dispatcher wird mit der Url aufgerufen und gibt ein Handle zurück, dass in den Routes definiert wurde und den Routestatus (siehe [Dispatcher](dispatching.md))
+
+5. Sollte die Route nicht gefunden worden sein wird der 404 Handle erstellt
+
+6. Wenn in den Optionen angegeben wurde, dass die Method überprüft werden soll, wird diese überprüft, sollte diese nicht mit der Route übereinstimmten wird der 405 Handle ausgegeben
+
+7. Sonst nehme den Handle vom Collector für die gefundene Route entgegen
+
+8. Speichere die gefunden Parameter der Route ab (solle es eine dynamic Route sein)
+
+9. Im Router kann dann auf die gefunden Varaiblen und Parameter zugegriffen werden
 
 [hier gehts weiter mit: Dispatcher](dispatching.md)
 

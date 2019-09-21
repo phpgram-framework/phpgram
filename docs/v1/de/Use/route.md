@@ -1,8 +1,11 @@
 # Route
 
 - Eine Route ist die Verbindung zwischen Request und Handler
+
 - eine Route beinhaltet die Url (mit der diese aufgerufen werden soll) und den Handler der geladen werden soll
+
 - siehe [Routing](../technisch/Routing/index.md)
+
 - Route Handler müssen nur den Content für den Response Body zurück liefern alles weitere wird erstellt
 
 ## Einfache Route
@@ -17,8 +20,11 @@ App::app()->add("/user",function (){
 ````
 
 - Im obigen Beispiel wird die anonyme Funktion dann ausgeführt wenn der Path der Url ``/user`` lautet
+
 - Die Function ist der Handler und das Array gibt die Http Method (z. B. Get, Post etc) an. Es können auch mehre Methods angegeben werden
+
 - Für den Handler kann alles eingesetzt werden, das der [Callback Creator](../technisch/CallbackCreator/index.md) in ein [Callback](../technisch/Callback/index.md) umformen kann
+
 - der return wäre bei ``/user`` => ``User Index``
 
 ## Wildcard Route
@@ -35,10 +41,15 @@ App::app()->add("/user/{id}",function ($id){
 ````
 
 - In diesem Beispiel wird hinter ``user`` ein Wert erwartet.
+
 - Für den Wert wird alles akzeptiert bis zum nächsten ``/``
+
 - Der [Route Parser](../technisch/Routing/routegeneration.md) extrahiert die Parameter und wandelt diese in die Regex: ``[^/]+`` um
+
 - der Parameter wird direkt an die Funktion weiter gegeben
+
 - der return wäre bei ``/user/12aC`` => ``Userid = 12aC``
+
 - auf den Parameter kann auch schon im Request zugegriffen werden (siehe [Middleware](middleware.md))
 
 ## Wildcard Route mit Datentypen
@@ -51,12 +62,19 @@ App::app()->add("/user/{id:\d+}",function ($id){
 	return "Userid = $id";
 },['GET']);
 ````
+
 - hier wird mit Regex die Werte die id annehmen kann eingeschränkt
+
 - es kann jede Art von Regex genutzt werden
+
 - der [Route Collector](../technisch/Routing/routeCreation.md) setzt die Klammern um die Regex automatisch nach den ``:``
+
 - ``\d+`` steht für Integer
+
 - bsp.: bei ``/user/12aC`` würde diese Route nicht gematcht werden
+
 - der return bei ``/user/12`` => ``Userid = 12``
+
 - return bei ``/user/12aC`` => ``Not Found``
 
 ## Wildcard Route mit Custom Dateitypen
@@ -69,7 +87,9 @@ StdParser::addDataTyp('lang','de|en');
 StdParser::addDataTyp('langs','es|ru|fr');
 ````
 - Custom Typen werden direkt im [Route Parser](../technisch/Routing/routegeneration.md) gesetzt
+
 - der Parser wandelt dann den ersten Parameter von ``addDataTyp()`` in die Regex um, die im zweiten Parameter definiert wurde
+
 - hier wird dann ``/{lang}`` in ``(de|en)`` umgewandelt => akzeptiere nur die Wörter de oder en
 
 ````php
@@ -92,19 +112,25 @@ App::app()->add("/page/{l:langs}/{id:n}",function ($l,$id){
 ````
 
 - ``:n`` ist hier ein Datentyp der bereits von Anfang an definiert wurde. Dieser steht für Integer
+
 - Das erste Beispiel gibt bei ``/page/de/21`` => ``Die Sprache ist: de und die Seite ist: 21`` aus
+
 - bei ``/page/ru/21`` => ``Die zu übersetzende Sprache ist: ru und die Seite ist: 21``
+
 - die Typen können dann erweitert werden z. B. mit ``pt`` sollten weitere Sprachen akzeptiert werden ohne die Platzhalter bei jeder einzelnen Route zu ändern
 
 ### Standard Typen
 
 - ``n`` => Integer
+
 - ``a`` => Alpha nummerisch
+
 - ``all`` => alles auch der ``/``
 
 ## Http Method
 
 - anstatt die Http Method bei jeder Route zu definieren können auch vorgefertigte Methoden genutzt werden
+
 - diese rufen dann auch die add Method mit der jeweiligen Http Method auf
 
 ````php
@@ -151,9 +177,13 @@ App::app()->head("/user",function (){
 ## Route Groups
 
 - Gruppen werden immer mit einem Prefix und einer Collector function definiert
+
 - in der function werden die Route eingesammelt
+
 - Das prefix wird dann vor die Url der Route gestellt
+
 - es sind auch nested Groups möglich
+
 - siehe [Route Collector](../technisch/Routing/routeCreation.md)
 
 ````php
@@ -183,7 +213,9 @@ App::app()->addGroup("/admin",function (){
 ````
 
 - wenn das Prefix ``/admin`` z. B. zu ``/administrator`` geändert werden würde sind alle Routes in der Gruppe ebenfalls geändert
+
 - um die Department Bearbeiten Funktion auf zurufen muss diese Url aufgerufen werden: ``/admin/settings/dep/{id}/edit``
+
 - Wenn die Route die gleiche Url haben soll wie das Prefix muss bei dieser keine Url angegeben werden
 
 ## Psr 7
@@ -205,8 +237,11 @@ App::app()->get("/user/{id}",function ($id){
 ## Handler 
 
 - in den Beispielen wurde eine function als Handler benutzt um zu zeigen wie die Parameter zur Function kommen
+
 - es können alle möglichen Muster in den Handler eingesetzt werden, die der [Callback Creator](../technisch/CallbackCreator/index.md) zu einem [Callback](../technisch/Callback/index.md) umformen kann
+
 - Standardgemäß werden vier Arten unterstützt: functions, Class function, Controller und HandlerInterface
+
 - weitere können, mit eigenen Creators, weitere Muster hinzu gefügt werden
 
 ````php
@@ -245,9 +280,15 @@ App::app()->get("/user/{id}","ExampleController@exampleControllerMethod");
 ````
 
 - beide Routes geben: bei ``/user/hallo`` => ``Userid = hallo und die augerufene Url ist: /user/hallo`` aus
+
 - Class method funktioniert so wie bei den functions, der request wird auch hier als letzer Parameter übergeben
+
 - Bei Controllern wird nur der Route Parameter übergeben. 
+
 	- siehe [Controller Middleware](../technisch/Middleware/controllermw.md)
+
 	- Das Request Objekt wird in einer Method in der abstrakten Klasse Controller gesetzt
+
 	- Wenn Controller von dieser Klasse erben haben diese Zugriff auf die protected var $request
+
 - Handler können auf den Request zugreifen und verändern

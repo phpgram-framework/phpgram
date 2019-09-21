@@ -7,7 +7,9 @@ class RouteCollector implements CollectorInterface
 }
 ````
 - diese Funktion liefert dem Router die Daten für den Dispatcher
+
 - sollte eine Cache Datei vorliegen (wird über den Construktor übergeben) wird diese geladen
+
 - sonst werden die Routes generiert
 
 ## Generator
@@ -20,8 +22,11 @@ abstract class Generator implements GeneratorInterface
 class DynamicGenerator extends Generator
 ````
 - eine abstract class die die Static Routes erzeugt (da das bei jedem Generator gleich sein wird)
+
 - eine Klasse die von der abstract erbt und die dynamic Routes erzeugt (hier kann jeder beliebige Generator genutzt werden)
+
 - hier werden die Routes nach dem Group Count Based Prinzip generiert von [FastRoute](http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html)
+
 - der DynamicGenerator wird aufgerufen mit einer Method im Generator
 
 ### Static Routes
@@ -33,11 +38,17 @@ abstract class Generator implements GeneratorInterface
 }
 ````
 1. die Funktion generate wird mit allen vom Collector gesammelten Routes aufgerufen
+
 2. in dem Array befinden sich die Routeobjekte
+
 3. Jede der Routes wird durchlaufen
+
 4. Beim Durchlauf parse die Routes (mithilfe des Parser Objekts in dem Route Objekt)
+
 5. Prüfe ob die Route Parameter besitzt (dynamic)
+
 6. Wenn ja ordne diese in ein Array ein, wenn nein füge sie dem static Teil der Routemap hinzu
+
 7. Um die dynamic Routes zu verarbeiten rufe die Method ``generateDynamic()`` mit den zuvor gesammelten Routes aus
 
 ````php
@@ -57,17 +68,26 @@ class DynamicGenerator extends Generator
 ````
 
 1. Dort werden die Routes gesammelt bis eine Anzahl an Routes erreicht ist
+
 2. die Anzahl wird errechnet: durch einen fest vorgegebenen Wert und der Anzahl der Routes (wie viele Chunks lassen sich mit der Anzahl an Routes erstellen und um wie vielt muss der Chunk erweitert werden damit alle Chunks voll sind)
+
 3. Füge Platzhalter hinzu um die Position der Route in der Regex zu bestimmten
-	3. Wenn die Route an zweiter Stelle steht und keine Platzhalter besitzt werden ihr drei hinzu gefügt (da die Route an 2. Position in der Regex steht und die Matches gezählt werden, im ersten Match ist immer der komplette String drin deswegen position +1)
-	3. hat die Route Parameter wird die Anzahl der parameter von der Anzahl der benötigten Platzhalter abgezogen ``$routeCollector[]= $path.str_repeat('()', $number - $varcount);``
+	
+	1. Wenn die Route an zweiter Stelle steht und keine Platzhalter besitzt werden ihr drei hinzu gefügt (da die Route an 2. Position in der Regex steht und die Matches gezählt werden, im ersten Match ist immer der komplette String drin deswegen position +1)
+	
+	2. hat die Route Parameter wird die Anzahl der parameter von der Anzahl der benötigten Platzhalter abgezogen ``$routeCollector[]= $path.str_repeat('()', $number - $varcount);``
+
 4. Wenn die Anzahl erreicht ist werden die Routes zu einem Chunk zusammengefasst
+
 5. Dazu werden die gesammelten Routes zu einer Regex zusammengefasst ``$routeList[] = '~^(?|'.implode('|',$routeCollector).')$~x';``
+
 6. Das Handle der Route steht dann an dem Index entsprechend der Anzahl an Platzhaltern (sodass das Handle beim Dispatcher leicht wiedergefunden werden kann)
 
 ### Output
 - Zum Schluss werden die generierten Routes in einer Map zurück gegeben die aus
+	
 	- den Static und
+	
 	- dynamic Routes besteht
 
 ### Inhalt Routing

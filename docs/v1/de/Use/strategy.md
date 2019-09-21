@@ -1,24 +1,31 @@
 # Strategy
 
 - siehe Technische Doc [Strategy](../technisch/Strategy/index.md)
+
 - Strategies bestimmten wie der Output des [Route Handlers](route.md) erfasst werden soll
+
 - Es muss immer ein Output generiert werden für den [Response](response.md)
+
 - Der Output darf erst im Emitter (siehe [Response](response.md) und [Emitter](../technisch/App/emit.md)) zum Client gesendet werden
 
 ## Strategies erstellen
 
 - Strategies müssen das Interface ``Gram\Strategy\StrategyInterface`` implementiert haben
+
 - siehe [Strategy](../technisch/Strategy/index.md)
 
 ## Strategies setzen
 
 - Es wird unterschieden zwischen Standard Strategy (die immer ausgeführt wird sollte keine andere definiert worden sein)
+
 - und Route und Route Group Strategy
 
 ### Std Stragey setzen
 
 - ``App::app()->setStrategy()``
+
 - Hier wird ein StrategyInterface erwartet
+
 - wenn keine gesetzt wird wird die ``Gram\Strategy\StdAppStrategy`` ausgeführt
 
 ### Routegroup Strategy setzen
@@ -52,9 +59,13 @@ App::app()->addGroup("/admin",function (){
 })->addStrategy(new StdAppStrategy());
 ````
 - hier wurden zwei Strategies gesetzt
+
 - es wird immer die letzte Strategy ausgeführt
+
 - in diesem Beispiel:
+
 	- für ``/admin`` und ``/admin/role`` die StdAppStrategy
+
 	- für ``/admin/stettings/dep...`` die BufferAppStrategy
 	
 ### Route Strategy
