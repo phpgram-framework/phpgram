@@ -13,7 +13,7 @@
 
 namespace Gram\Callback;
 
-use Gram\Middleware\Controller;
+use Gram\Middleware\Classes\ClassInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -27,6 +27,12 @@ use Psr\Http\Message\ServerRequestInterface;
 class ControllerCallback extends ClassCallback
 {
 	/**
+	 * @inheritdoc
+	 *
+	 * Führt den Controller aus und gibt dessen Return zurück
+	 *
+	 * Gibt eine Exception aus sollte die auszuführende Klasse kein @see ClassInterface implementiert haben
+	 *
 	 * @param array $param
 	 * @param ServerRequestInterface $request
 	 * @return mixed|string
@@ -36,7 +42,7 @@ class ControllerCallback extends ClassCallback
 	{
 		$class = new $this->class;
 
-		if ($class instanceof Controller){
+		if ($class instanceof ClassInterface){
 			$class->setPsr($request);	//gebe den Controllern die Psr Objekte
 			$callback = [$class,$this->function];
 
@@ -49,7 +55,7 @@ class ControllerCallback extends ClassCallback
 
 		$cn = get_class($class);
 
-		throw new \Exception("This Controller: $cn needs to extend from Gram\Middleware\Controller");
+		throw new \Exception("This Controller: $cn needs to implement Gram\Middleware\Classes\ClassInterface");
 	}
 
 	/**

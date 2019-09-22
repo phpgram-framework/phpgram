@@ -23,9 +23,28 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 interface CallbackInterface
 {
+	/**
+	 * Führt das Callback aus mit den Parameter aus dem Request und dem Request Object
+	 *
+	 * Erwartet den Rückgabe des Callbacks
+	 *
+	 * @param array $param
+	 * @param ServerRequestInterface $request
+	 * @return mixed
+	 */
 	public function callback($param=[],ServerRequestInterface $request);
 
+	/**
+	 * Gibt den Request der bei @see callback() übergeben wurde zurück
+	 *
+	 * @return ServerRequestInterface
+	 */
 	public function getRequest():ServerRequestInterface;
 
+	/**
+	 * Erstellt das Callback
+	 *
+	 * @return mixed
+	 */
 	public function set();
 }

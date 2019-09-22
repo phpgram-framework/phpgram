@@ -13,6 +13,7 @@
 
 namespace Gram\Callback;
 
+use Gram\Middleware\Classes\ClassInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -23,12 +24,14 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ClassCallback implements CallbackInterface
 {
-	protected $class,$function;
+	protected $class,$function,$param;
 
 	/** @var ServerRequestInterface */
 	protected $request;
 
 	/**
+	 * @inheritdoc
+	 *
 	 * Baue das Callback zusammen und führe es aus
 	 *
 	 * Bestehend aus der Klasse und der Funktion
@@ -41,22 +44,48 @@ class ClassCallback implements CallbackInterface
 	 */
 	public function callback($param=[],ServerRequestInterface $request)
 	{
-		$this->request=$request;
+		$this->request = $request;
+		$this->param = $param;
 
-		$callback = [new $this->class,$this->function];
-		$param[]=$request; //letzer param ist dann der request
+		$class = new $this->class;
 
-		$return = call_user_func_array($callback,$param);
+		$this->tryToPsr($class);	//versuche Psr zu setzen
+
+		$callback = [$class,$this->function];
+
+		$return = call_user_func_array($callback,$this->param);
+
+		$this->tryToPsr($class,true);	//versuche Psr zurück zu bekommen
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
 	}
 
+	private function tryToPsr($class,$des=false)
+	{
+		if($class instanceof ClassInterface){
+			if($des===false){
+				$class->setPsr($this->request);
+			}else{
+				$this->request = $class->getRequest();
+			}
+		}else{
+			if($des===false){
+				$this->param[]=$this->request; //letzer param ist dann der request
+			}
+		}
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function getRequest(): ServerRequestInterface
 	{
 		return $this->request;
 	}
 
 	/**
+	 * @inheritdoc
+	 *
 	 * Nimmt Klasse und Funktion entgegen
 	 *
 	 * Speichert diese um sie für das Callback zusammen zubauen

@@ -2,6 +2,12 @@
 
 # 1.1.x
 
+## 1.1.4
+
+- since 2019/09/22
+- Klassen müssen nicht mehr von Controller erben sondern nur noch ein Interface implementieren.
+- Für dieses Interface gibt es ein Trait, dass die Methods und Variables bereits implementiert hat. Dies kann dann einfach mit ``use`` genutzt werden
+
 ## 1.1.3
 
 - since 2019/09/21

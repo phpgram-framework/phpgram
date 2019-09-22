@@ -11,27 +11,33 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-namespace Gram\Middleware;
+namespace Gram\Middleware\Classes;
 
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Controller
- * @package Gram\Middleware
+ * Trait ControllerTrait
+ * @package Gram\Middleware\Controller
  *
- * Wenn Controller hiervon erben erhalten diese Zugriff auf des Request und können ihn verändern
+ * Hilfstrait um die Psr Funktionen zu implementieren
  */
-abstract class Controller
+trait ControllerTrait
 {
 	/** @var ServerRequestInterface */
 	protected $request;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function setPsr(ServerRequestInterface $request)
 	{
 		$this->request=$request;
 	}
 
-	public function getRequest()
+	/**
+	 * @inheritdoc
+	 */
+	public function getRequest():ServerRequestInterface
 	{
 		return $this->request;
 	}
