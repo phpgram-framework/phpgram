@@ -18,6 +18,8 @@
 if(!function_exists('debug_console')){
 	/*
 	 * Einfache Debugausgabe in die js Console
+	 *
+	 * @param $data
 	 */
 	function debug_console($data) {
 		if (is_array($data))
@@ -32,6 +34,9 @@ if(!function_exists('debug_console')){
 if(!function_exists('debug_page')){
 	/**
 	 * Macht einen var_dumb mit <pre></pre> bzw ein print_r von daten
+	 *
+	 * @param $data
+	 * @param bool $vd
 	 */
 	function debug_page($data,$vd=false){
 		echo "<pre>";

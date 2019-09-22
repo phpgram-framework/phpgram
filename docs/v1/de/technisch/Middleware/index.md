@@ -34,7 +34,7 @@ public function process(ServerRequestInterface $request, RequestHandlerInterface
 
 ## Phpgram Middleware
 
-- phpgram hat von beginn an folgende Mw: [Routing Middleware](routingmw.md) und [Controller Middleware](controllermw.md)
+- phpgram hat von beginn an folgende Mw: [Routing Middleware](routingmw.md) und [Class Middleware](classmw.md)
 
 - weitere können mit den oben angegebem Interface durch den [Middleware Collector](mwcollector.md) dem Stack hinzu gefügt werden
 
@@ -60,4 +60,4 @@ public function process(ServerRequestInterface $request, RequestHandlerInterface
 [3. ResponseHandler](responsehandle.md) <br>
 [4. Routing Middleware](routingmw.md) <br>
 [5. Middleware Collector](mwcollector.md) <br>
-[6. Controller Middleware](controllermw.md)
+[6. Class Middleware](classmw.md)

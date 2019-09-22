@@ -56,11 +56,15 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 	{
 		if(isset($this->group[$id]))
 			return $this->group[$id];
+
+		return null;
 	}
 
 	public function getRoute($id)
 	{
 		if(isset($this->route[$id]))
 			return $this->route[$id];
+
+		return null;
 	}
 }

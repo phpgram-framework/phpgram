@@ -77,4 +77,4 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 [3. ResponseHandler](responsehandle.md) <br>
 [4. Routing Middleware](routingmw.md) <br>
 [5. Middleware Collector](mwcollector.md) <br>
-[6. Controller Middleware](controllermw.md)
+[6. Class Middleware](classmw.md)

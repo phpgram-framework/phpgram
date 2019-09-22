@@ -38,13 +38,15 @@ Als Standard gibt es:
 
 	- hier wird eine anonyme Function (Closure) ausgeführt
 
-	- der request wird bei ``callback()`` als letzer Parameter hinzu gefügt
+	- die Function wird an die Callback Klasse gebunden und kann somit mit ``$this->request`` auf den Request zugrifen
 
 - Class Callback 
 
 	- hier wird aus einem übergebenen Klassen- und Funktionsnamen ein Callback erstellt
 
 	- der request wird hier auch als letzter Parameter hinzu gefügt
+	
+	- Wenn die Class das Interface ``Gram\Middleware\Classes\ClassInterface`` implementiert hat kann diese den request wirkungsvoll verändern (siehe [Class Middleware](../Middleware/classmw.md))
 
 - Controller Callback
 
@@ -54,7 +56,7 @@ Als Standard gibt es:
 
 	- trennt bei dem @ Zeichen Klasse und Funktion und setzt diese im Class Callback wieder ein
 
-	- bei ``callback()`` wird der Request nicht als Funktionsparamter hinzugefügt sondern an eine extra Method übergeben (siehe [Controller Middleware](../Middleware/controllermw.md))
+	- bei ``callback()`` wird der Request nicht als Funktionsparamter hinzugefügt sondern an eine extra Method übergeben (siehe [Class Middleware](../Middleware/classmw.md))
 
 - Handler Callback
 

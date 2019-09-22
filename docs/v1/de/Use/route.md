@@ -281,11 +281,11 @@ App::app()->get("/user/{id}","ExampleController@exampleControllerMethod");
 
 - beide Routes geben: bei ``/user/hallo`` => ``Userid = hallo und die augerufene Url ist: /user/hallo`` aus
 
-- Class method funktioniert so wie bei den functions, der request wird auch hier als letzer Parameter übergeben
+- Class method (siehe [Class Mw](../technisch/Middleware/classmw.md))
 
 - Bei Controllern wird nur der Route Parameter übergeben. 
 
-	- siehe [Controller Middleware](../technisch/Middleware/controllermw.md)
+	- siehe [Class Middleware](../technisch/Middleware/classmw.md)
 
 	- Das Request Objekt wird in einer Method in der abstrakten Klasse Controller gesetzt
 
