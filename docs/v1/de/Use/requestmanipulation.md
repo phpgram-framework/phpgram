@@ -129,7 +129,7 @@ class AuthInterrupt implements MiddlewareInterface
 		if((!$username || !$userid) && $handler instanceof QueueHandler){
 			$request = $request->withAttribute('callable',new Handler());
 			$request = $request->withAttribute('status',401); 
-			return $handler->getPre()->handle($request);
+			return $handler->getLast()->handle($request);
 		}
 		
 		return $handler->handle($request);	//zur nächsten Middleware weiter gehen

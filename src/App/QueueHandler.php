@@ -28,11 +28,11 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class QueueHandler implements RequestHandlerInterface
 {
-	private $stack, $previous;
+	private $stack, $last;
 
-	public function __construct(RequestHandlerInterface $previous)
+	public function __construct(RequestHandlerInterface $last)
 	{
-		$this->previous=$previous;	//der rücksprung handler mit dem diese klasse aufgerufen wird
+		$this->last=$last;	//der rücksprung handler mit dem diese klasse aufgerufen wird
 	}
 
 	public function add(MiddlewareInterface $middleware)
@@ -40,9 +40,9 @@ class QueueHandler implements RequestHandlerInterface
 		$this->stack[]=$middleware;	//nach jedem durchlauf wird ein element vom stack genommen
 	}
 
-	public function getPre()
+	public function getLast()
 	{
-		return $this->previous;
+		return $this->last;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class QueueHandler implements RequestHandlerInterface
 		//wenn es keine Middleware gibt gebe das Ergebnis des handlers aus der zuletzt getriggert werden soll
 
 		if(count($this->stack)===0){
-			return $this->previous->handle($request);
+			return $this->last->handle($request);
 		}
 
 		$middleware=array_shift($this->stack);	//hole das oberste element und lösche es aus dem array
