@@ -16,7 +16,7 @@ class ResponseCreator implements RequestHandlerInterface
 
 - bekommt Factories für Response und Stream übergeben
 
-- bekommt einen CallbackCreatorInterface und StrategyInterface übergeben die ausgeführt werden sollte nichts anderes im request übergeben worden sein
+- bekommt einen ResolverCreatorInterface und StrategyInterface übergeben die ausgeführt werden sollte nichts anderes im request übergeben worden sein
 
 ## Funktionsweise
 
@@ -46,11 +46,11 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 2. hole von der Strategy den ``content-typ``
 
-3. erstelle den Inhalt des Stream mithilfe des Callback Creators und der Strategy
+3. erstelle den Inhalt des Stream mithilfe des Resolver Creators und der Strategy
 
-	1. ``$creator->createCallback($this->callable);`` wandle das callable aus dem Request in ein richtiges um
+	1. ``$creator->createResolver($this->callable);`` wandle das callable aus dem Request in ein richtiges um
 
-	1. ``$strategy->invoke($creator->getCallable(),$this->param,$this->request);`` rufe die Strategy mit dem umgewandelten Callback und den benötigen Parametern (die Route Parameter und der Request)
+	1. ``$strategy->invoke($creator->getCallable(),$this->param,$this->request);`` rufe die Strategy mit dem umgewandelten Resolver und den benötigen Parametern (die Route Parameter und der Request)
 
 	1. gebe den return der Strategy wieder zurück und setze den als Content für den Stream
 
@@ -72,7 +72,7 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 - es muss immer ein callable gesetzt sein
 
-- callable kann alles sein was der [Creator](../CallbackCreator/index.md) (ob Standard oder übergebener, eigens definierter) zu einem [CallabackInterface](../Callback/index.md) umbauen kann
+- callable kann alles sein was der [Creator](../ResolverCreator/index.md) (ob Standard oder übergebener, eigens definierter) zu einem [CallabackInterface](../Resolver/index.md) umbauen kann
 
 - normalerweise füllt die [Routing Middleware](routingmw.md) param, status und callable aus und für creator und strategy werden Standard in der Appklasse definiert
 
@@ -80,7 +80,6 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 [hier gehts weiter mit: Routing Middleware](routingmw.md)
 
-### Inhalt Middleware
 ### Inhalt Middleware
 [1. Start](index.md) <br>
 [2. QueueHandler](queuehandle.md) <br>

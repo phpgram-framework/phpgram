@@ -13,8 +13,7 @@
 
 namespace Gram\Strategy;
 
-use Gram\Callback\CallbackInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Gram\Resolver\ResolverInterface;
 
 /**
  * Class BufferAppStrategy
@@ -30,10 +29,10 @@ class BufferAppStrategy extends StdAppStrategy
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request)
+	public function invoke(ResolverInterface $resolver, array $param)
 	{
 		ob_start();
-		parent::invoke($callback,$param,$request);
+		parent::invoke($resolver,$param);
 		$return=ob_get_clean();
 		ob_flush();
 

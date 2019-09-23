@@ -14,7 +14,8 @@
 namespace Gram\Middleware\Handler;
 
 use Gram\Strategy\StrategyInterface;
-use Gram\CallbackCreator\CallbackCreatorInterface;
+use Gram\ResolverCreator\ResolverCreatorInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,18 +34,20 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ResponseCreator implements RequestHandlerInterface
 {
-	private $stdstrategy,$creator,$callable,$param,$request,$responseFactory,$streamFactory;
+	private $stdstrategy,$creator,$callable,$param,$request,$response,$container,$responseFactory,$streamFactory;
 
 	public function __construct(
 		ResponseFactoryInterface $responseFactory,
 		StreamFactoryInterface $streamFactory,
-		CallbackCreatorInterface $creator,
-		StrategyInterface $strategy
+		ResolverCreatorInterface $creator,
+		StrategyInterface $strategy,
+		ContainerInterface $container=null
 	){
 		$this->stdstrategy=$strategy;
 		$this->creator=$creator;
 		$this->responseFactory=$responseFactory;
 		$this->streamFactory=$streamFactory;
+		$this->container = $container;
 	}
 
 	/**
@@ -68,18 +71,30 @@ class ResponseCreator implements RequestHandlerInterface
 		$this->param = $request->getAttribute('param',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
 		$creator = $request->getAttribute('creator',null) ?? $this->creator;
+		$status = $request->getAttribute('status',200);
+		$reason = $request->getAttribute('reason','');
+		$header = $request->getAttribute('header',[]);
+
+		//erstelle Response mit den Werten von den Middleware
+		$this->response = $this->responseFactory->createResponse($status,$reason);
 
 		//erstelle head
-		$head=$strategy->getHeader();
+		$head = $strategy->getHeader();
+
+		$this->response = $this->response->withHeader($head["name"],$head["value"]);
+
+		//Fügt Custom Header aus dem Request hinzu
+		foreach ($header as $item) {
+			$this->response=$this->response->withHeader($item["name"],$item['value']);
+		}
 
 		//Führe Callable aus
 		$content = $this->createBody($strategy,$creator);
 
 		//erstelle Body
-		if($content instanceof ServerRequestInterface){
-			//Wenn der Return bereits ein Request ist
-			$body = $content->getBody();
-			$this->request=$content;
+		if($content instanceof ResponseInterface){
+			//Wenn der Return bereits ein Response ist ist
+			return $content;
 		}else if(is_string($content)){
 			//Wenn Return ein String ist erstelle Body aus zurück gegebem String
 			$body = $this->streamFactory->createStream($content);
@@ -88,21 +103,8 @@ class ResponseCreator implements RequestHandlerInterface
 			$body = $this->streamFactory->createStreamFromResource($content);
 		}
 
-		//werte können auch durch Callable manipuliert worden sein
-		$status = $this->request->getAttribute('status',200);
-		$reason = $this->request->getAttribute('reason','');
-		$header = $this->request->getAttribute('header',[]);
-
-		$response = $this->responseFactory->createResponse($status,$reason);
-
-		$response=$response
-			->withBody($body)
-			->withHeader($head["name"],$head["value"]);
-
-		//Fügt Custom Header hinzu
-		foreach ($header as $item) {
-			$response=$response->withHeader($item["name"],$item['value']);
-		}
+		//setze Body in den Response ein
+		$response = $this->response->withBody($body);
 
 		return $response;
 	}
@@ -116,23 +118,28 @@ class ResponseCreator implements RequestHandlerInterface
 	 *
 	 * Nehme des return des Callbacks entgegen
 	 *
-	 * Nehme das Request Object des Callbacks entgegen, da dieses ggf. verändert wurde
+	 * Nehme die Request und Response Objects des Callbacks entgegen, da diese ggf. verändert wurden
 	 * durch das Callback
 	 *
 	 * @param StrategyInterface $strategy
-	 * @param CallbackCreatorInterface $creator
+	 * @param ResolverCreatorInterface $creator
 	 * @return mixed
 	 */
-	protected function createBody(StrategyInterface $strategy,CallbackCreatorInterface $creator)
+	protected function createBody(StrategyInterface $strategy, ResolverCreatorInterface $creator)
 	{
-		$creator->createCallback($this->callable);
-		$callback = $creator->getCallable();
+		$creator->createResolver($this->callable);
+		$resolver = $creator->getCallable();
+
+		$resolver->setRequest($this->request);
+		$resolver->setResponse($this->response);
+		$resolver->setContainer($this->container);
 
 		//Führe das Callback aus
-		$result = $strategy->invoke($callback,$this->param,$this->request);
+		$result = $strategy->invoke($resolver,$this->param);
 
-		//nehme Request entgegen falls das Callback Attribute verändert hat
-		$this->request = $callback->getRequest();
+		//nehme Request und Response entgegen falls das Callback Attribute verändert hat
+		$this->request = $resolver->getRequest();
+		$this->response = $resolver->getResponse();
 
 		return $result;
 	}

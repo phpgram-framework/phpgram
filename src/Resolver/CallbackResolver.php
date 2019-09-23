@@ -11,45 +11,34 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-namespace Gram\Callback;
-
-use Psr\Http\Message\ServerRequestInterface;
+namespace Gram\Resolver;
 
 /**
  * Class CallbackHandler
- * @package Gram\Handler
+ * @package Gram\Resolver
  *
  * Speichert ein Callable und gibt es wieder zurück
  */
-class CallbackCallback implements CallbackInterface
+class CallbackResolver implements ResolverInterface
 {
+	use ResolverTrait;
+
 	/** @var \Closure */
 	protected $callback;
-
-	/** @var ServerRequestInterface */
-	public $request;
 
 	/**
 	 * Führe das Callback aus
 	 *
 	 * @param array $param
-	 * @param ServerRequestInterface $request
 	 * @return mixed|string
 	 */
-	public function callback($param=[],ServerRequestInterface $request)
+	public function resolve($param=[])
 	{
-		$this->request = $request;
-
 		$callback = $this->callback->bindTo($this);	//Bindet die Funktion an diese Klasse, somit hat sie Zugriff auf den Request
 
 		$return = call_user_func_array($callback,$param);
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
-	}
-
-	public function getRequest(): ServerRequestInterface
-	{
-		return $this->request;
 	}
 
 	/**

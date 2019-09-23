@@ -13,6 +13,7 @@
 
 namespace Gram\Middleware\Classes;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -27,9 +28,10 @@ interface ClassInterface
 	 * Setze Psr Object(s) in der Klasse
 	 *
 	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
 	 * @return mixed
 	 */
-	public function setPsr(ServerRequestInterface $request);
+	public function setPsr(ServerRequestInterface $request, ResponseInterface $response);
 
 	/**
 	 * Gebe Psr Object(s) wieder zurück
@@ -37,4 +39,11 @@ interface ClassInterface
 	 * @return ServerRequestInterface
 	 */
 	public function getRequest():ServerRequestInterface;
+
+	/**
+	 * Gebe den Response wieder zurück
+	 *
+	 * @return ResponseInterface
+	 */
+	public function getResponse():ResponseInterface;
 }

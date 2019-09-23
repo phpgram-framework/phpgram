@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# 1.2.x
+
+## 1.2.0
+
+- since 2019/09/24
+- Möglichkeit Response in der Applikation zu ändern
+- DI hinzugefügt für Classen die das ClassInterface implementiert haben
+- DI Funktioniert mit Psr 16
+
 # 1.1.x
 
 ## 1.1.5

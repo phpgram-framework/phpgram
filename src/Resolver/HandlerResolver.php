@@ -11,37 +11,30 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-namespace Gram\Callback;
+namespace Gram\Resolver;
 
 use Gram\Middleware\Handler\HandlerInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class HandlerCallback
- * @package Gram\Callback
+ * @package Gram\Resolver
  *
  * Erstellt einen Handler für Middleware Klassen
  *
  * Dieser kann aufgerufen werden wenn die Middleware einen Fehler festgestellt hat und die Seite beenden will
  */
-class HandlerCallback implements CallbackInterface
+class HandlerResolver implements ResolverInterface
 {
+	use ResolverTrait;
+
 	private $handler;
 
-	public $request;
-
-	public function callback($param = [],ServerRequestInterface $request)
+	public function resolve($param = [])
 	{
-		$this->request=$request;
 
-		$return = call_user_func_array([$this->handler,'handle'],[$request]);
+		$return = call_user_func_array([$this->handler,'handle'],[$this->request]);
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
-	}
-
-	public function getRequest(): ServerRequestInterface
-	{
-		return $this->request;
 	}
 
 	/**

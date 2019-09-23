@@ -13,8 +13,7 @@
 
 namespace Gram\Strategy;
 
-use Gram\Callback\CallbackInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Gram\Resolver\ResolverInterface;
 
 /**
  * Class StdAppStrategy
@@ -35,8 +34,8 @@ class StdAppStrategy implements StrategyInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request)
+	public function invoke(ResolverInterface $resolver, array $param)
 	{
-		return $callback->callback($param,$request);
+		return $resolver->resolve($param);
 	}
 }

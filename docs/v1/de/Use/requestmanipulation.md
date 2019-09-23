@@ -8,13 +8,13 @@
 		
 - ``'callable'``
 
-	- Das [Callback](../technisch/Callback/index.md), das mit dem [CallbackCreator](../technisch/CallbackCreator/index.md) erstellt wird und in der [Strategy](../technisch/Strategy/index.md) ausgeführt wird
+	- Das [Resolver](../technisch/Resolver/index.md), das mit dem [ResolverCreator](../technisch/ResolverCreator/index.md) erstellt wird und in der [Strategy](../technisch/Strategy/index.md) ausgeführt wird
 
-	- Das Callback muss immer ausgefüllt sein
+	- Das Resolver muss immer ausgefüllt sein
 
 - ``'param'``
 
-	- Die Parameter mit denen das Callback ausgeführt werden soll
+	- Die Parameter mit denen das Resolver ausgeführt werden soll
 
 	- wird vom Router nach dem [Dispatch](../technisch/Routing/dispatching.md) gesetzt
 
@@ -54,13 +54,13 @@
 
 - ``'strategy'``
 
-	- Die Strategy mit der das Callback ausgeführt werden soll
+	- Die Strategy mit der das Resolver ausgeführt werden soll
 
 	- Als Standard wird die in [App](../technisch/App/index.md) angegebene Standard Strategy gesetzt
 
 - ``'creator'``
 	
-	- Der CallbackCreator mit dem das ``callable`` zu einem Callback, mit Mustererkennung, umgeformt werden soll
+	- Der ResolverCreator mit dem das ``callable`` zu einem Resolver, mit Mustererkennung, umgeformt werden soll
 	
 	- Als Standard wird der in App als Standard gesetzte Creator ausgeführt
 

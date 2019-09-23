@@ -19,19 +19,19 @@ interface StrategyInterface
 {
 	public function getHeader();
 
-	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request);
+	public function invoke(ResolverInterface $resolver, array $param);
 }
 ````
 - mit ``getHeader()`` kann der Content-Typ Header gesetzt werden
 
-- mit ``invoke()`` wird das [Callback](../Callback/index.md) ausgeführt mit den Route Paramtern und dem Request Objekt
+- mit ``invoke()`` wird der [Resolver](../Resolver/index.md) ausgeführt mit den Route Paramtern und dem Request Objekt
 
 - der Request kann hier nicht mehr geändert werden 
 
 ## phpgram Standard Strategies
 
-- StdAppStrategy: diese führt das Callback aus und gibt das Return des Callbacks zurück
+- StdAppStrategy: diese führt das Resolver aus und gibt das Return des Resolvers zurück
 
-- BufferAppStrategy: erbt von StdAppStrategy öffnet den Output Buffer bevor das Callback ausgeführt wird und gibt den Inhalt des Buffers zurück
+- BufferAppStrategy: erbt von StdAppStrategy öffnet den Output Buffer bevor der Resolver ausgeführt wird und gibt den Inhalt des Buffers zurück
 
-- JsonStrategy: wandelt das return des Callbacks in ein json Dateiformat um
+- JsonStrategy: wandelt das return des Resolvers in ein json Dateiformat um

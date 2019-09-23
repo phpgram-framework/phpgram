@@ -13,6 +13,7 @@
 
 namespace Gram\Middleware\Classes;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -21,17 +22,21 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Hilfstrait um die Psr Funktionen zu implementieren
  */
-trait ControllerTrait
+trait ClassTrait
 {
 	/** @var ServerRequestInterface */
 	protected $request;
 
+	/** @var ResponseInterface */
+	protected $response;
+
 	/**
 	 * @inheritdoc
 	 */
-	public function setPsr(ServerRequestInterface $request)
+	public function setPsr(ServerRequestInterface $request, ResponseInterface $response)
 	{
-		$this->request=$request;
+		$this->request = $request;
+		$this->response = $response;
 	}
 
 	/**
@@ -40,5 +45,13 @@ trait ControllerTrait
 	public function getRequest():ServerRequestInterface
 	{
 		return $this->request;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getResponse():ResponseInterface
+	{
+		return $this->response;
 	}
 }

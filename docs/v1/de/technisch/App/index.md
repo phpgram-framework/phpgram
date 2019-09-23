@@ -32,7 +32,7 @@ class App
 	
 	- [Standard Strategy](../Strategy/index.md)
 
-	- [Standard Callback Creator](../CallbackCreator/index.md)
+	- [Standard Resolver Creator](../ResolverCreator/index.md)
 
 	- [ResponseCreator](../Middleware/responsehandle.md)
 

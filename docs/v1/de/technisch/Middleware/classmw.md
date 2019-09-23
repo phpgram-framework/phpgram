@@ -28,9 +28,9 @@ interface ClassInterface
 
 - und das alle Controller implementieren müssen
 
-- Der Request wird vom [ResponseCreator](responsehandle.md) an die [Strategy](../Strategy/index.md) übergeben und diese wiederung ruft das [Callback](../Callback/index.md) auf mit diesem Request
+- Der Request wird vom [ResponseCreator](responsehandle.md) an die [Strategy](../Strategy/index.md) übergeben und diese wiederung ruft das [Resolver](../Resolver/index.md) auf mit diesem Request
 
-- Das Class und ControllerCallback setzt dann den Request ein
+- Das Class und ControllerResolver setzt dann den Request ein
 
 - Nach dem die Klasse fertig ist holt sich der ResponseCreator den Request wieder zurück
 

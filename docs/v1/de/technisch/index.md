@@ -14,7 +14,7 @@
 
 5. ggf. Standard [Strategy](Strategy/index.md) definieren: ``App::app()->setStrategy()``, diese muss in StrategyInterface übergeben bekommen
 
-6. ggf. [Callback Creator](CallbackCreator/index.md) definieren: ``App::app()->setCallbackCreator()``, hier wird ein CallbackCreatorInterface erwartet
+6. ggf. [Resolver Creator](ResolverCreator/index.md) definieren: ``App::app()->setResolverCreator()``, hier wird ein ResolverCreatorInterface erwartet
 
 7. Zuletzt die Psr 17 Response und Stream Factories setzen: ``App::app()->setFactory()``, hier werden ResponseFactoryInterface und StreamFactoryInterface erwartet
 
@@ -57,7 +57,7 @@
 [App](App/index.md) <br>
 [Middleware](Middleware/index.md) <br>
 [Routing](Routing/index.md) <br>
-[Callback Creator](CallbackCreator/index.md) <br>
-[Callback](Callback/index.md) <br>
+[Resolver Creator](ResolverCreator/index.md) <br>
+[Resolver](Resolver/index.md) <br>
 [Strategy](Strategy/index.md) <br>
 [Emitter](App/emit.md)

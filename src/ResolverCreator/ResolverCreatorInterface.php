@@ -11,9 +11,9 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-namespace Gram\CallbackCreator;
+namespace Gram\ResolverCreator;
 
-use Gram\Callback\CallbackInterface;
+use Gram\Resolver\ResolverInterface;
 
 /**
  * Interface CallbackCreatorInterface
@@ -23,7 +23,7 @@ use Gram\Callback\CallbackInterface;
  *
  * Ein Creator erstellt mithilfe von Mustererkennung ein Callback
  */
-interface CallbackCreatorInterface
+interface ResolverCreatorInterface
 {
 	/**
 	 * Erstellt ein Callback anhand von Mustern
@@ -31,12 +31,12 @@ interface CallbackCreatorInterface
 	 * @param $possibleCallable
 	 * @return mixed
 	 */
-	public function createCallback($possibleCallable);
+	public function createResolver($possibleCallable);
 
 	/**
 	 * Gibt ein Callback zurück
 	 *
-	 * @return CallbackInterface
+	 * @return ResolverInterface
 	 */
-	public function getCallable():CallbackInterface;
+	public function getCallable():ResolverInterface;
 }

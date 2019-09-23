@@ -11,13 +11,12 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-namespace Gram\CallbackCreator;
+namespace Gram\ResolverCreator;
 
-use Gram\Callback\CallbackInterface;
-use Gram\Callback\CallbackCallback;
-use Gram\Callback\ClassCallback;
-use Gram\Callback\ControllerCallback;
-use Gram\Callback\HandlerCallback;
+use Gram\Resolver\ResolverInterface;
+use Gram\Resolver\CallbackResolver;
+use Gram\Resolver\ClassResolver;
+use Gram\Resolver\HandlerResolver;
 use Gram\Middleware\Handler\HandlerInterface;
 
 /**
@@ -26,7 +25,7 @@ use Gram\Middleware\Handler\HandlerInterface;
  *
  * Erstellt ein Callable aus etwas übergebenem
  */
-class CallbackCreator implements CallbackCreatorInterface
+class ResolverCreator implements ResolverCreatorInterface
 {
 	protected $callable=null;
 
@@ -35,7 +34,7 @@ class CallbackCreator implements CallbackCreatorInterface
 	 *
 	 * Prüft ob etwas ein Callable bzw ein Stack mit Callable ist
 	 *
-	 * Unterscheidet zwischen Handler (Handlerobjekt), Class und Function, Controller oder Function
+	 * Unterscheidet zwischen Handler (Handlerobjekt), Class und Function
 	 *
 	 * Normales Callable prüfen ob es aus einem Array besteht (class und function) -> classhandler erstellen
 	 *
@@ -45,43 +44,28 @@ class CallbackCreator implements CallbackCreatorInterface
 	 *
 	 * @param $possibleCallable
 	 */
-	public function createCallback($possibleCallable)
+	public function createResolver($possibleCallable)
 	{
 		if(is_object($possibleCallable) && $possibleCallable instanceof HandlerInterface){
 			$this->callable=$this->createHandlerCallback($possibleCallable);
-		}else if(!is_array($possibleCallable)){
-			$this->callable=$this->createCallbackFor($possibleCallable);
 		}else{
-			$this->callable=$this->createCallbackForClass($possibleCallable[0],$possibleCallable[1]);
+			$this->callable=$this->createCallbackFor($possibleCallable);
 		}
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getCallable():CallbackInterface
+	public function getCallable():ResolverInterface
 	{
 		return $this->callable;
 	}
 
-	private function createCallbackForMVC($controller)
+	private function createCallbackForClass($class)
 	{
-		$callback = new ControllerCallback();
+		$callback = new ClassResolver();
 		try{
-			$callback->setC($controller);
-		}catch (\Exception $e){
-			echoExep($e);
-			return false;
-		}
-
-		return $callback;
-	}
-
-	private function createCallbackForClass($class,$function)
-	{
-		$callback = new ClassCallback();
-		try{
-			$callback->set($class,$function);
+			$callback->set($class);
 		}catch (\Exception $e){
 			echoExep($e);
 			return false;
@@ -92,7 +76,7 @@ class CallbackCreator implements CallbackCreatorInterface
 
 	private function createCallbackFromCallable(callable $callable)
 	{
-		$callback= new CallbackCallback();
+		$callback= new CallbackResolver();
 		try{
 			$callback->set($callable);
 		}catch (\Exception $e){
@@ -105,7 +89,7 @@ class CallbackCreator implements CallbackCreatorInterface
 
 	private function createHandlerCallback(HandlerInterface $handler)
 	{
-		$callback = new HandlerCallback();
+		$callback = new HandlerResolver();
 		try{
 			$callback->set($handler);
 		}catch (\Exception $e){
@@ -120,14 +104,14 @@ class CallbackCreator implements CallbackCreatorInterface
 	 * Prüfe ob der Controller callable ist,
 	 * wenn ja benutze den Callable Handler und nicht den Controller Handler
 	 * @param $callback
-	 * @return bool|CallbackCallback|ControllerCallback
+	 * @return bool|CallbackResolver|ClassResolver
 	 */
 	private function createCallbackFor($callback)
 	{
 		if(is_callable($callback)){
 			return $this->createCallbackFromCallable($callback);
 		}else{
-			return $this->createCallbackForMVC($callback);
+			return $this->createCallbackForClass($callback);
 		}
 	}
 }

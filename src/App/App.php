@@ -11,12 +11,12 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-/** @version 1.1.5 */
+/** @version 1.2.0 */
 
 namespace Gram\App;
 
-use Gram\CallbackCreator\CallbackCreator;
-use Gram\CallbackCreator\CallbackCreatorInterface;
+use Gram\ResolverCreator\ResolverCreator;
+use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\ResponseCreator;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
@@ -25,6 +25,7 @@ use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
 use Gram\Strategy\StdAppStrategy;
 use Gram\Strategy\StrategyInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -38,8 +39,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class App
 {
-	private $router=null,$middlewareCollector=null,$strategyCollector=null;
-	private $responseFactory, $streamFactory,$stdStrategy=null,$callbackcreator=null,$options=[],$responseCreator=null,$queuHandler=null;
+	private $router=null,$middlewareCollector=null,$strategyCollector=null,$container=null;
+	private $responseFactory, $streamFactory,$stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
 
 	private static $_instance;
 
@@ -115,13 +116,19 @@ class App
 	public function start(ServerRequestInterface $request)
 	{
 		//setze Standard Objekte
-		$callbackcreator = $this->callbackcreator ?? new CallbackCreator();
+		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
 		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
 
 		//bereite Queue vor
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
-		$fallback = $this->responseCreator ?? new ResponseCreator($this->responseFactory,$this->streamFactory,$callbackcreator,$stdStrategy);
+		$fallback = $this->responseCreator ?? new ResponseCreator(
+			$this->responseFactory,
+			$this->streamFactory,
+			$resolverCreator,
+			$stdStrategy,
+			$this->container
+			);
 
 		$queue = $this->queuHandler ?? new QueueHandler($fallback);	//default Fallback
 
@@ -176,9 +183,9 @@ class App
 		$this->stdStrategy=$stdStrategy;
 	}
 
-	public function setCallbackCreator(CallbackCreatorInterface $creator=null)
+	public function setResolverCreator(ResolverCreatorInterface $creator=null)
 	{
-		$this->callbackcreator=$creator;
+		$this->resolverCreator=$creator;
 	}
 
 	public function setLastHandler(RequestHandlerInterface $responseCreator=null)
@@ -189,6 +196,11 @@ class App
 	public function setQueueHandler(RequestHandlerInterface $queueHandler=null)
 	{
 		$this->queuHandler = $queueHandler;
+	}
+
+	public function setContainer(ContainerInterface $container=null)
+	{
+		$this->container = $container;
 	}
 
 	public function setOptions(array $options=[])

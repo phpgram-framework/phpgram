@@ -13,8 +13,7 @@
 
 namespace Gram\Strategy;
 
-use Gram\Callback\CallbackInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Gram\Resolver\ResolverInterface;
 
 /**
  * Class JsonStrategy
@@ -43,9 +42,9 @@ class JsonStrategy implements StrategyInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(CallbackInterface $callback, array $param, ServerRequestInterface $request)
+	public function invoke(ResolverInterface $resolver, array $param)
 	{
-		$result = $callback->callback($param,$request);
+		$result = $resolver->resolve($param);
 
 		if(!$this->ableToJson($result)){
 			return $result;
