@@ -15,13 +15,13 @@ interface CallbackCreatorInterface
 }
 ````
 
-- die Method ``createCallback()`` wird im [ResponseHandler](../Middleware/responsehandle.md) aufgerufen
+- die Method ``createCallback()`` wird im [ResponseCreator](../Middleware/responsehandle.md) aufgerufen
 
 - sie wendet die Mustererkennung an und erstellt ein [CallbackInterface](../Callback/index.md)
 
 - mit ``getCallable()`` wird das erstellte Interface Objekt zurück gegeben
 
-- wird im ResponseHandler der [Strategy](../Strategy/index.md) übergeben
+- wird im ResponseCreator der [Strategy](../Strategy/index.md) übergeben
 
 ## phpgram Standard Creator
 

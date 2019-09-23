@@ -126,4 +126,4 @@ class Auth implements MiddlewareInterface
 
 - der Request ist meist verändert
 
-- Wenn ein Error oder Event aufgetreten ist so muss die Mw selber einen Response erstellen (dies kann auch über den ResponseHandler funktionieren (siehe [Response Manipulation](requestmanipulation.md)))
+- Wenn ein Error oder Event aufgetreten ist so muss die Mw selber einen Response erstellen (dies kann auch über den ResponseCreator funktionieren (siehe [Response Manipulation](requestmanipulation.md)))

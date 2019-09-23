@@ -54,7 +54,7 @@ class QueueHandler implements RequestHandlerInterface
 	 *
 	 * Sonst laufe durch den ganzen Middleware stack und führe den letzten Handler aus
 	 *
-	 * hier ist das der @see ResponseHandler
+	 * Standard ist der @see ResponseCreator
 	 *
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface

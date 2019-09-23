@@ -24,7 +24,7 @@
 
 2. erstelle Standard Strategy und Creator (siehe Vorbereitung 5. und 6.)
 
-3. erstelle den [ResponseHandler](Middleware/responsehandle.md)
+3. erstelle den [ResponseCreator](Middleware/responsehandle.md)
 
 4. erstelle den [QueueHandler](Middleware/queuehandle.md)
 
@@ -42,14 +42,14 @@
 
 11. ggf. werden die für die Route definierten Mw ausgeführt
 
-12. Der Response wird durch den ResponseHandler erstellt und zurück gegeben
+12. Der Response wird durch den ResponseCreator erstellt und zurück gegeben
 
 13. Der Response wird dem [Emitter](App/emit.md) übergeben der den Header und den Body ausgibt
 
 
 ## Ablauf Kurzfassung
 
-[App](App/index.md) -> [QueueHandler](Middleware/queuehandle.md) -> Std Middleware -> [Routing Mw](Middleware/routingmw.md) -> weitere Mw -> [ResponseHandler](Middleware/responsehandle.md) -> [Strategy](Strategy/index.md) -> ResponseHandler -> App -> [Emitter](App/emit.md)
+[App](App/index.md) -> [QueueHandler](Middleware/queuehandle.md) -> Std Middleware -> [Routing Mw](Middleware/routingmw.md) -> weitere Mw -> [ResponseCreator](Middleware/responsehandle.md) -> [Strategy](Strategy/index.md) -> ResponseCreator -> App -> [Emitter](App/emit.md)
 
 <br>
 

@@ -1,6 +1,6 @@
 # Strategy
 
-- entscheidet wie der Output des callable im [ResponseHandler](../Middleware/responsehandle.md) zu erstellen ist
+- entscheidet wie der Output des callable im [ResponseCreator](../Middleware/responsehandle.md) zu erstellen ist
 
 - es muss immer einen return geben der als Content in dem Response gespeichert wird
 

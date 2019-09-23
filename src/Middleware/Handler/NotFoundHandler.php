@@ -27,7 +27,7 @@ class NotFoundHandler implements RequestHandlerInterface
 {
 	private $callbackHandler;
 
-	public function __construct(ResponseHandler $callbackHandler)
+	public function __construct(RequestHandlerInterface $callbackHandler)
 	{
 		$this->callbackHandler=$callbackHandler;
 	}

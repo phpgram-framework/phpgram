@@ -11,13 +11,13 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-/** @version 1.1.4 */
+/** @version 1.1.4.1 */
 
 namespace Gram\App;
 
 use Gram\CallbackCreator\CallbackCreator;
 use Gram\CallbackCreator\CallbackCreatorInterface;
-use Gram\Middleware\Handler\ResponseHandler;
+use Gram\Middleware\Handler\ResponseCreator;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\MiddlewareCollector;
@@ -28,6 +28,7 @@ use Gram\Strategy\StrategyInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class App
@@ -37,8 +38,8 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 class App
 {
-	private $request,$router=null,$middlewareCollector=null,$strategyCollector=null;
-	private $responseFactory, $streamFactory,$stdStrategy=null,$callbackcreator=null,$options=[];
+	private $router=null,$middlewareCollector=null,$strategyCollector=null;
+	private $responseFactory, $streamFactory,$stdStrategy=null,$callbackcreator=null,$options=[],$responseCreator=null,$queuHandler=null;
 
 	private static $_instance;
 
@@ -113,8 +114,6 @@ class App
 	 */
 	public function start(ServerRequestInterface $request)
 	{
-		$this->request=$request;
-
 		//setze Standard Objekte
 		$callbackcreator = $this->callbackcreator ?? new CallbackCreator();
 		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
@@ -122,9 +121,9 @@ class App
 		//bereite Queue vor
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
-		$fallback = new ResponseHandler($this->responseFactory,$this->streamFactory,$callbackcreator,$stdStrategy);
+		$fallback = $this->responseCreator ?? new ResponseCreator($this->responseFactory,$this->streamFactory,$callbackcreator,$stdStrategy);
 
-		$queue = new QueueHandler($fallback);	//default Fallback
+		$queue = $this->queuHandler ?? new QueueHandler($fallback);	//default Fallback
 
 		//___________________________________________________________________________
 
@@ -180,6 +179,16 @@ class App
 	public function setCallbackCreator(CallbackCreatorInterface $creator=null)
 	{
 		$this->callbackcreator=$creator;
+	}
+
+	public function setLastHandler(RequestHandlerInterface $responseCreator=null)
+	{
+		$this->responseCreator = $responseCreator;
+	}
+
+	public function setQueueHandler(RequestHandlerInterface $queueHandler=null)
+	{
+		$this->queuHandler = $queueHandler;
 	}
 
 	public function setOptions(array $options=[])

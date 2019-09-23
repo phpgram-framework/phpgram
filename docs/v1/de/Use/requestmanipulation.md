@@ -2,7 +2,7 @@
 
 - Im Request Objekt werden Standard Attribute gesetzt die verändert werden können
 
-- Anhand dieser Attribute wird der Response im [ResponseHandler](../technisch/Middleware/responsehandle.md) erstellt
+- Anhand dieser Attribute wird der Response im [ResponseCreator](../technisch/Middleware/responsehandle.md) erstellt
 
 ## Die Attribute
 		
@@ -66,14 +66,14 @@
 
 ## Veränderungsmöglichkeiten
 
-- Solange der Request nicht beim ResponseHandler angekommen ist können alle Attribute verändert werden
+- Solange der Request nicht beim ResponseCreator angekommen ist können alle Attribute verändert werden
 
 - In dem Handler der Route (siehe [Route Example](route.md)) z. B. Klassen oder Controller können: ``status``, ``header`` und ``reason`` verändert werden.
 
 - Die anderen Attribute können nicht verändert werden, da der Handler mit diesen ausgeführt wurde
 
 ### Middleware
-- jede Middleware hat vor dem ResponseHandler Zugriff auf den Request
+- jede Middleware hat vor dem ResponseCreator Zugriff auf den Request
 
 - Die Middleware kann z. B. das callable und den Status austauschen wenn in der Middleware ein Fehler aufgetreten ist (z. B. nicht eingelogt). Die werden dann ausgeführt, an statt der Handler der Route (siehe [Middleware](middleware.md))
 
@@ -124,7 +124,7 @@ class AuthInterrupt implements MiddlewareInterface
 		$username = $request->getAttribute('username',false);
 		$userid= $request->getAttribute('userid',false);
 		
-		//Middleware Kette unterbrachen und direkt mit dem veränderten callable zum ResponseHandler gehen
+		//Middleware Kette unterbrachen und direkt mit dem veränderten callable zum ResponseCreator gehen
 		//dieser ist verfügbar im QueueHandler (siehe Middleware)
 		if((!$username || !$userid) && $handler instanceof QueueHandler){
 			$request = $request->withAttribute('callable',new Handler());

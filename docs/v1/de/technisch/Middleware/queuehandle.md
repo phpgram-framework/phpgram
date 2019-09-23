@@ -19,7 +19,7 @@ class QueueHandler implements RequestHandlerInterface
 
 ## Funktionsweise
 
-1. Bekommt den [ResponseHandler](responsehandle.md) übergeben. Dieser wird als letztes nach allen Mw ausgeführt
+1. Bekommt den [ResponseCreator](responsehandle.md) übergeben. Dieser wird als letztes nach allen Mw ausgeführt
 
 2. Middleware werden dem Stack hinzu gefügt (Routing Middleware wird immer hinzu gefügt)
 
@@ -27,13 +27,13 @@ class QueueHandler implements RequestHandlerInterface
 
 4. die erste Mw wird vom Stack genommen und über ihre process Method ausgeführt
 
-5. Dabei wird der Request und die QueueHandler selber als ResponseHandlerInterface übergeben
+5. Dabei wird der Request und die QueueHandler selber als ResponseCreatorInterface übergeben
 
 6. Somit kann die Middleware die handle Method im QueueHandler wieder aufrufen wenn diese eine Mw weiter gehen will
 
 7. Danach wird die nächste Mw vom Stack genommen und ausgeführt
 
-8. Sollte keine Mw mehr auf dem Stack sein wird der [ResponseHandler](responsehandle.md) ausgeführt
+8. Sollte keine Mw mehr auf dem Stack sein wird der [ResponseCreator](responsehandle.md) ausgeführt
 
 9. Dieser erstellt dann den Response und gibt diesen zurück
 
@@ -53,28 +53,28 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 ````
 
 
-- Der QueueHandler bietet die Möglichkeit, den [ResponseHandler](responsehandle.md) bereits in den Mw auf zu rufen. Dazu:
+- Der QueueHandler bietet die Möglichkeit, den [ResponseCreator](responsehandle.md) bereits in den Mw auf zu rufen. Dazu:
 
 	- z. B.: durch ``if($handler instanceof QueueHandler)``
 
 	- somit gibt es auch keine Warning
 
-- der ResponseHandler kann so bekommen werden: ``$handler->getPre()``
+- der ResponseCreator kann so bekommen werden: ``$handler->getPre()``
 
 	- der Return kann so ausehen: ``return $handler->getPre()->handle($request);``
 
 	- im Request wird dann das Attribut callable verändert, sodass nicht das callable des Routers ausgeführt wird
 
-	- siehe [ResponseHandler](responsehandle.md)
+	- siehe [ResponseCreator](responsehandle.md)
 
 <br>
 
-[hier gehts weiter mit: ResponseHandler](responsehandle.md)
+[hier gehts weiter mit: ResponseCreator](responsehandle.md)
 
 ### Inhalt Middleware
 [1. Start](index.md) <br>
 [2. QueueHandler](queuehandle.md) <br>
-[3. ResponseHandler](responsehandle.md) <br>
+[3. ResponseCreator](responsehandle.md) <br>
 [4. Routing Middleware](routingmw.md) <br>
 [5. Middleware Collector](mwcollector.md) <br>
 [6. Class Middleware](classmw.md)

@@ -28,11 +28,11 @@ interface ClassInterface
 
 - und das alle Controller implementieren müssen
 
-- Der Request wird vom [ResponseHandler](responsehandle.md) an die [Strategy](../Strategy/index.md) übergeben und diese wiederung ruft das [Callback](../Callback/index.md) auf mit diesem Request
+- Der Request wird vom [ResponseCreator](responsehandle.md) an die [Strategy](../Strategy/index.md) übergeben und diese wiederung ruft das [Callback](../Callback/index.md) auf mit diesem Request
 
 - Das Class und ControllerCallback setzt dann den Request ein
 
-- Nach dem die Klasse fertig ist holt sich der ResponseHandler den Request wieder zurück
+- Nach dem die Klasse fertig ist holt sich der ResponseCreator den Request wieder zurück
 
 ## Vorgefertigte Implementierung
 
@@ -73,7 +73,7 @@ trait ControllerTrait
 ### Inhalt Middleware
 [1. Start](index.md) <br>
 [2. QueueHandler](queuehandle.md) <br>
-[3. ResponseHandler](responsehandle.md) <br>
+[3. ResponseCreator](responsehandle.md) <br>
 [4. Routing Middleware](routingmw.md) <br>
 [5. Middleware Collector](mwcollector.md) <br>
 [6. Class Middleware](classmw.md)

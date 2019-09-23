@@ -34,7 +34,7 @@ class App
 
 	- [Standard Callback Creator](../CallbackCreator/index.md)
 
-	- [ResponseHandler](../Middleware/responsehandle.md)
+	- [ResponseCreator](../Middleware/responsehandle.md)
 
 	- [QueueHandler](../Middleware/queuehandle.md)
 

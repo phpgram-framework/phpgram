@@ -31,7 +31,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * Kann auch von anderen Klassen aufgerufen werden um einen Response zu erstellen
  */
-class ResponseHandler implements RequestHandlerInterface
+class ResponseCreator implements RequestHandlerInterface
 {
 	private $stdstrategy,$creator,$callable,$param,$request,$responseFactory,$streamFactory;
 

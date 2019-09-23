@@ -1,9 +1,9 @@
-# ResponseHandler
+# ResponseCreator
 
 ````php
 <?php
 namespace Gram\Middleware\Handler;
-class ResponseHandler implements RequestHandlerInterface
+class ResponseCreator implements RequestHandlerInterface
 ````
 
 - erstellt den Response mit Header und Body
@@ -64,7 +64,7 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 8. gebe den fertigen Response zurück
 
-## Manipulation des ResponseHandlers
+## Manipulation des ResponseCreators
 
 - alle Attribute die in 1. aufgelistet wurden können von den Middleware verändert werden
 
@@ -84,7 +84,7 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 ### Inhalt Middleware
 [1. Start](index.md) <br>
 [2. QueueHandler](queuehandle.md) <br>
-[3. ResponseHandler](responsehandle.md) <br>
+[3. ResponseCreator](responsehandle.md) <br>
 [4. Routing Middleware](routingmw.md) <br>
 [5. Middleware Collector](mwcollector.md) <br>
 [6. Class Middleware](classmw.md)

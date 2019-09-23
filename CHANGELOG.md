@@ -2,6 +2,12 @@
 
 # 1.1.x
 
+## 1.1.4.1
+
+- since 2019/09/23
+- ResponseHandler in ResponseCreator umbenannt
+- Möglichkeit ResponseCreator und QueueHandler in den App Einstellungen zu setzen
+
 ## 1.1.4
 
 - since 2019/09/22

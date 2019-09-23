@@ -30,7 +30,7 @@ public function process(ServerRequestInterface $request, RequestHandlerInterface
 
 - Wenn doch muss die Middleware einen eigenen Response erzeugen, der dann ausgegeben wird
 
-- Dafür kann in phpgram der [ResponseHandler](responsehandle.md) so manipluiert werden, dass dieser den Response der Mw erstellt, anstatt den des Routers
+- Dafür kann in phpgram der [ResponseCreator](responsehandle.md) so manipluiert werden, dass dieser den Response der Mw erstellt, anstatt den des Routers
 
 ## Phpgram Middleware
 
@@ -44,11 +44,11 @@ public function process(ServerRequestInterface $request, RequestHandlerInterface
 
 - [QueueHandler](queuehandle.md)
 
-- [ResponseHandler](responsehandle.md)
+- [ResponseCreator](responsehandle.md)
 
 - NotFoundHandler: 
 
-	 - wird aufgerufen wenn der Router 404 oder 405 zurück gibt. Erbt vom ResponseHandler und erstellt einen Response mit dem in den Routes definierten 404 bzw. 405 Handle
+	 - wird aufgerufen wenn der Router 404 oder 405 zurück gibt. Erbt vom ResponseCreator und erstellt einen Response mit dem in den Routes definierten 404 bzw. 405 Handle
 
 <br>
 
@@ -57,7 +57,7 @@ public function process(ServerRequestInterface $request, RequestHandlerInterface
 ### Inhalt Middleware
 [1. Start](index.md) <br>
 [2. QueueHandler](queuehandle.md) <br>
-[3. ResponseHandler](responsehandle.md) <br>
+[3. ResponseCreator](responsehandle.md) <br>
 [4. Routing Middleware](routingmw.md) <br>
 [5. Middleware Collector](mwcollector.md) <br>
 [6. Class Middleware](classmw.md)
