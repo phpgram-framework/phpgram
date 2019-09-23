@@ -74,6 +74,10 @@ class ClassResolver implements ResolverInterface
 	}
 
 	/**
+	 * Erstellt das Class Object
+	 *
+	 * Entweder direkt oder mit den Dependencies des Class Constructor
+	 *
 	 * @return object
 	 * @throws \Exception
 	 */
@@ -90,10 +94,16 @@ class ClassResolver implements ResolverInterface
 		$con_param = $constructor->getParameters();
 		$dependencies = $this->getDependencies($con_param);
 
-		return $this->reflector->newInstanceArgs($dependencies);
+		return $this->reflector->newInstanceArgs($dependencies);	//erstelle das Object mit den Parameter im Constructor
 	}
 
 	/**
+	 * Durchläuft alle Dependencies der Klasse
+	 * use gibt die Parameter als Array zurück
+	 *
+	 * Benutzt dazu die Hilfs Method @see resolveParam
+	 * die bei jedem Parameter aufgerufen wird und die jeweilige Dependency aus dem Container läd
+	 *
 	 * @param array $parameters
 	 * @return array
 	 * @throws \Exception
@@ -111,6 +121,17 @@ class ClassResolver implements ResolverInterface
 	}
 
 	/**
+	 * Bekommt einen Parameter übergeben und sucht diesen im Psr 16 Container
+	 *
+	 * Zuerst Suche nach der Dependency ohne Namespace
+	 *
+	 * Danach mit Namespace
+	 *
+	 * Wenn nichts gefunden wurde, prüfe ob es einen Default Value gibt,
+	 * wenn ja gebe diesen zurück
+	 *
+	 * Wenn nicht throw Exception
+	 *
 	 * @param \ReflectionParameter $parameter
 	 * @return mixed
 	 * @throws \Exception
