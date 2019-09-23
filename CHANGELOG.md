@@ -2,7 +2,7 @@
 
 # 1.1.x
 
-## 1.1.4.1
+## 1.1.5
 
 - since 2019/09/23
 - ResponseHandler in ResponseCreator umbenannt
