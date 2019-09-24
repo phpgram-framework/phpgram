@@ -128,7 +128,7 @@ class ResponseCreator implements RequestHandlerInterface
 	protected function createBody(StrategyInterface $strategy, ResolverCreatorInterface $creator)
 	{
 		$creator->createResolver($this->callable);
-		$resolver = $creator->getCallable();
+		$resolver = $creator->getResolver();
 
 		$resolver->setRequest($this->request);
 		$resolver->setResponse($this->response);

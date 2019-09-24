@@ -38,5 +38,5 @@ interface ResolverCreatorInterface
 	 *
 	 * @return ResolverInterface
 	 */
-	public function getCallable():ResolverInterface;
+	public function getResolver():ResolverInterface;
 }

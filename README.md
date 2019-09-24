@@ -3,8 +3,9 @@
 A very fast and lightweight Php Framework for small to enterprise applications.
 
 - Routing based on [nikic/Fastroute](https://github.com/nikic/FastRoute)
+- RouteHandler for Functions and Classes
 - Request Response via [Psr-7](https://www.php-fig.org/psr/psr-7/), Middleware via [Psr-15](https://www.php-fig.org/psr/psr-15/), Request, Response Factory via [Psr-17](https://www.php-fig.org/psr/psr-17/)
-- Controller Support
+- Automatic Dependency Injection with [Psr 11](https://www.php-fig.org/psr/psr-11/) for Classes
 - Response Creation
 - Define Output Strategies
 

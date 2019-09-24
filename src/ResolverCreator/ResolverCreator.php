@@ -27,75 +27,70 @@ use Gram\Middleware\Handler\HandlerInterface;
  */
 class ResolverCreator implements ResolverCreatorInterface
 {
-	protected $callable=null;
+	protected $resolver=null;
 
 	/**
 	 * @inheritdoc
 	 *
-	 * Prüft ob etwas ein Callable bzw ein Stack mit Callable ist
+	 * Prüft ob das callable ein String, HandlerInterface oder Callable ist
 	 *
-	 * Unterscheidet zwischen Handler (Handlerobjekt), Class und Function
-	 *
-	 * Normales Callable prüfen ob es aus einem Array besteht (class und function) -> classhandler erstellen
-	 *
-	 * sonst etweder ein ControllerHandler erstellen (ein Art ClassHandler) oder
-	 *
-	 * wenn es eine Function war im Callable handler speichern
+	 * Erstellt dann den entsprechenden Resolver
 	 *
 	 * @param $possibleCallable
+	 * @throws \Exception
 	 */
 	public function createResolver($possibleCallable)
 	{
 		if(is_object($possibleCallable) && $possibleCallable instanceof HandlerInterface){
-			$this->callable=$this->createHandlerCallback($possibleCallable);
+			$this->resolver=$this->createHandlerCallback($possibleCallable);
 		}else{
-			$this->callable=$this->createCallbackFor($possibleCallable);
+			$this->resolver=$this->createCallbackFor($possibleCallable);
 		}
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getCallable():ResolverInterface
+	public function getResolver():ResolverInterface
 	{
-		return $this->callable;
+		return $this->resolver;
 	}
 
+	/**
+	 * @param $class
+	 * @return ClassResolver
+	 * @throws \Exception
+	 */
 	private function createCallbackForClass($class)
 	{
 		$callback = new ClassResolver();
-		try{
-			$callback->set($class);
-		}catch (\Exception $e){
-			echoExep($e);
-			return false;
-		}
+		$callback->set($class);
 
 		return $callback;
 	}
 
+	/**
+	 * @param callable $callable
+	 * @return CallbackResolver
+	 * @throws \Exception
+	 */
 	private function createCallbackFromCallable(callable $callable)
 	{
 		$callback= new CallbackResolver();
-		try{
-			$callback->set($callable);
-		}catch (\Exception $e){
-			echoExep($e);
-			return false;
-		}
+		$callback->set($callable);
 
 		return $callback;
 	}
 
+	/**
+	 * @param HandlerInterface $handler
+	 * @return HandlerResolver
+	 * @throws \Exception
+	 */
 	private function createHandlerCallback(HandlerInterface $handler)
 	{
 		$callback = new HandlerResolver();
-		try{
-			$callback->set($handler);
-		}catch (\Exception $e){
-			echoExep($e);
-			return false;
-		}
+		$callback->set($handler);
 
 		return $callback;
 	}
@@ -105,6 +100,7 @@ class ResolverCreator implements ResolverCreatorInterface
 	 * wenn ja benutze den Callable Handler und nicht den Controller Handler
 	 * @param $callback
 	 * @return bool|CallbackResolver|ClassResolver
+	 * @throws \Exception
 	 */
 	private function createCallbackFor($callback)
 	{

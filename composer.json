@@ -35,10 +35,7 @@
 	"autoload": {
 		"psr-4": {
 			"Gram\\":"src/"
-		},
-		"files": [
-			"src/general/gramHelpers.php"
-		]
+		}
 	},
 	"autoload-dev": {
 		"psr-4":{
