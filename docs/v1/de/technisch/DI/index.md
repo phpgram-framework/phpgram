@@ -38,4 +38,14 @@ App::app()->setContainer($container);
 
 4. Prüfe zuerst ob es einen Constructor gibt und ob ein Container vorliegt. Ist eins von beiden nicht der Fall wird einfach ein neues Object der Klasse erstellt
 
-5. 
+5. Sonst werden die Parameter die der Constructor bekommt geprüft
+
+6. Durchsuche alle Klassennamen der Parameter ob diese im übergebenem Container sind
+
+7. Wenn nicht wird geprüft ob der Parameter einen Default Wert hat und dann wird dieser geladen. Wenn nicht gebe Exception aus
+
+8. Wenn es diesen Namen (mit oder ohne Namespace) im Container gibt wird der Wert aus dem Container geladen
+
+9. Das Object wird dann, mithilfe von ReflectionClass, mit den Parameter aus dem Container erstellt
+
+10. Danach werden noch die Psr Objects mit einem Interface gesetzt und die Method wird mit call_user_function_array gestartet (Die Parameter kommen vom [Router](../Middleware/routingmw.md))
