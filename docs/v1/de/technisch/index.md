@@ -59,5 +59,6 @@
 [Routing](Routing/index.md) <br>
 [Resolver Creator](ResolverCreator/index.md) <br>
 [Resolver](Resolver/index.md) <br>
+[Dependency Injection](DI/index.md) <br>
 [Strategy](Strategy/index.md) <br>
 [Emitter](App/emit.md)

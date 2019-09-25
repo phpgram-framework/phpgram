@@ -121,11 +121,11 @@ class ClassResolver implements ResolverInterface
 	}
 
 	/**
-	 * Bekommt einen Parameter übergeben und sucht diesen im Psr 16 Container
+	 * Bekommt einen Parameter übergeben und sucht diesen im Psr 11 Container
 	 *
-	 * Zuerst Suche nach der Dependency ohne Namespace
+	 * Suche zuerst nach Dependency mit Namespace im Container
 	 *
-	 * Danach mit Namespace
+	 * Danach suche nach der Dependency ohne Namespace
 	 *
 	 * Wenn nichts gefunden wurde, prüfe ob es einen Default Value gibt,
 	 * wenn ja gebe diesen zurück
@@ -138,16 +138,16 @@ class ClassResolver implements ResolverInterface
 	 */
 	protected function resolveParam(\ReflectionParameter $parameter)
 	{
-		//Suche zuerst Dep ohne Namespace
-		$dependency_short = $parameter->getClass()->getShortName();
-		if($this->container->has($dependency_short)){
-			return $this->container->get($dependency_short);
-		}
-
-		//Suche dann Dep mit Namespace
+		//Suche zuerst Dep mit Namespace
 		$dependency = $parameter->getClass()->getName();
 		if($this->container->has($dependency)){
 			return $this->container->get($dependency);
+		}
+
+		//Suche danach Dep ohne Namespace
+		$dependency_short = $parameter->getClass()->getShortName();
+		if($this->container->has($dependency_short)){
+			return $this->container->get($dependency_short);
 		}
 
 		//Prüfe dann ob es einen Defaultwert gibt, wenn ja setze diesen

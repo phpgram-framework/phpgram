@@ -32,7 +32,7 @@ trait ResolverTrait
 	public $response;
 
 	/** @var ContainerInterface */
-	private $container = null;
+	public $container = null;
 
 	/**
 	 * @inheritdoc
