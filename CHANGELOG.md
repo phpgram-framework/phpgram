@@ -10,6 +10,7 @@
 - DI Funktioniert mit Psr 11
 - Es wird im Container zuerst nach der Klasse mit Namespace gesucht und danach erst ohne
 - Functions können mit ``$this->value`` auf die Values im Container zugreifen. 
+- Klassen können auch wie Functions mit ``$this->value`` auf einen Value im Container zugreifen (dies ist ein Anti Pattern)
 
 
 # 1.1.x

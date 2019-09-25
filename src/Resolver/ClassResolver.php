@@ -62,7 +62,10 @@ class ClassResolver implements ResolverInterface
 
 		$this->class = $this->getClass();
 
-		$this->class->setPsr($this->request,$this->response);	//gebe den Klassen die Psr Objekte
+		//gebe den Klassen die Psr Objekte
+		$this->class->setPsr($this->request,$this->response);
+		$this->class->setContainer($this->container);
+
 		$callback = [$this->class,$this->function];
 
 		$return = call_user_func_array($callback,$param);

@@ -13,6 +13,7 @@
 
 namespace Gram\Middleware\Classes;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -46,4 +47,23 @@ interface ClassInterface
 	 * @return ResponseInterface
 	 */
 	public function getResponse():ResponseInterface;
+
+	/**
+	 * Setzt den DI Container sodass auch Klassen darauf zugriff haben
+	 *
+	 * @param ContainerInterface $container
+	 * @return mixed
+	 */
+	public function setContainer(ContainerInterface $container);
+
+	/**
+	 * Gibt einen Wert aus dem DI Container zurück
+	 * mit $this->value
+	 *
+	 * Wirft eine Exception wenn es den Wert nicht gibt
+	 *
+	 * @param $name
+	 * @return mixed
+	 */
+	public function __get($name);
 }

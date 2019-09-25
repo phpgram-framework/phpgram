@@ -13,6 +13,7 @@
 
 namespace Gram\Middleware\Classes;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -29,6 +30,9 @@ trait ClassTrait
 
 	/** @var ResponseInterface */
 	protected $response;
+
+	/** @var ContainerInterface */
+	protected $psr11Container;
 
 	/**
 	 * @inheritdoc
@@ -53,5 +57,21 @@ trait ClassTrait
 	public function getResponse():ResponseInterface
 	{
 		return $this->response;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setContainer(ContainerInterface $container)
+	{
+		$this->psr11Container = $container;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function __get($name)
+	{
+		return $this->psr11Container->get($name);
 	}
 }
