@@ -2,18 +2,15 @@
 
 # 1.2.x
 
-## 1.2.1
-
-- since 2019/09/25
-- Es wird im Container zuerst nach der Klasse mit Namespace gesucht und danach erst ohne
-- Functions können jetzt auch auf den Container zugreifen. Dort kann dann nach Index gesucht werden mit ``has()``
-
 ## 1.2.0
 
 - since 2019/09/24
 - Möglichkeit Response in der Applikation zu ändern
 - DI hinzugefügt für Classen die das ClassInterface implementiert haben
 - DI Funktioniert mit Psr 11
+- Es wird im Container zuerst nach der Klasse mit Namespace gesucht und danach erst ohne
+- Functions können mit ``$this->value`` auf die Values im Container zugreifen. 
+
 
 # 1.1.x
 

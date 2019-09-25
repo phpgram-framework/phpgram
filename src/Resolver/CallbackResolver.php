@@ -53,4 +53,18 @@ class CallbackResolver implements ResolverInterface
 
 		$this->callback=$callback;
 	}
+
+	/**
+	 * Biete die Möglichkeit auf Values im Container zu zugreifen mit
+	 * $this->value
+	 *
+	 * Sollte der Value nicht im Container enthalten sein wird eine Exception geworfen
+	 *
+	 * @param $name
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		return $this->container->get($name);
+	}
 }
