@@ -1,4 +1,4 @@
-[![](/docs/img/Feather_writing.svg.png?raw=true)](https://gitlab.com/grammm/php-gram/phpgram)
+[![](https://gitlab.com/grammm/php-gram/phpgram/raw/master/docs/img/Feather_writing.svg.png)](https://gitlab.com/grammm/php-gram/phpgram)
 
 # phpgram
 
