@@ -62,7 +62,7 @@ trait ClassTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function setContainer(ContainerInterface $container)
+	public function setContainer(ContainerInterface $container=null)
 	{
 		$this->psr11Container = $container;
 	}
@@ -72,6 +72,10 @@ trait ClassTrait
 	 */
 	public function __get($name)
 	{
+		if($this->psr11Container===null){
+			return null;
+		}
+
 		return $this->psr11Container->get($name);
 	}
 }

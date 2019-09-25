@@ -54,7 +54,7 @@ interface ClassInterface
 	 * @param ContainerInterface $container
 	 * @return mixed
 	 */
-	public function setContainer(ContainerInterface $container);
+	public function setContainer(ContainerInterface $container=null);
 
 	/**
 	 * Gibt einen Wert aus dem DI Container zurück
