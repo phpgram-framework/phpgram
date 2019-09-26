@@ -15,7 +15,8 @@
 - Möglichkeit Response in der Applikation zu ändern
 - DI hinzugefügt für Classen die das ClassInterface implementiert haben
 - DI Funktioniert mit Psr 11
-- Es wird im Container zuerst nach der Klasse mit Namespace gesucht und danach erst ohne
+- Es wird im Container zuerst nach der auf zurufenden Klasse gesucht und danach werden alle Parameter des Constructor 
+der Klasse mit Namespace und danach ohne Namespace im Container gesucht
 - Functions können mit ``$this->value`` auf die Values im Container zugreifen. 
 - Klassen können auch wie Functions mit ``$this->value`` auf einen Value im Container zugreifen (dies ist ein Anti Pattern)
 

@@ -79,18 +79,27 @@ class ClassResolver implements ResolverInterface
 	/**
 	 * Erstellt das Class Object
 	 *
-	 * Entweder direkt oder mit den Dependencies des Class Constructor
+	 * Entweder direkt, aus dem Container oder mit den Dependencies des Class Constructor
 	 *
 	 * @return object
 	 * @throws \Exception
 	 */
 	protected function getClass()
 	{
+		//wenn es keinen Container gibt gebe das neue object zurück
+		if($this->container === null){
+			return new $this->classname;
+		}
+
 		$constructor = $this->reflector->getConstructor();
 
-		//wenn es keinen Construktor oder Container für DI gibt gebe die neue Klasse zurück
-		if($constructor===null || $this->container === null)
-		{
+		//Wenn es die Klasse bereits im Container gibt gebe dieses Object zurück, hier mit Namespace
+		if($this->container->has($this->classname)){
+			return $this->container->get($this->classname);
+		}
+
+		//wenn es keinen Construktor für DI gibt gebe die neue Klasse zurück
+		if($constructor===null) {
 			return new $this->classname;
 		}
 
