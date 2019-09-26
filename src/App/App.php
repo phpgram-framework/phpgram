@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <j.heinemann1@web.de>
  */
 
-/** @version 1.2.0 */
+/** @version 1.2.1 */
 
 namespace Gram\App;
 
@@ -27,6 +27,7 @@ use Gram\Strategy\StdAppStrategy;
 use Gram\Strategy\StrategyInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -39,8 +40,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class App
 {
-	private $router=null,$middlewareCollector=null,$strategyCollector=null,$container=null;
-	private $responseFactory, $streamFactory,$stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
+	protected $router=null,$middlewareCollector=null,$strategyCollector=null,$container=null;
+	protected $responseFactory, $streamFactory,$stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
 
 	private static $_instance;
 
@@ -48,9 +49,7 @@ class App
 	 * App constructor.
 	 * Private da die App nur mit init gestartet werden darf
 	 */
-	private function __construct()
-	{
-	}
+	private function __construct(){}
 
 	/**
 	 * Erstellt ein Routerobjekt zurück wenn es noch nicht erstellt wurde
@@ -104,16 +103,49 @@ class App
 	 *
 	 * Erhält den Request
 	 *
-	 * Setzt alle wichtigen Handler und Middleware. Startet den QueueHandler der die Abfolge der Middlewares verwaltet
-	 *
-	 * Startet die Routing Middleware
-	 *
-	 * Diese prüft mit dem Middlewarecollector ob Std Middleware defineirt wurden
-	 * wenn ja werden diese dem QueueHandler hinzugefügt
+	 * erstellt den Response und emittet ihn
 	 *
 	 * @param ServerRequestInterface $request
 	 */
 	public function start(ServerRequestInterface $request)
+	{
+		$response = $this->sendRequest($request);
+
+		$emitter = new Emitter();
+
+		$emitter->emit($response);	//Gebe Header und Body vom Response aus
+	}
+
+	/**
+	 * Eine Psr 18 Varainte mit ServerRequestInterface anstatt RequestInterface
+	 * Achtung: Ohne Überprüfung von Request und Response
+	 *
+	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
+	 */
+	public function sendRequest(ServerRequestInterface $request): ResponseInterface
+	{
+		$queue = $this->init();
+
+		$response = $queue->handle($request);	//Starte den Stack und erstelle Response
+
+		return $response;
+	}
+
+	/**
+	 * Setzt alle wichtigen Handler und Middleware.
+	 * Startet den QueueHandler der die Abfolge der Middlewares verwaltet
+	 *
+	 * Füge mit der Routing Middleware weitere Middleware aus dem Collector hinzu die
+	 * zuerst gestartet werden sollen
+	 *
+	 * Füge dann die Routing Middleware dem Stack hinzu
+	 *
+	 * Gebe zum Schluss den fertigen QueueHandler zurück
+	 *
+	 * @return QueueHandler
+	 */
+	protected function init()
 	{
 		//setze Standard Objekte
 		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
@@ -123,11 +155,11 @@ class App
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
 		$fallback = $this->responseCreator ?? new ResponseCreator(
-			$this->responseFactory,
-			$this->streamFactory,
-			$resolverCreator,
-			$stdStrategy,
-			$this->container
+				$this->responseFactory,
+				$this->streamFactory,
+				$resolverCreator,
+				$stdStrategy,
+				$this->container
 			);
 
 		$queue = $this->queuHandler ?? new QueueHandler($fallback);	//default Fallback
@@ -152,13 +184,7 @@ class App
 
 		//______________________________________________________________________________
 
-		//Starte den Stack und erstelle Response
-
-		$response = $queue->handle($request);
-
-		$emitter = new Emitter();
-
-		$emitter->emit($response);	//Gebe Header und Body vom Response aus
+		return $queue;
 	}
 
 	public static function app()

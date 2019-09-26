@@ -15,12 +15,16 @@ class RouterTest extends TestCase
 
 		$uri = $factory->createUri('https://jo.com/test/vars/123/tester');
 
-		$collector->get('/test/vars/{var:n}/tester',"hallo");
+		$routemap = new RouteMap();
+		$routes = $routemap->map();
+		$routehandler = $routemap->handler();
+
+		$collector->get($routes[0],$routehandler[0]);
 
 		$router->run($uri->getPath());
 
 		$handler = $router->getHandle();
 
-		self::assertEquals('hallo',$handler['callable']);
+		self::assertEquals($routehandler[0],$handler['callable']);
 	}
 }
