@@ -28,11 +28,14 @@ App::app()->setContainer($container);
 
 - Mit get wird dieser Eintrag aus dem Container zurück gegeben
 
-## Funktionsweise im Standard [ClassResolver](../Resolver/index.md)
+- Mit der Auto DI wird nur ein index gesucht und gefunden wenn dieser mit dem vollen Klassennamen (mit Namespace) 
+oder nur der Klassenname drin ist
+
+## Funktionsweise im Standard [ClassResolver](../Resolver/index.md) (Auto DI)
 
 1. Prüfe zuerst ob die Klasse ausführbar ist und ob sie das benötigte Interface implementiert hat (siehe [Class Middleware](../Middleware/classmw.md))
 
-2. Erstelle aus der Class ein neues Object gg.f mit den Constructor Dependencies
+2. Erstelle aus der Class ein neues Object ggf. mit den Constructor Dependencies
 
 3. Dazu untersuche den Constructor mithilfe von ReflectionClass
 
@@ -49,3 +52,24 @@ App::app()->setContainer($container);
 9. Das Object wird dann, mithilfe von ReflectionClass, mit den Parameter aus dem Container erstellt
 
 10. Danach werden noch die Psr Objects mit einem Interface gesetzt und die Method wird mit call_user_function_array gestartet (Die Parameter kommen vom [Router](../Middleware/routingmw.md))
+
+
+## Funktionsweise im Standard [FunctionResolver](../Resolver/index.md)
+
+1. Binde das Closure (die anonymous function) an den Resolver
+
+2. Somit hat die Function Zugriff mit ``$this->value`` auf alle Public Variables der gebundenen Klasse
+
+3. Die vom ResponseCreator übergebenen Objects werden als Public gespeichert
+somit hat die Function darauf zugriff
+
+
+## Cheating DI (Anti-Pattern!)
+
+- Es kann auch einen Index mit ``$this->value`` in Klassen zugegriffen werden, da diese auch eine ``__get()`` Method implementiert haben
+die den Wert aus dem Container läd, wie bei den Functions
+
+- Dies sollte in Klassen aber nicht genutzt werden, da bei der DI es immer klar ersichtlich sein muss
+welche Klasse bzw. Dependency inject wird.
+
+- Somit ist es besser die Dependencies bereits im Constructor fest zulegen und sie dann mithilfe der Auto DI übergeben bekommt

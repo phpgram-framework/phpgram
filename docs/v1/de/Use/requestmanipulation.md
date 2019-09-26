@@ -68,9 +68,6 @@
 
 - Solange der Request nicht beim ResponseCreator angekommen ist können alle Attribute verändert werden
 
-- In dem Handler der Route (siehe [Route Example](route.md)) z. B. Klassen oder Controller können: ``status``, ``header`` und ``reason`` verändert werden.
-
-- Die anderen Attribute können nicht verändert werden, da der Handler mit diesen ausgeführt wurde
 
 ### Middleware
 - jede Middleware hat vor dem ResponseCreator Zugriff auf den Request

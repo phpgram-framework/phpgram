@@ -1,7 +1,7 @@
 # Middleware
 
 
-- steht zwischen dem Request und der Applikation
+- steht zwischen dem Request und der Application
 
 - Middleware werden auf einem Stack gespeichert und Rekursiv aufgerufen
 
@@ -48,7 +48,7 @@ public function process(ServerRequestInterface $request, RequestHandlerInterface
 
 - NotFoundHandler: 
 
-	 - wird aufgerufen wenn der Router 404 oder 405 zurück gibt. Erbt vom ResponseCreator und erstellt einen Response mit dem in den Routes definierten 404 bzw. 405 Handle
+	 - Ruft bei 404 oder 405 vom Router den ResponseCreator auf mit dem vorher definierten 404 bzw. 405 Handler
 
 <br>
 

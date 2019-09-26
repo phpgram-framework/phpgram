@@ -7,32 +7,22 @@ namespace Gram\Middleware\Classes;
 
 interface ClassInterface
 {
-	/**
-	 * Setze Psr Object(s) in der Klasse
-	 *
-	 * @param ServerRequestInterface $request
-	 * @return mixed
-	 */
-	public function setPsr(ServerRequestInterface $request);
-
-	/**
-	 * Gebe Psr Object(s) wieder zurück
-	 *
-	 * @return ServerRequestInterface
-	 */
-	public function getRequest():ServerRequestInterface;
+	
 }
 ````
 
-- Ein Interface, dass alle Klassen implementieren können wenn diese den Request wirkungsvoll verändern wollen
+- Ein Interface, dass alle Klassen implementiert haben müssen. Sonst wird eine Exception geworfen
 
-- und das alle Controller implementieren müssen
+- Es ist dazu da dem Object der Klasse die Psr Objects: Request, Response und Container zu kommen zulassen
 
-- Der Request wird vom [ResponseCreator](responsehandle.md) an die [Strategy](../Strategy/index.md) übergeben und diese wiederung ruft das [Resolver](../Resolver/index.md) auf mit diesem Request
+- Das Interface enthält nur Getter und Setter Methods
 
-- Das Class und ControllerResolver setzt dann den Request ein
+- Der [ResponseCreator](responsehandle.md) übergibt die Psr Objecte an den jeweiligen [Resolver](../Resolver/index.md), der die Objects wiederum durch dieses Interface dem Object der auf zurufenden Klasse zukommen lässt
 
-- Nach dem die Klasse fertig ist holt sich der ResponseCreator den Request wieder zurück
+- Nachdem Durchlauf nimmt der ResponseCreator den Response wieder entgegen
+
+- Klassen können wie Functions auf den Psr 11 Container zugreifen sowie mit ``$this->value`` auf einen index im Container
+mit der ``__get()`` Function
 
 ## Vorgefertigte Implementierung
 
@@ -41,30 +31,13 @@ interface ClassInterface
 
 namespace Gram\Middleware\Classes;
 
-trait ControllerTrait
+trait ClassTrait
 {
-	/** @var ServerRequestInterface */
-	protected $request;
-
-	/**
-	 * @inheritdoc
-	 */
-	public function setPsr(ServerRequestInterface $request)
-	{
-		$this->request=$request;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function getRequest():ServerRequestInterface
-	{
-		return $this->request;
-	}
+	
 }
 ````  
 
-- dieses Trait kann in Klassen genutzt werden mit ``use ControllerTrait;`` um die Methods zu implementieren 
+- dieses Trait kann in Klassen genutzt werden mit ``use ClassTrait;`` um die Methods zu implementieren 
 
 <br>
 

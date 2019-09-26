@@ -220,12 +220,11 @@ App::app()->addGroup("/admin",function (){
 
 ## Psr 7
 
-- Controller und Functions können auf das Request Object mit: ``$this->request`` zugreifen und verändern
-
+- Classes und Functions können auf das Request Object mit: ``$this->request`` zugreifen und verändern
+- und auf den Response mit: ``$this->response``
 ````php
 <?php
 use Gram\App\App;
-use Psr\Http\Message\ServerRequestInterface;
 
 App::app()->get("/user/{id}",function ($id){
 	return "Userid = $id und die aufgerufene Url ist: ".$this->request->getUri()->getPath();
@@ -240,29 +239,15 @@ App::app()->get("/user/{id}",function ($id){
 
 - es können alle möglichen Muster in den Handler eingesetzt werden, die der [ResolverCreator](../technisch/ResolverCreator/index.md) zu einem [Resolver](../technisch/Resolver/index.md) umformen kann
 
-- Standardgemäß werden vier Arten unterstützt: functions, Class function, Controller und HandlerInterface
+- Standardgemäß werden vier Arten unterstützt: functions, Classes und HandlerInterface
 
 - weitere können, mit eigenen Creators, weitere Muster hinzu gefügt werden
 
 ````php
 <?php
 use Gram\App\App;
-use Psr\Http\Message\ServerRequestInterface;
 
 //Class Function:
-
-class ExampleClass
-{
-	public function exampleMethod($id,ServerRequestInterface $request)
-	{
-		return "Userid = $id und die aufgerufene Url ist: ".$request->getUri()->getPath();
-	}
-}
-
-//[Class name, Method name] 
-App::app()->get("/user/{id}",["ExampleClass","exampleMethod"]);
-
-//Controller:
 
 use Gram\Middleware\Controller;
 
@@ -281,14 +266,8 @@ App::app()->get("/user/{id}","ExampleController@exampleControllerMethod");
 
 - beide Routes geben: bei ``/user/hallo`` => ``Userid = hallo und die augerufene Url ist: /user/hallo`` aus
 
-- Class method (siehe [Class Mw](../technisch/Middleware/classmw.md))
+- Für Klassen siehe [Class Middleware](../technisch/Middleware/classmw.md)
 
 - Bei Controllern wird nur der Route Parameter übergeben. 
 
-	- siehe [Class Middleware](../technisch/Middleware/classmw.md)
-
-	- Das Request Objekt wird in einer Method in der abstrakten Klasse Controller gesetzt
-
-	- Wenn Controller von dieser Klasse erben haben diese Zugriff auf die protected var $request
-
-- Handler können auf den Request zugreifen und verändern
+- Handler können nur auf den Request zugreifen ihn aber nicht verändern
