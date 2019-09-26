@@ -2,6 +2,13 @@
 
 # 1.2.x
 
+## 1.2.1
+
+- since 2019/09/26
+- App Class jetzt mit init Function
+- eine public sendRequest() Method wie bei Psr 18 die aber ein ServerRequestInterface akzeptiert
+- Diese kann aufgerufen werden wenn nur ein Response zurück gegeben werden soll ohne den zu emitten
+
 ## 1.2.0
 
 - since 2019/09/24
