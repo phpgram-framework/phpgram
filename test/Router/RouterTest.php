@@ -132,4 +132,52 @@ class RouterTest extends TestCase
 
 		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
 	}
+
+	public function testSimpleRoutesWithPut()
+	{
+		$this->initRouter();
+		$this->initRoutes('put');
+
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+
+		$this->router->run($uri->getPath(),'PUT');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testSimpleRoutesWithDelete()
+	{
+		$this->initRouter();
+		$this->initRoutes('delete');
+
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+
+		$this->router->run($uri->getPath(),'DELETE');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testSimpleRoutesWithPatch()
+	{
+		$this->initRouter();
+		$this->initRoutes('patch');
+
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+
+		$this->router->run($uri->getPath(),'PATCH');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
 }

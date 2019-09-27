@@ -40,11 +40,6 @@ trait RouteCollectorTrait
 		return $this->add($route,$handler,['GET','POST']);
 	}
 
-	public function head(string $route,$handler)
-	{
-		return $this->add($route,$handler,['HEAD']);
-	}
-
 	public function delete(string $route,$handler)
 	{
 		return $this->add($route,$handler,['DELETE']);
