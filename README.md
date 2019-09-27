@@ -3,8 +3,8 @@
 # phpgram
 
 [![Packagist Version](https://img.shields.io/packagist/v/phpgram/phpgram)](https://packagist.org/packages/phpgram/phpgram)
-[![Packagist](https://img.shields.io/packagist/l/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/composer.json)
+[![Packagist](https://img.shields.io/packagist/l/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
 
 A very fast and lightweight Php Framework for small to enterprise applications.
 
@@ -23,7 +23,7 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 - Define Output Strategies
 
 
-## Doc
+## Documentation
 - [start](https://gitlab.com/grammm/php-gram/phpgram/blob/master/docs/index.md)
 
 ## Install
@@ -33,6 +33,10 @@ Via Composer
 ``` bash
 $ composer require phpgram/phpgram
 ```
+
+## License
+
+phpgram is open source and under [MIT License](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
 
 ## Credits
 ### Router
