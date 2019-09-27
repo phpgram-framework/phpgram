@@ -98,18 +98,18 @@ class RouteCollector implements CollectorInterface
 	public function addGroup($prefix,callable $groupcollector):RouteGroup
 	{
 		$pre = $this->prefix;
-		$oldgroupids=$this->routegroupsids;
+		$oldgroupids=$this->routegroupsids;	//Alle Gruppen in der die Route drin ist
 
 		$this->prefix=$this->prefix.$prefix;
 		$this->routegroupid=$this->routegroupid+1;
-		$this->routegroupsids[]=$this->routegroupid;
+		$this->routegroupsids[]=$this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
 
 		$group = new RouteGroup($this->prefix,$this->routegroupid,$this->stack,$this->strategyCollector);
 
 		call_user_func($groupcollector);
 
 		$this->prefix=$pre;
-		$this->routegroupsids=$oldgroupids;
+		$this->routegroupsids=$oldgroupids;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
 
 		return $group;
 	}
