@@ -1,0 +1,22 @@
+# Select image from https://hub.docker.com/_/php/
+image: php:7.3
+
+# Select what we should cache
+cache:
+  paths:
+  - vendor/
+
+
+before_script:
+# Install git, the php image doesn't have installed
+- apt-get update -yqq
+- apt-get install git -yqq
+
+- curl -sS https://getcomposer.org/installer | php
+
+# Install all project dependencies
+- php composer.phar install
+
+test:phpgram:
+  script:
+  - vendor/bin/phpunit
