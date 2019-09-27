@@ -1,30 +1,142 @@
 <?php
 namespace Gram\Test\Router;
+
+use Gram\Route\Collector\RouteCollector;
+use Gram\Route\Interfaces\RouterInterface;
 use Gram\Route\Router;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
-	public function testSimpleRoutes(){
-		$router= new Router();
+	private $map, $routes, $routehandler;
 
-		$collector= $router->getCollector();
+	/** @var Router */
+	private $router;
+	/** @var RouteCollector */
+	private $collector;
+
+
+	public function __construct(?string $name = null, array $data = [], string $dataName = '')
+	{
+		parent::__construct($name, $data, $dataName);
+
+		$this->map = new RouteMap();
+		$this->routes = $this->map->map();
+		$this->routehandler = $this->map->handler();
+	}
+
+	private function initRouter()
+	{
+		$this->router = new Router();
+		$this->collector = $this->router->getCollector();
+
+		$this->collector->set404("404");
+		$this->collector->set405("405");
+	}
+
+	private function initRoutesGet()
+	{
+		//init Collector
+		foreach ($this->routes as $key=>$route) {
+			$this->collector->get($route,$this->routehandler[$key]);
+		}
+	}
+
+	private function initRoutesPost()
+	{
+		//init Collector
+		foreach ($this->routes as $key=>$route) {
+			$this->collector->post($route,$this->routehandler[$key]);
+		}
+	}
+
+	public function testRouterInit()
+	{
+		$router = new Router();
+		$collector = $router->getCollector();
+
+		self::assertInstanceOf(RouterInterface::class,$router);
+		self::assertInstanceOf(RouteCollector::class,$collector);
+	}
+
+	public function testSimpleRoutes()
+	{
+		$this->initRouter();
+		$this->initRoutesGet();
+
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123@a/tester');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[2],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testSimpleRoutesWithDataTyp()
+	{
+		$this->initRouter();
+		$this->initRoutesGet();
 
 		$factory= new Psr17Factory();
 
 		$uri = $factory->createUri('https://jo.com/test/vars/123/tester');
 
-		$routemap = new RouteMap();
-		$routes = $routemap->map();
-		$routehandler = $routemap->handler();
+		$this->router->run($uri->getPath(),'GET');
 
-		$collector->get($routes[0],$routehandler[0]);
+		$handler = $this->router->getHandle();
 
-		$router->run($uri->getPath());
+		self::assertEquals($this->routehandler[0],$handler['callable'],"Handler = ".$handler['callable']);
+	}
 
-		$handler = $router->getHandle();
+	public function testSimpleRoutesWithDataTypTwo()
+	{
+		$this->initRouter();
+		$this->initRoutesGet();
 
-		self::assertEquals($routehandler[0],$handler['callable']);
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testSimpleRoutesWithHead()
+	{
+		$this->initRouter();
+		$this->initRoutesGet();
+
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+
+		$this->router->run($uri->getPath(),'HEAD');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testSimpleRoutesWithPost()
+	{
+		$this->initRouter();
+		$this->initRoutesPost();
+
+		$factory= new Psr17Factory();
+
+		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+
+		$this->router->run($uri->getPath(),'POST');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
 	}
 }

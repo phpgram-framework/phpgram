@@ -35,6 +35,8 @@ use Gram\Route\RouteGroup;
  */
 class RouteCollector implements CollectorInterface
 {
+	use RouteCollectorTrait;
+
 	private $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
 	private $handler=[],$routeid=0,$routegroupid=0;
 	private $parser,$generator,$caching,$cache,$stack,$strategyCollector;
@@ -146,41 +148,6 @@ class RouteCollector implements CollectorInterface
 	public function get405()
 	{
 		return $this->er405;
-	}
-
-	public function get(string $route,$handler)
-	{
-		return $this->add($route,$handler,['GET']);
-	}
-
-	public function post(string $route,$handler)
-	{
-		return $this->add($route,$handler,['POST']);
-	}
-
-	public function getpost(string $route,$handler)
-	{
-		return $this->add($route,$handler,['GET','POST']);
-	}
-
-	public function head(string $route,$handler)
-	{
-		return $this->add($route,$handler,['HEAD']);
-	}
-
-	public function delete(string $route,$handler)
-	{
-		return $this->add($route,$handler,['DELETE']);
-	}
-
-	public function put(string $route,$handler)
-	{
-		return $this->add($route,$handler,['PUT']);
-	}
-
-	public function patch(string $route,$handler)
-	{
-		return $this->add($route,$handler,['PATCH']);
 	}
 
 	public function setBase(string $base)

@@ -20,6 +20,7 @@ use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\ResponseCreator;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
+use Gram\Route\Collector\RouteCollectorTrait;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
@@ -40,6 +41,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class App
 {
+	use RouteCollectorTrait;
+
 	protected $router=null,$middlewareCollector=null,$strategyCollector=null,$container=null;
 	protected $responseFactory, $streamFactory,$stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
 
@@ -244,51 +247,6 @@ class App
 	public function addGroup($prefix,callable $groupcollector)
 	{
 		return $this->getRouter()->getCollector()->addGroup($prefix,$groupcollector);
-	}
-
-	public function get(string $route,$handler)
-	{
-		return $this->add($route,$handler,['GET']);
-	}
-
-	public function post(string $route,$handler)
-	{
-		return $this->add($route,$handler,['POST']);
-	}
-
-	public function getpost(string $route,$handler)
-	{
-		return $this->add($route,$handler,['GET','POST']);
-	}
-
-	public function head(string $route,$handler)
-	{
-		return $this->add($route,$handler,['HEAD']);
-	}
-
-	public function delete(string $route,$handler)
-	{
-		return $this->add($route,$handler,['DELETE']);
-	}
-
-	public function put(string $route,$handler)
-	{
-		return $this->add($route,$handler,['PUT']);
-	}
-
-	public function patch(string $route,$handler)
-	{
-		return $this->add($route,$handler,['PATCH']);
-	}
-
-	public function options(string $route,$handler)
-	{
-		return $this->add($route,$handler,['OPTIONS']);
-	}
-
-	public function any(string $route,$handler)
-	{
-		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','OPTIONS']);
 	}
 
 	//Spezielle Routes

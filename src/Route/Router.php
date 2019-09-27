@@ -154,9 +154,16 @@ class Router implements RouterInterface
 	 */
 	private function checkMethod($httpMethod, CollectorInterface $collector)
 	{
+		$httpMethod = strtolower($httpMethod);
+
+		//Bei HEAD requests suche eine GET Route
+		if($httpMethod=='head'){
+			$httpMethod = 'get';
+		}
+		
 		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
 		foreach ((array)$this->handle['method'] as $item) {
-			if(strtolower($httpMethod)===strtolower($item)){
+			if($httpMethod===strtolower($item)){
 				return true;
 			}
 		}
