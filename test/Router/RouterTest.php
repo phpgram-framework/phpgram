@@ -1,6 +1,7 @@
 <?php
 namespace Gram\Test\Router;
 
+use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\RouteCollector;
 use Gram\Route\Interfaces\RouterInterface;
 use Gram\Route\Router;
@@ -17,12 +18,15 @@ class RouterTest extends TestCase
 	private $collector;
 	/** @var Psr17Factory */
 	private $psr17;
+	/** @var MiddlewareCollector */
+	private $mwCollector;
 
 	protected function setUp(): void
 	{
 		$this->psr17 = new Psr17Factory();
 
-		$this->router = new Router();
+		$this->mwCollector = new MiddlewareCollector();
+		$this->router = new Router([],$this->mwCollector);
 		$this->collector = $this->router->getCollector();
 		$this->collector->set404("404");
 		$this->collector->set405("405");
@@ -34,10 +38,16 @@ class RouterTest extends TestCase
 
 	private function initRoutes($method='get')
 	{
-		//init Collector
-		foreach ($this->routes as $key=>$route) {
-			$this->collector->{$method}($route,$this->routehandler[$key]);
-		}
+		$this->collector->addGroup("",function () use($method){
+			//init Collector
+			foreach ($this->routes as $key=>$route) {
+				$this->collector->{$method}($route,$this->routehandler[$key])
+					->addMiddleware("Middleware $key")
+					->addMiddleware("Middleware 2 $key");
+			}
+		})
+			->addMiddleware("Group 1")
+			->addMiddleware("Group 1 1");
 	}
 
 	public function testRouterInit()
@@ -157,5 +167,27 @@ class RouterTest extends TestCase
 		$handler = $this->router->getHandle();
 
 		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testRoutesWithMiddelware()
+	{
+		$this->initRoutes();
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123/tester');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		$groupid=$handler['groupid'];
+		$routeid=$handler['routeid'];
+
+		$mwRoute = $this->mwCollector->getRoute($routeid);
+		$mwGroup = $this->mwCollector->getGroup($groupid[1]);
+
+		self::assertEquals('Middleware 0',$mwRoute[0]);
+		self::assertEquals('Middleware 2 0',$mwRoute[1]);
+		self::assertEquals('Group 1',$mwGroup[0]);
+		self::assertEquals('Group 1 1',$mwGroup[1]);
 	}
 }
