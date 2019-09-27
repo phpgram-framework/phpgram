@@ -35,21 +35,14 @@ class RouterTest extends TestCase
 		$this->collector->set405("405");
 	}
 
-	private function initRoutesGet()
+	private function initRoutes($method='get')
 	{
 		//init Collector
 		foreach ($this->routes as $key=>$route) {
-			$this->collector->get($route,$this->routehandler[$key]);
+			$this->collector->{$method}($route,$this->routehandler[$key]);
 		}
 	}
 
-	private function initRoutesPost()
-	{
-		//init Collector
-		foreach ($this->routes as $key=>$route) {
-			$this->collector->post($route,$this->routehandler[$key]);
-		}
-	}
 
 	public function testRouterInit()
 	{
@@ -63,7 +56,7 @@ class RouterTest extends TestCase
 	public function testSimpleRoutes()
 	{
 		$this->initRouter();
-		$this->initRoutesGet();
+		$this->initRoutes();
 
 		$factory= new Psr17Factory();
 
@@ -79,7 +72,7 @@ class RouterTest extends TestCase
 	public function testSimpleRoutesWithDataTyp()
 	{
 		$this->initRouter();
-		$this->initRoutesGet();
+		$this->initRoutes();
 
 		$factory= new Psr17Factory();
 
@@ -95,7 +88,7 @@ class RouterTest extends TestCase
 	public function testSimpleRoutesWithDataTypTwo()
 	{
 		$this->initRouter();
-		$this->initRoutesGet();
+		$this->initRoutes();
 
 		$factory= new Psr17Factory();
 
@@ -111,7 +104,7 @@ class RouterTest extends TestCase
 	public function testSimpleRoutesWithHead()
 	{
 		$this->initRouter();
-		$this->initRoutesGet();
+		$this->initRoutes();
 
 		$factory= new Psr17Factory();
 
@@ -127,7 +120,7 @@ class RouterTest extends TestCase
 	public function testSimpleRoutesWithPost()
 	{
 		$this->initRouter();
-		$this->initRoutesPost();
+		$this->initRoutes('post');
 
 		$factory= new Psr17Factory();
 
