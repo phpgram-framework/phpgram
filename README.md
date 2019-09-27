@@ -2,6 +2,10 @@
 
 # phpgram
 
+[![Packagist Version](https://img.shields.io/packagist/v/phpgram/phpgram)](https://packagist.org/packages/phpgram/phpgram)
+[![Packagist](https://img.shields.io/packagist/l/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/composer.json)
+
 A very fast and lightweight Php Framework for small to enterprise applications.
 
 - Routing based on [nikic/Fastroute](https://github.com/nikic/FastRoute)
