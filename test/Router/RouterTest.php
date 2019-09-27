@@ -15,24 +15,21 @@ class RouterTest extends TestCase
 	private $router;
 	/** @var RouteCollector */
 	private $collector;
+	/** @var Psr17Factory */
+	private $psr17;
 
-
-	public function __construct(?string $name = null, array $data = [], string $dataName = '')
+	protected function setUp(): void
 	{
-		parent::__construct($name, $data, $dataName);
+		$this->psr17 = new Psr17Factory();
+
+		$this->router = new Router();
+		$this->collector = $this->router->getCollector();
+		$this->collector->set404("404");
+		$this->collector->set405("405");
 
 		$this->map = new RouteMap();
 		$this->routes = $this->map->map();
 		$this->routehandler = $this->map->handler();
-	}
-
-	private function initRouter()
-	{
-		$this->router = new Router();
-		$this->collector = $this->router->getCollector();
-
-		$this->collector->set404("404");
-		$this->collector->set405("405");
 	}
 
 	private function initRoutes($method='get')
@@ -42,7 +39,6 @@ class RouterTest extends TestCase
 			$this->collector->{$method}($route,$this->routehandler[$key]);
 		}
 	}
-
 
 	public function testRouterInit()
 	{
@@ -55,60 +51,54 @@ class RouterTest extends TestCase
 
 	public function testSimpleRoutes()
 	{
-		$this->initRouter();
 		$this->initRoutes();
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123@a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@a/tester');
 
 		$this->router->run($uri->getPath(),'GET');
 
 		$handler = $this->router->getHandle();
+		$param = $this->router->getParam();
 
 		self::assertEquals($this->routehandler[2],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals(['var'=>'123@a'],$param);
 	}
 
 	public function testSimpleRoutesWithDataTyp()
 	{
-		$this->initRouter();
 		$this->initRoutes();
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123/tester');
 
 		$this->router->run($uri->getPath(),'GET');
 
 		$handler = $this->router->getHandle();
+		$param = $this->router->getParam();
 
 		self::assertEquals($this->routehandler[0],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals(['var'=>'123'],$param);
 	}
 
 	public function testSimpleRoutesWithDataTypTwo()
 	{
-		$this->initRouter();
 		$this->initRoutes();
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->router->run($uri->getPath(),'GET');
 
 		$handler = $this->router->getHandle();
+		$param = $this->router->getParam();
 
 		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals(['var'=>'123a'],$param);
 	}
 
 	public function testSimpleRoutesWithHead()
 	{
-		$this->initRouter();
 		$this->initRoutes();
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->router->run($uri->getPath(),'HEAD');
 
@@ -119,12 +109,9 @@ class RouterTest extends TestCase
 
 	public function testSimpleRoutesWithPost()
 	{
-		$this->initRouter();
 		$this->initRoutes('post');
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->router->run($uri->getPath(),'POST');
 
@@ -135,12 +122,9 @@ class RouterTest extends TestCase
 
 	public function testSimpleRoutesWithPut()
 	{
-		$this->initRouter();
 		$this->initRoutes('put');
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->router->run($uri->getPath(),'PUT');
 
@@ -151,12 +135,9 @@ class RouterTest extends TestCase
 
 	public function testSimpleRoutesWithDelete()
 	{
-		$this->initRouter();
 		$this->initRoutes('delete');
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->router->run($uri->getPath(),'DELETE');
 
@@ -167,12 +148,9 @@ class RouterTest extends TestCase
 
 	public function testSimpleRoutesWithPatch()
 	{
-		$this->initRouter();
 		$this->initRoutes('patch');
 
-		$factory= new Psr17Factory();
-
-		$uri = $factory->createUri('https://jo.com/test/vars/123a/tester');
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->router->run($uri->getPath(),'PATCH');
 
