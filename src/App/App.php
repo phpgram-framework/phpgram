@@ -23,6 +23,8 @@ use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\RouteCollectorTrait;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
+use Gram\Route\Route;
+use Gram\Route\RouteGroup;
 use Gram\Route\Router;
 use Gram\Strategy\StdAppStrategy;
 use Gram\Strategy\StrategyInterface;
@@ -239,12 +241,12 @@ class App
 
 	//Routes
 
-	public function add(string $path,$handler,array $method)
+	public function add(string $path,$handler,array $method):Route
 	{
 		return $this->getRouter()->getCollector()->add($path,$handler,$method);
 	}
 
-	public function addGroup($prefix,callable $groupcollector)
+	public function addGroup($prefix,callable $groupcollector):RouteGroup
 	{
 		return $this->getRouter()->getCollector()->addGroup($prefix,$groupcollector);
 	}

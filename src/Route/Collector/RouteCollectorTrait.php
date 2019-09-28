@@ -13,6 +13,9 @@
 
 namespace Gram\Route\Collector;
 
+use Gram\Route\Route;
+use Gram\Route\RouteGroup;
+
 /**
  * Trait CollectorTrait
  * @package Gram\Route\Collector
@@ -21,9 +24,9 @@ namespace Gram\Route\Collector;
  */
 trait RouteCollectorTrait
 {
-	abstract function add(string $path,$handler,array $method);
+	abstract function add(string $path,$handler,array $method):Route;
 
-	abstract public function addGroup($prefix,callable $groupcollector);
+	abstract public function addGroup($prefix,callable $groupcollector):RouteGroup;
 
 	public function get(string $route,$handler)
 	{
