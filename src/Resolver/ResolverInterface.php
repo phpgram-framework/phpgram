@@ -51,13 +51,6 @@ interface ResolverInterface
 	public function setRequest(ServerRequestInterface $request);
 
 	/**
-	 * Gibt den Request der bei @see resolve() übergeben wurde zurück
-	 *
-	 * @return ServerRequestInterface
-	 */
-	public function getRequest():ServerRequestInterface;
-
-	/**
 	 * Gibt das Response Object
 	 *
 	 * @param ResponseInterface $response

@@ -45,14 +45,6 @@ trait ResolverTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function getRequest(): ServerRequestInterface
-	{
-		return $this->request;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
 	public function setResponse(ResponseInterface $response)
 	{
 		$this->response = $response;

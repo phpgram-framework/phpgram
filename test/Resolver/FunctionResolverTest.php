@@ -18,8 +18,7 @@ class FunctionResolverTest extends TestCase
 	private $request;
 	/** @var ResponseInterface */
 	private $response;
-	/** @var ServerRequestInterface */
-	private $newRequest;
+
 	/** @var ResponseInterface */
 	private $newResponse;
 
@@ -53,7 +52,6 @@ class FunctionResolverTest extends TestCase
 			$this->body=null;
 		}
 
-		$this->newRequest = $this->resolver->getRequest();
 		$this->newResponse = $this->resolver->getResponse();
 	}
 

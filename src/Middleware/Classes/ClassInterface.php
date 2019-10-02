@@ -35,13 +35,6 @@ interface ClassInterface
 	public function setPsr(ServerRequestInterface $request, ResponseInterface $response);
 
 	/**
-	 * Gebe Psr Object(s) wieder zurück
-	 *
-	 * @return ServerRequestInterface
-	 */
-	public function getRequest():ServerRequestInterface;
-
-	/**
 	 * Gebe den Response wieder zurück
 	 *
 	 * @return ResponseInterface

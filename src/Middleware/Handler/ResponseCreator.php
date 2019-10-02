@@ -118,7 +118,7 @@ class ResponseCreator implements RequestHandlerInterface
 	 *
 	 * Nehme des return des Callbacks entgegen
 	 *
-	 * Nehme die Request und Response Objects des Callbacks entgegen, da diese ggf. verändert wurden
+	 * Nehme den Response des Callbacks entgegen, da diese ggf. verändert wurden
 	 * durch das Callback
 	 *
 	 * @param StrategyInterface $strategy
@@ -137,8 +137,7 @@ class ResponseCreator implements RequestHandlerInterface
 		//Führe das Callback aus
 		$result = $strategy->invoke($resolver,$this->param);
 
-		//nehme Request und Response entgegen falls das Callback Attribute verändert hat
-		$this->request = $resolver->getRequest();
+		//nehme Response entgegen falls das Callback Attribute verändert hat
 		$this->response = $resolver->getResponse();
 
 		return $result;

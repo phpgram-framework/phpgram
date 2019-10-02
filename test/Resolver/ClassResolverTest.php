@@ -70,7 +70,6 @@ class ClassResolverTest extends TestCase
 			$this->body=null;
 		}
 
-		$this->newRequest = $this->resolver->getRequest();
 		$this->newResponse = $this->resolver->getResponse();
 	}
 

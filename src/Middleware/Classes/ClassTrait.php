@@ -46,14 +46,6 @@ trait ClassTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function getRequest():ServerRequestInterface
-	{
-		return $this->request;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
 	public function getResponse():ResponseInterface
 	{
 		return $this->response;

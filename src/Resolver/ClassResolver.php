@@ -70,7 +70,6 @@ class ClassResolver implements ResolverInterface
 
 		$return = call_user_func_array($callback,$param);
 
-		$this->request = $this->class->getRequest();	//nehme Request wieder entgegen
 		$this->response = $this->class->getResponse();
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
