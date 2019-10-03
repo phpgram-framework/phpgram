@@ -8,7 +8,7 @@
  *
  * @license https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE
  *
- * @author Jörn Heinemann <j.heinemann1@web.de>
+ * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
 namespace Gram\Middleware\Classes;
