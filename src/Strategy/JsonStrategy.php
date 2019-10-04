@@ -23,7 +23,7 @@ use Gram\Resolver\ResolverInterface;
  */
 class JsonStrategy implements StrategyInterface
 {
-	private $options, $depth;
+	protected $options, $depth;
 
 	public function __construct($options = 0, $depth = 512)
 	{
@@ -59,7 +59,7 @@ class JsonStrategy implements StrategyInterface
 	 * @param $result
 	 * @return bool
 	 */
-	private function ableToJson($result){
+	protected function ableToJson($result){
 		return (is_array($result) || is_object($result));
 	}
 }

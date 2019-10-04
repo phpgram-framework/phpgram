@@ -2,6 +2,11 @@
 
 # 1.2.x
 
+## 1.2.2
+
+- since 2019/10/04
+- Alle Strategies haben nun protected Methods und Variables um diese ggf. zu erweitern
+
 ## 1.2.1
 
 - since 2019/09/26
