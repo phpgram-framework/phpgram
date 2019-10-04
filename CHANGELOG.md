@@ -6,6 +6,7 @@
 
 - since 2019/10/04
 - Alle Strategies haben nun protected Methods und Variables um diese ggf. zu erweitern
+- Head Routes wieder hinzugefügt
 
 ## 1.2.1
 

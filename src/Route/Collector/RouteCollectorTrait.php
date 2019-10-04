@@ -58,6 +58,11 @@ trait RouteCollectorTrait
 		return $this->add($route,$handler,['PATCH']);
 	}
 
+	public function head(string $route,$handler)
+	{
+		return $this->add($route,$handler,['HEAD']);
+	}
+
 	public function options(string $route,$handler)
 	{
 		return $this->add($route,$handler,['OPTIONS']);
@@ -65,6 +70,6 @@ trait RouteCollectorTrait
 
 	public function any(string $route,$handler)
 	{
-		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','OPTIONS']);
+		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','HEAD','OPTIONS']);
 	}
 }

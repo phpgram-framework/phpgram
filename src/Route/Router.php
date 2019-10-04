@@ -156,16 +156,16 @@ class Router implements RouterInterface
 	{
 		$httpMethod = strtolower($httpMethod);
 
-		//Bei HEAD requests suche eine GET Route
-		if($httpMethod=='head'){
-			$httpMethod = 'get';
-		}
-		
 		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
 		foreach ((array)$this->handle['method'] as $item) {
 			if($httpMethod===strtolower($item)){
 				return true;
 			}
+		}
+
+		//Bei HEAD requests suche eine GET Route wenn fehlgeschlagen
+		if($httpMethod=='head'){
+			return $this->checkMethod('GET',$collector);
 		}
 
 		$this->status=self::METHOD_NOT_ALLOWED;
