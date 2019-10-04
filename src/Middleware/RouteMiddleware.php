@@ -106,8 +106,7 @@ class RouteMiddleware implements MiddlewareInterface
 		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
 		if($addstd===true){
 			foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
-				$callable = (is_object($item))?$item:new $item;
-				$this->queueHandler->add($callable);
+				$this->queueHandler->add($item);
 			}
 		}else{
 			foreach ($this->groupid as $item) {
