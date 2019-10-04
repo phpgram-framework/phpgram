@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.2.2 */
+/** @version 1.2.3 */
 
 namespace Gram\App;
 
@@ -46,7 +46,13 @@ class App
 	use RouteCollectorTrait;
 
 	protected $router=null,$middlewareCollector=null,$strategyCollector=null,$container=null;
-	protected $responseFactory, $streamFactory,$stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
+	protected $stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
+
+	/** @var ResponseFactoryInterface */
+	protected $responseFactory;
+
+	/** @var StreamFactoryInterface */
+	protected $streamFactory;
 
 	private static $_instance;
 
@@ -114,7 +120,13 @@ class App
 	 */
 	public function start(ServerRequestInterface $request)
 	{
-		$response = $this->sendRequest($request);
+		try {
+			$response = $this->sendRequest($request);  //Starte den Stack und erstelle Response
+		} catch (\Exception $e) {
+			$stream = $this->streamFactory->createStream("<h1>Application Error</h1> <pre>".$e."</pre>");
+
+			$response = $this->responseFactory->createResponse(500)->withBody($stream);
+		}
 
 		$emitter = new Emitter();
 
@@ -127,6 +139,7 @@ class App
 	 *
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface
+	 * @throws \Exception
 	 */
 	public function sendRequest(ServerRequestInterface $request): ResponseInterface
 	{
@@ -167,7 +180,7 @@ class App
 				$this->container
 			);
 
-		$queue = $this->queuHandler ?? new QueueHandler($fallback);	//default Fallback
+		$queue = $this->queuHandler ?? new QueueHandler($fallback,$this->container);	//default Fallback
 
 		//___________________________________________________________________________
 

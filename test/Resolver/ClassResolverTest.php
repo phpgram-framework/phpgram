@@ -19,8 +19,6 @@ class ClassResolverTest extends TestCase
 	private $request;
 	/** @var ResponseInterface */
 	private $response;
-	/** @var ServerRequestInterface */
-	private $newRequest;
 	/** @var ResponseInterface */
 	private $newResponse;
 

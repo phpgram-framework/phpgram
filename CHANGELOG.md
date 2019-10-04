@@ -2,6 +2,11 @@
 
 # 1.2.x
 
+## 1.2.3
+- since 2019/10/05
+- Middleware können jetzt auch aus einem Psr 11 Container geladen werden
+und nur ihr Index braucht angegeben zu werden
+
 ## 1.2.2
 
 - since 2019/10/04
