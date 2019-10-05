@@ -14,7 +14,7 @@
 namespace Gram\Exceptions;
 
 
-class AbstractGramException extends \Exception
+abstract class AbstractGramException extends \Exception
 {
 
 }
