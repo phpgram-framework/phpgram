@@ -13,6 +13,7 @@
 
 namespace Gram\App;
 
+use Gram\Exceptions\MiddlewareNotAllowedException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -75,14 +76,14 @@ class QueueHandler implements RequestHandlerInterface
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
 		if($this->container!==null && is_string($middleware)){
 			if($this->container->has($middleware) === false){
-				throw new \Exception("Middleware: [$middleware] not found");
+				throw new MiddlewareNotAllowedException("Middleware: [$middleware] not found");
 			}
 
 			$middleware = $this->container->get($middleware);
 		}
 
 		if($middleware instanceof MiddlewareInterface === false){
-			throw new \Exception("Middleware needs to implement Psr 15 MiddlewareInterface");
+			throw new MiddlewareNotAllowedException("Middleware needs to implement Psr 15 MiddlewareInterface");
 		}
 
 		return $middleware->process($request,$this);	//führe die middleware aus
