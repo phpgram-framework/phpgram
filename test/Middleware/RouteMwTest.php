@@ -103,4 +103,25 @@ class RouteMwTest extends TestCase
 
 		self::assertEquals($expect,$string);
 	}
+
+	public function testNotFound()
+	{
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/tester1');
+
+		$this->request = $this->request->withUri($uri);
+
+		$this->routeCollector->set404('Not Found');
+
+		$response = $this->queue->handle($this->request);
+
+		$status = $response->getStatusCode();
+
+		self::assertEquals(404,$status);
+
+		$string = $response->getBody()->__toString();
+
+		$expect = "Ein Stream für Not Found 1";
+
+		self::assertEquals($expect,$string);
+	}
 }
