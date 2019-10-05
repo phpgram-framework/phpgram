@@ -2,6 +2,11 @@
 
 # 1.2.x
 
+## 1.2.4
+- since 201/10/05
+- Exceptions ausgeweitet
+- Mw Handler erben nun vom ClassInterface und haben somit Zugriff auf Request und Response
+
 ## 1.2.3
 - since 2019/10/05
 - Middleware können jetzt auch aus einem Psr 11 Container geladen werden

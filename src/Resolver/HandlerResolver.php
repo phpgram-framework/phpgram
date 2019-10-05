@@ -13,6 +13,7 @@
 
 namespace Gram\Resolver;
 
+use Gram\Exceptions\ClassNotAllowedException;
 use Gram\Middleware\Handler\HandlerInterface;
 
 /**
@@ -27,12 +28,17 @@ class HandlerResolver implements ResolverInterface
 {
 	use ResolverTrait;
 
+	/** @var HandlerInterface */
 	private $handler;
 
 	public function resolve($param = [])
 	{
+		$this->handler->setPsr($this->request,$this->response);
+		$this->handler->setContainer($this->container);
 
-		$return = call_user_func_array([$this->handler,'handle'],[$this->request]);
+		$return = call_user_func([$this->handler,'handle']);
+
+		$this->response = $this->handler->getResponse();
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
 	}
@@ -44,7 +50,7 @@ class HandlerResolver implements ResolverInterface
 	public function set(HandlerInterface $handler=null)
 	{
 		if($handler===null){
-			throw new \Exception("Keinen Handler angegeben");
+			throw new ClassNotAllowedException("No Handler set");
 		}
 
 		$this->handler=$handler;

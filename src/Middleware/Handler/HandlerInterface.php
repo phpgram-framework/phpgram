@@ -12,7 +12,7 @@
  */
 
 namespace Gram\Middleware\Handler;
-use Psr\Http\Message\ServerRequestInterface;
+use Gram\Middleware\Classes\ClassInterface;
 
 /**
  * Interface HandlerInterface
@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Ein Interface für Handler die von Middleware ausgeführt werden können
  */
-interface HandlerInterface
+interface HandlerInterface extends ClassInterface
 {
-	public function handle(ServerRequestInterface $request);
+	public function handle();
 }

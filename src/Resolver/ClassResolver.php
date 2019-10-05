@@ -13,6 +13,8 @@
 
 namespace Gram\Resolver;
 
+use Gram\Exceptions\ClassNotAllowedException;
+use Gram\Exceptions\DependencyNotFoundException;
 use Gram\Middleware\Classes\ClassInterface;
 
 /**
@@ -52,13 +54,12 @@ class ClassResolver implements ResolverInterface
 		$this->reflector = new \ReflectionClass($this->classname);
 
 		if(!$this->reflector->isInstantiable()) {
-			throw new \Exception("[$this->classname] is not instantiable");
+			throw new ClassNotAllowedException("[$this->classname] is not instantiable");
 		}
 
 		if(!$this->reflector->implementsInterface('Gram\Middleware\Classes\ClassInterface')){
-			throw new \Exception("[$this->classname] needs to implement Gram\Middleware\Classes\ClassInterface");
+			throw new ClassNotAllowedException("[$this->classname] needs to implement Gram\Middleware\Classes\ClassInterface");
 		}
-
 
 		$this->class = $this->getClass();
 
@@ -166,7 +167,7 @@ class ClassResolver implements ResolverInterface
 			return $parameter->getDefaultValue();
 		}
 
-		throw new \Exception("Dependency [$dependency] for [$this->classname] is missing");
+		throw new DependencyNotFoundException("Dependency [$dependency] for [$this->classname] is missing");
 	}
 
 	/**
@@ -174,19 +175,19 @@ class ClassResolver implements ResolverInterface
 	 *
 	 * trennt den Class String in Klasse und Funktion
 	 *
-	 * @param string $controller
+	 * @param string $class
 	 * @throws \Exception
 	 */
-	public function set($controller="")
+	public function set($class="")
 	{
-		if($controller===""){
-			throw new \Exception("Keinen Controller angegeben");
+		if($class===""){
+			throw new ClassNotAllowedException("No Class given in [$class]");
 		}
 
-		$extract = explode('@',$controller);
+		$extract = explode('@',$class);
 
 		if($extract[0]==="" || $extract[1]===""){
-			throw new \Exception("Keine Klasse oder Funktion angegeben");
+			throw new ClassNotAllowedException("Cannot split Class and Method from [$class]");
 		}
 
 		$this->classname=$extract[0];

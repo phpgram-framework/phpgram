@@ -13,6 +13,7 @@
 
 namespace Gram\Middleware\Handler;
 
+use Gram\Exceptions\CallableNotFoundException;
 use Gram\Strategy\StrategyInterface;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Psr\Container\ContainerInterface;
@@ -61,6 +62,7 @@ class ResponseCreator implements RequestHandlerInterface
 	 *
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface
+	 * @throws CallableNotFoundException
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
@@ -68,6 +70,11 @@ class ResponseCreator implements RequestHandlerInterface
 
 		//Die Attribute die für das Ausführen des callable benötigt werden
 		$this->callable = $request->getAttribute('callable');
+
+		if($this->callable===null){
+			throw new CallableNotFoundException("No callable to Resolve");
+		}
+
 		$this->param = $request->getAttribute('param',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
 		$creator = $request->getAttribute('creator',null) ?? $this->creator;
