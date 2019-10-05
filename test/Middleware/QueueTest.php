@@ -55,7 +55,7 @@ class QueueTest extends TestCase
 
 		$string = $response->getBody()->__toString();
 
-		$expect = "Ein Stream123";
+		$expect = "Ein Stream für  123";
 
 		self::assertEquals($expect,$string);
 	}
@@ -100,7 +100,7 @@ class QueueTest extends TestCase
 
 		$string = $response->getBody()->__toString();
 
-		$expect = "Ein Stream123";
+		$expect = "Ein Stream für  123";
 
 		self::assertEquals($expect,$string);
 	}

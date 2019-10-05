@@ -13,9 +13,12 @@ class DummyLastHandler implements RequestHandlerInterface
 
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
+		$callable = $request->getAttribute('callable',null);
+		$status = $request->getAttribute('status',200);
+
 		$psr17 = new Psr17Factory();
 
-		$stream = $psr17->createStream('Ein Stream');
+		$stream = $psr17->createStream('Ein Stream für '.$callable.' ');
 
 		$words = $request->getAttribute('words',[]);
 
@@ -23,7 +26,7 @@ class DummyLastHandler implements RequestHandlerInterface
 			$stream->write($word);
 		}
 
-		$response = $psr17->createResponse();
+		$response = $psr17->createResponse($status);
 
 		return $response->withBody($stream);
 	}
