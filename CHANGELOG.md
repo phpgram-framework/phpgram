@@ -2,8 +2,12 @@
 
 # 1.2.x
 
+## 1.2.5
+- since 2019/10/13
+- Router Basepath und Startpage bugfix
+
 ## 1.2.4
-- since 201/10/05
+- since 2019/10/05
 - Exceptions ausgeweitet
 - Mw Handler erben nun vom ClassInterface und haben somit Zugriff auf Request und Response
 

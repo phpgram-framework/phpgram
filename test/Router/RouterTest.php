@@ -36,8 +36,10 @@ class RouterTest extends TestCase
 		$this->routehandler = $this->map->handler();
 	}
 
-	private function initRoutes($method='get')
+	private function initRoutes($method='get',$basepath ='')
 	{
+		$this->collector->setBase($basepath);
+
 		$this->collector->addGroup("",function () use($method){
 			//init Collector
 			foreach ($this->routes as $key=>$route) {
@@ -189,5 +191,57 @@ class RouterTest extends TestCase
 		self::assertEquals('Middleware 2 0',$mwRoute[1]);
 		self::assertEquals('Group 1',$mwGroup[0]);
 		self::assertEquals('Group 1 1',$mwGroup[1]);
+	}
+
+	public function testStartPage()
+	{
+		$this->initRoutes();
+
+		$uri = $this->psr17->createUri('https://jo.com/');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[3],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testStaticPage()
+	{
+		$this->initRoutes();
+
+		$uri = $this->psr17->createUri('https://jo.com/abc/');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[4],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function testBasePath()
+	{
+		$this->initRoutes('GET','/base_path');
+
+		$uri = $this->psr17->createUri('https://jo.com/base_path/abc');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[4],$handler['callable']);
+	}
+
+	public function testBasePathWithStartPage()
+	{
+		$this->initRoutes('GET','/base_path');
+
+		$uri = $this->psr17->createUri('https://jo.com/base_path/');
+
+		$this->router->run($uri->getPath(),'GET');
+
+		$handler = $this->router->getHandle();
+
+		self::assertEquals($this->routehandler[3],$handler['callable']);
 	}
 }

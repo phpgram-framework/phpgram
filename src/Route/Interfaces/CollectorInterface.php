@@ -78,4 +78,5 @@ interface CollectorInterface
 	public function put(string $route,$handler);
 	public function patch(string $route,$handler);
 	public function setBase(string $base);
+	public function getBase();
 }

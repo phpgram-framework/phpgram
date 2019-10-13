@@ -9,7 +9,9 @@ class RouteMap
 		return [
 			'/test/vars/{var:n}/tester',
 			'/test/vars/{var:a}/tester',
-			'/test/vars/{var}/tester'
+			'/test/vars/{var}/tester',
+			'/',
+			'/abc'
 		];
 	}
 
@@ -18,7 +20,9 @@ class RouteMap
 		return [
 			"TestHandler0",
 			"TestHandler1",
-			"TestHandler2"
+			"TestHandler2",
+			"Start",
+			"abc"
 		];
 	}
 }

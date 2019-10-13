@@ -40,7 +40,12 @@ class Router implements RouterInterface
 	const OK = 200;
 
 	private $checkMethod,$uri,$handle,$param=[],$status,$slash_trim;
-	private $collector,$dispatcher;
+
+	/** @var CollectorInterface */
+	private $collector;
+
+	/** @var DispatcherInterface */
+	private $dispatcher;
 
 	/**
 	 * Router constructor.
@@ -92,7 +97,7 @@ class Router implements RouterInterface
 	{
 		$uri=urldecode($uri);	//umlaute filtern
 
-		if($this->slash_trim && $uri !=='/'){
+		if($this->slash_trim && $uri !== $this->collector->getBase().'/'){
 			$uri = rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 

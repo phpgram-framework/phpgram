@@ -155,6 +155,11 @@ class RouteCollector implements CollectorInterface
 		$this->basepath=$base;
 	}
 
+	public function getBase()
+	{
+		return $this->basepath;
+	}
+
 	public function set404($handle)
 	{
 		$this->er404=$handle;
