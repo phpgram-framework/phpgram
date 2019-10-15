@@ -33,9 +33,7 @@ class BufferAppStrategy extends StdAppStrategy
 	{
 		ob_start();
 		parent::invoke($resolver,$param);
-		$return=ob_get_clean();
-		ob_flush();
 
-		return $return;
+		return ob_get_clean();
 	}
 }
