@@ -2,6 +2,10 @@
 
 # 1.2.x
 
+## 1.2.6
+- since 2019/10/15
+- Buffer Strategy Php Notice bugfix
+
 ## 1.2.5
 - since 2019/10/13
 - Router Basepath und Startpage bugfix
