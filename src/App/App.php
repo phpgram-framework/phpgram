@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.2.6 */
+/** @version 1.2.7 */
 
 namespace Gram\App;
 

@@ -2,6 +2,11 @@
 
 # 1.2.x
 
+## 1.2.7
+- since 2019/10/23
+- Class Resolver erstellt für die aufzurufende class und reflactor keine Klassenvariable mehr
+sondern eine lokale
+
 ## 1.2.6
 - since 2019/10/15
 - Buffer Strategy Php Notice bugfix

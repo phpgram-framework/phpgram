@@ -31,13 +31,6 @@ class ClassResolver implements ResolverInterface
 
 	protected $classname,$function,$param;
 
-	/** @var \ReflectionClass */
-	protected $reflector;
-
-	/** @var ClassInterface */
-	protected $class;
-
-
 	/**
 	 * @inheritdoc
 	 *
@@ -51,27 +44,17 @@ class ClassResolver implements ResolverInterface
 	 */
 	public function resolve($param=[])
 	{
-		$this->reflector = new \ReflectionClass($this->classname);
-
-		if(!$this->reflector->isInstantiable()) {
-			throw new ClassNotAllowedException("[$this->classname] is not instantiable");
-		}
-
-		if(!$this->reflector->implementsInterface('Gram\Middleware\Classes\ClassInterface')){
-			throw new ClassNotAllowedException("[$this->classname] needs to implement Gram\Middleware\Classes\ClassInterface");
-		}
-
-		$this->class = $this->getClass();
+		$class = $this->getClass();
 
 		//gebe den Klassen die Psr Objekte
-		$this->class->setPsr($this->request,$this->response);
-		$this->class->setContainer($this->container);
+		$class->setPsr($this->request,$this->response);
+		$class->setContainer($this->container);
 
-		$callback = [$this->class,$this->function];
+		$callback = [$class,$this->function];
 
 		$return = call_user_func_array($callback,$param);
 
-		$this->response = $this->class->getResponse();
+		$this->response = $class->getResponse();
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
 	}
@@ -81,7 +64,7 @@ class ClassResolver implements ResolverInterface
 	 *
 	 * Entweder direkt, aus dem Container oder mit den Dependencies des Class Constructor
 	 *
-	 * @return object
+	 * @return object|ClassInterface
 	 * @throws \Exception
 	 */
 	protected function getClass()
@@ -91,12 +74,24 @@ class ClassResolver implements ResolverInterface
 			return new $this->classname;
 		}
 
-		$constructor = $this->reflector->getConstructor();
+		$reflector = new \ReflectionClass($this->classname);
+
+		//Prüft ob von der Klasse ein Object erstellt werden kann
+		if(!$reflector->isInstantiable()) {
+			throw new ClassNotAllowedException("[$this->classname] is not instantiable");
+		}
+
+		//Prüft ob die Klasse das ClassInterface implementiert hat
+		if(!$reflector->implementsInterface('Gram\Middleware\Classes\ClassInterface')){
+			throw new ClassNotAllowedException("[$this->classname] needs to implement Gram\Middleware\Classes\ClassInterface");
+		}
 
 		//Wenn es die Klasse bereits im Container gibt gebe dieses Object zurück, hier mit Namespace
 		if($this->container->has($this->classname)){
 			return $this->container->get($this->classname);
 		}
+
+		$constructor = $reflector->getConstructor();
 
 		//wenn es keinen Construktor für DI gibt gebe die neue Klasse zurück
 		if($constructor===null) {
@@ -106,7 +101,7 @@ class ClassResolver implements ResolverInterface
 		$con_param = $constructor->getParameters();
 		$dependencies = $this->getDependencies($con_param);
 
-		return $this->reflector->newInstanceArgs($dependencies);	//erstelle das Object mit den Parameter im Constructor
+		return $reflector->newInstanceArgs($dependencies);	//erstelle das Object mit den Parameter im Constructor
 	}
 
 	/**
