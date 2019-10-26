@@ -3,7 +3,7 @@
 # 1.2.x
 
 ## 1.2.7
-- since 2019/10/23
+- since 2019/10/30
 - Class Resolver erstellt für die aufzurufende class und reflactor keine Klassenvariable mehr
 sondern eine lokale
 - Routing Mw packt nun nicht mehr den rohen Router handler in den Request
