@@ -76,7 +76,7 @@ class Emitter
 		//Sende weitere Header die noch hinzugefügt wurden
 		foreach ($response->getHeaders() as $headers=>$values) {
 			$name = ucwords($headers,'-');
-			$first = $name !== 'Set-Cookie';
+			$first = $name === 'Set-Cookie' ? false : true;
 
 			//wenn header ein Array sende alle werte im Array
 			foreach ($values as $value) {

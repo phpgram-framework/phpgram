@@ -7,6 +7,7 @@
 - Class Resolver erstellt für die aufzurufende class und reflactor keine Klassenvariable mehr
 sondern eine lokale
 - Routing Mw packt nun nicht mehr den rohen Router handler in den Request
+- Emitter bugfix update
 
 ## 1.2.6
 - since 2019/10/15
