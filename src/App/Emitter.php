@@ -51,8 +51,6 @@ class Emitter
 		}else{
 			$this->emitBodyRange($range, $response);
 		}
-
-		exit();	//schließe die Seite, keine weitere Ausgabe mehr möglich
 	}
 
 	private function emitStatusLine(ResponseInterface $response)

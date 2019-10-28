@@ -131,6 +131,8 @@ class App
 		$emitter = new Emitter();
 
 		$emitter->emit($response);	//Gebe Header und Body vom Response aus
+
+		exit();	//schließe die Seite, keine weitere Ausgabe mehr möglich
 	}
 
 	/**
