@@ -58,13 +58,13 @@ class Emitter
 		$status = $response->getStatusCode();
 
 		//Erstelle den Status Header
-		$statusLine = sprintf('HTTP/%s %s %s',
+		$statusLine = \sprintf('HTTP/%s %s %s',
 			$response->getProtocolVersion(),
 			$status,
 			$response->getReasonPhrase()
 		);
 
-		header($statusLine, true,$status);
+		\header($statusLine, true,$status);
 	}
 
 	private function emitHeader(ResponseInterface $response)
@@ -73,17 +73,17 @@ class Emitter
 
 		//Sende weitere Header die noch hinzugefügt wurden
 		foreach ($response->getHeaders() as $headers=>$values) {
-			$name = ucwords($headers,'-');
+			$name = \ucwords($headers,'-');
 			$first = $name === 'Set-Cookie' ? false : true;
 
 			//wenn header ein Array sende alle werte im Array
 			foreach ($values as $value) {
-				$responseHeader = sprintf('%s: %s',
+				$responseHeader = \sprintf('%s: %s',
 					$name,
 					$value
 				);
 
-				header($responseHeader, $first,$status);
+				\header($responseHeader, $first,$status);
 				$first=false;
 			}
 		}
@@ -128,7 +128,7 @@ class Emitter
 		$length = $last - $first + 1;
 
 		if (!$body->isReadable()){
-			echo substr($body->getContents(), $first, $length);
+			echo \substr($body->getContents(), $first, $length);
 			return;
 		}
 
@@ -136,7 +136,7 @@ class Emitter
 
 		while ($remaining >= $this->maxBufferLength && ! $body->eof()) {
 			$contents   = $body->read($this->maxBufferLength);
-			$remaining -= strlen($contents);
+			$remaining -= \strlen($contents);
 			echo $contents;
 		}
 		if ($remaining > 0 && ! $body->eof()) {
@@ -157,7 +157,7 @@ class Emitter
 	 */
 	private function parseContentRange(string $header) : ?array
 	{
-		if (! preg_match('/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/', $header, $matches)) {
+		if (! \preg_match('/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/', $header, $matches)) {
 			return null;
 		}
 		return [
