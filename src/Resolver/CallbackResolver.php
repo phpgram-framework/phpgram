@@ -13,6 +13,8 @@
 
 namespace Gram\Resolver;
 
+use Gram\Exceptions\CallableNotAllowedException;
+
 /**
  * Class CallbackHandler
  * @package Gram\Resolver
@@ -36,7 +38,7 @@ class CallbackResolver implements ResolverInterface
 	{
 		$callback = $this->callback->bindTo($this);	//Bindet die Funktion an diese Klasse, somit hat sie Zugriff auf den Request
 
-		$return = call_user_func_array($callback,$param);
+		$return = \call_user_func_array($callback,$param);
 
 		return ($return===null)?'':$return;	//default: immer einen String zurück geben
 	}
@@ -47,8 +49,8 @@ class CallbackResolver implements ResolverInterface
 	 */
 	public function set($callback=null)
 	{
-		if(!is_callable($callback)){
-			throw new \Exception("Kein Callable!");
+		if(! \is_callable($callback)){
+			throw new CallableNotAllowedException("No callable given");
 		}
 
 		$this->callback=$callback;
