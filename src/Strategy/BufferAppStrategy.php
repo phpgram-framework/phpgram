@@ -31,9 +31,9 @@ class BufferAppStrategy extends StdAppStrategy
 	 */
 	public function invoke(ResolverInterface $resolver, array $param)
 	{
-		ob_start();
+		\ob_start();
 		parent::invoke($resolver,$param);
 
-		return ob_get_clean();
+		return \ob_get_clean();
 	}
 }

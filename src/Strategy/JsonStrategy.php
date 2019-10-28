@@ -50,7 +50,7 @@ class JsonStrategy implements StrategyInterface
 			return $result;
 		}
 
-		return json_encode($result,$this->options,$this->depth);
+		return \json_encode($result,$this->options,$this->depth);
 	}
 
 	/**
@@ -60,6 +60,6 @@ class JsonStrategy implements StrategyInterface
 	 * @return bool
 	 */
 	protected function ableToJson($result){
-		return (is_array($result) || is_object($result));
+		return (\is_array($result) || \is_object($result));
 	}
 }
