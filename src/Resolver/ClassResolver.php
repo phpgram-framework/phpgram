@@ -52,7 +52,7 @@ class ClassResolver implements ResolverInterface
 
 		$callback = [$class,$this->function];
 
-		$return = call_user_func_array($callback,$param);
+		$return = \call_user_func_array($callback,$param);
 
 		$this->response = $class->getResponse();
 
@@ -69,11 +69,6 @@ class ClassResolver implements ResolverInterface
 	 */
 	protected function getClass()
 	{
-		//wenn es keinen Container gibt gebe das neue object zurück
-		if($this->container === null){
-			return new $this->classname;
-		}
-
 		$reflector = new \ReflectionClass($this->classname);
 
 		//Prüft ob von der Klasse ein Object erstellt werden kann
@@ -84,6 +79,11 @@ class ClassResolver implements ResolverInterface
 		//Prüft ob die Klasse das ClassInterface implementiert hat
 		if(!$reflector->implementsInterface('Gram\Middleware\Classes\ClassInterface')){
 			throw new ClassNotAllowedException("[$this->classname] needs to implement Gram\Middleware\Classes\ClassInterface");
+		}
+
+		//wenn es keinen Container gibt gebe das neue object zurück
+		if($this->container === null){
+			return new $this->classname;
 		}
 
 		//Wenn es die Klasse bereits im Container gibt gebe dieses Object zurück, hier mit Namespace
@@ -179,7 +179,7 @@ class ClassResolver implements ResolverInterface
 			throw new ClassNotAllowedException("No Class given in [$class]");
 		}
 
-		$extract = explode('@',$class);
+		$extract = \explode('@',$class);
 
 		if($extract[0]==="" || $extract[1]===""){
 			throw new ClassNotAllowedException("Cannot split Class and Method from [$class]");
