@@ -106,7 +106,7 @@ class RouteCollector implements CollectorInterface
 
 		$group = new RouteGroup($this->prefix,$this->routegroupid,$this->stack,$this->strategyCollector);
 
-		call_user_func($groupcollector);
+		\call_user_func($groupcollector);
 
 		$this->prefix=$pre;
 		$this->routegroupsids=$oldgroupids;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
@@ -126,9 +126,9 @@ class RouteCollector implements CollectorInterface
 		$data = $this->generator->generate($this->routes);
 
 		if($this->caching){
-			file_put_contents(
+			\file_put_contents(
 				$this->cache,
-				'<?php return ' . var_export($data, true) . ';'
+				'<?php return ' . \var_export($data, true) . ';'
 			);
 		}
 

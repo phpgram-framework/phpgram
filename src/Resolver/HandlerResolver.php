@@ -36,7 +36,7 @@ class HandlerResolver implements ResolverInterface
 		$this->handler->setPsr($this->request,$this->response);
 		$this->handler->setContainer($this->container);
 
-		$return = call_user_func([$this->handler,'handle']);
+		$return = \call_user_func([$this->handler,'handle']);
 
 		$this->response = $this->handler->getResponse();
 

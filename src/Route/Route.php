@@ -76,16 +76,16 @@ class Route
 	{
 		$data=$this->parseRoute($this->parser);	//die geparste Route
 		$url="";
-		$var=array();
+		$var=[];
 		foreach ($data[0] as $datum) {
 			if(is_string($datum)){
 				//füge es einfach der url wieder zu
-				$url.=preg_quote($datum, '~');
+				$url.= \preg_quote($datum, '~');
 				continue;
 			}
 
 			//füge var hinzu
-			if(is_array($datum)){
+			if(\is_array($datum)){
 				$var[]=$datum[0];	//varaiblen name
 				$url.='('.$datum[1].')';
 			}

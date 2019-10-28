@@ -50,7 +50,7 @@ class DynamicGenerator extends Generator
 	 */
 	public function generateDynamic(array $routes)
 	{
-		$chunkSize=$this->getChunkSize(count($routes));	//passe die chunk größe an
+		$chunkSize=$this->getChunkSize(\count($routes));	//passe die chunk größe an
 
 		foreach ($routes as $route) {
 			//sammle solange Routes zum gruppieren bis chunk erreicht ist
@@ -111,9 +111,9 @@ class DynamicGenerator extends Generator
 	 */
 	private function getChunkSize($count)
 	{
-		$approxChunks = max(1, round($count/self::CHUNKSIZE));	//wie viele Chunks lassen sich erstellen (muss min. einen geben)
+		$approxChunks = \max(1, \round($count/self::CHUNKSIZE));	//wie viele Chunks lassen sich erstellen (muss min. einen geben)
 
-		return (int) ceil($count / $approxChunks);		//die tatsächliche Größe, um die Anzahl an Chunks zu minimieren
+		return (int) \ceil($count / $approxChunks);		//die tatsächliche Größe, um die Anzahl an Chunks zu minimieren
 	}
 
 	/**
@@ -125,8 +125,8 @@ class DynamicGenerator extends Generator
 	 */
 	private function chunkRoutes()
 	{
-		$this->routeList[] = '~^(?|' . implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
-		$this->handlerList[]=$this->handleCollector;	//übergibt die handler für die Routeliste
+		$this->routeList[] = '~^(?|' . \implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
+		$this->handlerList[] = $this->handleCollector;	//übergibt die handler für die Routeliste
 
 		$this->reset();
 	}
@@ -154,9 +154,9 @@ class DynamicGenerator extends Generator
 	 */
 	private function routeCollector(Route $route)
 	{
-		$varcount = count($route->vars);	//zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
-		$this->number=max($this->number,$varcount);	//passe Placeholderanzahl an
-		$this->routeCollector[]= $route->path.str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
+		$varcount = \count($route->vars);	//zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
+		$this->number = \max($this->number,$varcount);	//passe Placeholderanzahl an
+		$this->routeCollector[]= $route->path. \str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
 		++$this->number;	//erhöhe da die nächste Route einen Playerholder mehr braucht
 		$this->handleCollector[$this->number]=[$route->handle,$route->vars];	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
 	}

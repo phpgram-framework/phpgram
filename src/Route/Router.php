@@ -95,10 +95,10 @@ class Router implements RouterInterface
 	 */
 	public function run($uri,$httpMethod=null)
 	{
-		$uri=urldecode($uri);	//umlaute filtern
+		$uri = \urldecode($uri);	//umlaute filtern
 
 		if($this->slash_trim && $uri !== $this->collector->getBase().'/'){
-			$uri = rtrim($uri,'/');	//entferne letzen / von der Url
+			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
 		$this->uri = $uri;
@@ -159,11 +159,11 @@ class Router implements RouterInterface
 	 */
 	private function checkMethod($httpMethod, CollectorInterface $collector)
 	{
-		$httpMethod = strtolower($httpMethod);
+		$httpMethod = \strtolower($httpMethod);
 
 		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
 		foreach ((array)$this->handle['method'] as $item) {
-			if($httpMethod===strtolower($item)){
+			if($httpMethod === \strtolower($item)){
 				return true;
 			}
 		}

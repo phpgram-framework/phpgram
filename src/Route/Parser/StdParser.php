@@ -43,14 +43,14 @@ REGEX;
 		/**
 		 * @copyright Phil Bennett philipobenito@gmail.com (thephpleague <https://route.thephpleague.com/>)
 		 */
-		$data=preg_replace(array_keys(self::$placeholders), array_values(self::$placeholders), $this->uri);	//Costume Placeholder
+		$data = \preg_replace(\array_keys(self::$placeholders), \array_values(self::$placeholders), $this->uri);	//Costume Placeholder
 
 
 		/**
 		 * @copyright Nikita Popov (FastRoute <https://github.com/nikic/FastRoute>)
 		 */
-		$routeWithoutClosingOptionals = rtrim($data, ']');
-		$segments = preg_split('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \[~x', $routeWithoutClosingOptionals);
+		$routeWithoutClosingOptionals = \rtrim($data, ']');
+		$segments = \preg_split('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \[~x', $routeWithoutClosingOptionals);
 
 		$currentRoute = '';
 		$routeDatas = [];
@@ -71,7 +71,7 @@ REGEX;
 		/**
 		 * @copyright Nikita Popov (FastRoute <https://github.com/nikic/FastRoute>)
 		 */
-		if (!preg_match_all(
+		if (! \preg_match_all(
 			'~' . self::VARIABLE_REGEX . '~x', $route, $matches,
 			PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 		)) {
@@ -82,17 +82,17 @@ REGEX;
 		$routeData = [];
 		foreach ($matches as $set) {
 			if ($set[0][1] > $offset) {
-				$routeData[] = substr($route, $offset, $set[0][1] - $offset);
+				$routeData[] = \substr($route, $offset, $set[0][1] - $offset);
 			}
 			$routeData[] = [
 				$set[1][0],
-				isset($set[2]) ? trim($set[2][0]) : self::DEFAULT_REGEX
+				isset($set[2]) ? \trim($set[2][0]) : self::DEFAULT_REGEX
 			];
-			$offset = $set[0][1] + strlen($set[0][0]);
+			$offset = $set[0][1] + \strlen($set[0][0]);
 		}
 
-		if ($offset !== strlen($route)) {
-			$routeData[] = substr($route, $offset);
+		if ($offset !== \strlen($route)) {
+			$routeData[] = \substr($route, $offset);
 		}
 
 		return $routeData;

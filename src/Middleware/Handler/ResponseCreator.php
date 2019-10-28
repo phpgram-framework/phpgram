@@ -102,7 +102,7 @@ class ResponseCreator implements RequestHandlerInterface
 		if($content instanceof ResponseInterface){
 			//Wenn der Return bereits ein Response ist ist
 			return $content;
-		}else if(is_string($content)){
+		}else if(\is_string($content)){
 			//Wenn Return ein String ist erstelle Body aus zurück gegebem String
 			$body = $this->streamFactory->createStream($content);
 		}else {

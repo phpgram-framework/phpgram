@@ -71,10 +71,10 @@ class QueueHandler implements RequestHandlerInterface
 			return $this->last->handle($request);
 		}
 
-		$middleware=array_shift($this->stack);	//hole das oberste element und lösche es aus dem array
+		$middleware = \array_shift($this->stack);	//hole das oberste element und lösche es aus dem array
 
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
-		if($this->container!==null && is_string($middleware)){
+		if($this->container!==null && \is_string($middleware)){
 			if($this->container->has($middleware) === false){
 				throw new MiddlewareNotAllowedException("Middleware: [$middleware] not found");
 			}

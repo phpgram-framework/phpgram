@@ -38,7 +38,7 @@ class DynamicDispatcher extends Dispatcher
 		//$i = welche Regexliste
 		//count($matches) = nummer des handlers
 		foreach($routes as $i=>$regex) {
-			if(!preg_match($regex,$uri,$matches)){
+			if(! \preg_match($regex,$uri,$matches)){
 				continue;	//wenn Route nicht Dabei ist nächsten Chunk prüfen
 			}
 
