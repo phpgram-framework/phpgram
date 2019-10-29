@@ -75,8 +75,7 @@ class RouteMiddleware implements MiddlewareInterface
 
 		//Bei Fehler, 404 oder 405
 		if($status!==200){
-			$response = $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
-			return $response->withStatus($status);
+			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
 		}
 
 		$this->groupid=$handle['groupid'];
