@@ -78,22 +78,14 @@ class ResponseCreator implements RequestHandlerInterface
 		$this->param = $request->getAttribute('param',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
 		$creator = $request->getAttribute('creator',null) ?? $this->creator;
-		$status = $request->getAttribute('status',200);
-		$reason = $request->getAttribute('reason','');
-		$header = $request->getAttribute('header',[]);
 
 		//erstelle Response mit den Werten von den Middleware
-		$this->response = $this->responseFactory->createResponse($status,$reason);
+		$this->response = $this->responseFactory->createResponse(200);
 
 		//erstelle head
 		$head = $strategy->getHeader();
 
 		$this->response = $this->response->withHeader($head["name"],$head["value"]);
-
-		//Fügt Custom Header aus dem Request hinzu
-		foreach ($header as $item) {
-			$this->response=$this->response->withHeader($item["name"],$item['value']);
-		}
 
 		//Führe Callable aus
 		$content = $this->createBody($strategy,$creator);
