@@ -78,9 +78,10 @@ class ResponseCreator implements RequestHandlerInterface
 		$this->param = $request->getAttribute('param',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
 		$creator = $request->getAttribute('creator',null) ?? $this->creator;
+		$status = $request->getAttribute('status',200);
 
 		//erstelle Response mit den Werten von den Middleware
-		$this->response = $this->responseFactory->createResponse(200);
+		$this->response = $this->responseFactory->createResponse($status);
 
 		//erstelle head
 		$head = $strategy->getHeader();

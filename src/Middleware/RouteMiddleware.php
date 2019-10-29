@@ -70,6 +70,7 @@ class RouteMiddleware implements MiddlewareInterface
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request=$request
 			->withAttribute('callable',$handle['callable'])
+			->withAttribute('status',$status)
 			->withAttribute('param',$this->router->getParam());
 
 		//Bei Fehler, 404 oder 405
