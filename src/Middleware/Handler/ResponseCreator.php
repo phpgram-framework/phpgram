@@ -35,7 +35,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ResponseCreator implements RequestHandlerInterface
 {
-	private $stdstrategy,$creator,$callable,$param,$request,$response,$container,$responseFactory,$streamFactory;
+	private $stdstrategy, $creator, $container, $responseFactory, $streamFactory;
 
 	public function __construct(
 		ResponseFactoryInterface $responseFactory,
@@ -66,47 +66,28 @@ class ResponseCreator implements RequestHandlerInterface
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
-		$this->request = $request;
-
 		//Die Attribute die für das Ausführen des callable benötigt werden
-		$this->callable = $request->getAttribute('callable');
+		$callable = $request->getAttribute('callable');
 
-		if($this->callable===null){
+		if($callable===null){
 			throw new CallableNotFoundException("No callable to Resolve");
 		}
 
-		$this->param = $request->getAttribute('param',[]);
+		$param = $request->getAttribute('param',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
 		$creator = $request->getAttribute('creator',null) ?? $this->creator;
 		$status = $request->getAttribute('status',200);
 
 		//erstelle Response mit den Werten von den Middleware
-		$this->response = $this->responseFactory->createResponse($status);
+		$response = $this->responseFactory->createResponse($status);
 
-		//erstelle head
-		$head = $strategy->getHeader();
+		//erstelle header der Strategy
+		$content_typ_head = $strategy->getHeader();
 
-		$this->response = $this->response->withHeader($head["name"],$head["value"]);
+		$response = $response->withHeader($content_typ_head["name"],$content_typ_head["value"]);
 
 		//Führe Callable aus
-		$content = $this->createBody($strategy,$creator);
-
-		//erstelle Body
-		if($content instanceof ResponseInterface){
-			//Wenn der Return bereits ein Response ist ist
-			return $content;
-		}else if(\is_string($content)){
-			//Wenn Return ein String ist erstelle Body aus zurück gegebem String
-			$body = $this->streamFactory->createStream($content);
-		}else {
-			//Sonst erstelle Body aus einer Resource
-			$body = $this->streamFactory->createStreamFromResource($content);
-		}
-
-		//setze Body in den Response ein
-		$response = $this->response->withBody($body);
-
-		return $response;
+		return $this->createBody($callable,$param,$strategy,$creator,$request,$response);
 	}
 
 	/**
@@ -121,25 +102,46 @@ class ResponseCreator implements RequestHandlerInterface
 	 * Nehme den Response des Callbacks entgegen, da diese ggf. verändert wurden
 	 * durch das Callback
 	 *
+	 * @param $callable
+	 * @param array $param
 	 * @param StrategyInterface $strategy
 	 * @param ResolverCreatorInterface $creator
-	 * @return mixed
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 */
-	protected function createBody(StrategyInterface $strategy, ResolverCreatorInterface $creator)
-	{
-		$creator->createResolver($this->callable);
+	protected function createBody(
+		$callable,
+		array $param=[],
+		StrategyInterface $strategy,
+		ResolverCreatorInterface $creator,
+		ServerRequestInterface $request,
+		ResponseInterface $response
+	) {
+		$creator->createResolver($callable);
 		$resolver = $creator->getResolver();
 
-		$resolver->setRequest($this->request);
-		$resolver->setResponse($this->response);
+		$resolver->setRequest($request);
+		$resolver->setResponse($response);
 		$resolver->setContainer($this->container);
 
-		//Führe das Callback aus
-		$result = $strategy->invoke($resolver,$this->param);
+		$content = $strategy->invoke($resolver,$param);
 
-		//nehme Response entgegen falls das Callback Attribute verändert hat
-		$this->response = $resolver->getResponse();
+		if($content instanceof ResponseInterface){
+			//Wenn der Return bereits ein Response ist
+			return $content;
+		}
 
-		return $result;
+		$response = $resolver->getResponse();
+
+		if(\is_string($content)){
+			//Wenn Return ein String ist erstelle Body aus zurück gegebem String
+			$body = $this->streamFactory->createStream($content);
+		}else {
+			//Sonst erstelle Body aus einer Resource
+			$body = $this->streamFactory->createStreamFromResource($content);
+		}
+
+		return $response->withBody($body);
 	}
 }
