@@ -39,7 +39,6 @@ use Gram\Route\Interfaces\RouterInterface as Router;
 class RouteMiddleware implements MiddlewareInterface
 {
 	private $router,$notFoundHandler,$queueHandler,$middlewareCollector,$strategyCollector;
-	private $routeid,$groupid;
 
 	public function __construct(
 		Router $router,
@@ -78,16 +77,16 @@ class RouteMiddleware implements MiddlewareInterface
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
 		}
 
-		$this->groupid=$handle['groupid'];
-		$this->routeid=$handle['routeid'];
+		$routeid = $handle['routeid'];
+		$groupid = $handle['groupid'];
 
-		$this->buildStack();
+		$this->buildStack(false,$routeid,$groupid);
 
 		//Prüfe ob es eine Route Strategie gibt
-		$strategy= $this->strategyCollector->getRoute($this->routeid);
+		$strategy= $this->strategyCollector->getRoute($routeid);
 		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
 		if($strategy===null){
-			foreach ($this->groupid as $item) {
+			foreach ($groupid as $item) {
 				$check = $this->strategyCollector->getGroup($item);
 				if($check!==null){
 					$strategy=$check;
@@ -100,30 +99,35 @@ class RouteMiddleware implements MiddlewareInterface
 		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
 	}
 
-	public function buildStack($addstd=false)
+	public function buildStack($addstd=false, int $routeid=null, array $groupid = null)
 	{
 		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
 		if($addstd===true){
 			foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
 				$this->queueHandler->add($item);
 			}
-		}else{
-			foreach ($this->groupid as $item) {
-				$grouMw=$this->middlewareCollector->getGroup($item);
-				//Füge Routegroup Mw hinzu
-				if ($grouMw!==null){
-					foreach ($grouMw as $item2) {
-						$this->queueHandler->add($item2);
-					}
+			return;
+		}
+
+		if($routeid===null || $groupid===null){
+			return;
+		}
+
+		foreach ($groupid as $item) {
+			$grouMw=$this->middlewareCollector->getGroup($item);
+			//Füge Routegroup Mw hinzu
+			if ($grouMw!==null){
+				foreach ($grouMw as $item2) {
+					$this->queueHandler->add($item2);
 				}
 			}
+		}
 
-			$routeMw = $this->middlewareCollector->getRoute($this->routeid);
-			//Füge Route MW hinzu
-			if($routeMw!==null){
-				foreach ($routeMw as $item) {
-					$this->queueHandler->add($item);
-				}
+		$routeMw = $this->middlewareCollector->getRoute($routeid);
+		//Füge Route MW hinzu
+		if($routeMw!==null){
+			foreach ($routeMw as $item) {
+				$this->queueHandler->add($item);
 			}
 		}
 	}
