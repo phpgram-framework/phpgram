@@ -28,30 +28,6 @@
 
 	- als Standard ist hier 200 (ok) gesetzt
 
-- ``'reason'``
-
-	- Der Grund für den Status. Z. B.: Status 200; Grund OK oder 404 Grund Not Found
-
-	- Wenn kein Wert gesetzt wurde ``''`` wird im Response Objekt ein Standardwert für den Status gesetzt
-
-	- Wird nicht im Router gesetzt
-
-- ``'header'``
-
-	- Custom Header die ebenfalls ausgegeben werden sollen
-
-	- Als Standard wird hier ein leeres Array gesetzt
-
-	- Die Header müssen folgendes Format haben
-
-		- ``["name"=>"Header-Name","value"=>"Wert des Headers"]``
-
-		- die einzelnen Header müssen in einem Array zusammengefasst werden
-
-		- ``[Header1,Header2]`` 
-
-		- Bsp.: ``[["name"=>"Content-Length","value"=>3000],["name"=>"Header-Zwei","value"=>2]]``
-
 - ``'strategy'``
 
 	- Die Strategy mit der das Resolver ausgeführt werden soll
