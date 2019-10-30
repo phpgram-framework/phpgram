@@ -2,6 +2,14 @@
 
 # 1.2.x
 
+## 1.2.8
+- since 2019/10/30
+- Response Creator und Route Mw update:
+	- speichert Werte nun nicht mehr in Klassen Variablen ab
+- Doc Anpassung
+- alle php core Functions mit \ versehen, um sicher zustellen, 
+dass auch die Core Functions verwendet werden  
+
 ## 1.2.7
 - since 2019/10/27
 - Class Resolver erstellt für die aufzurufende class und reflactor keine Klassenvariable mehr
