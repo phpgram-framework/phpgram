@@ -36,8 +36,8 @@ interface RouterInterface
 	 */
 	public function run($uri,$httpMethod=null);
 
-	public function getStatus();
-	public function getHandle();
-	public function getParam();
+	/**
+	 * @return CollectorInterface
+	 */
 	public function getCollector();
 }

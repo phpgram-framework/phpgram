@@ -39,7 +39,7 @@ class Router implements RouterInterface
 	const METHOD_NOT_ALLOWED = 405;
 	const OK = 200;
 
-	private $checkMethod,$uri,$handle,$param=[],$status,$slash_trim;
+	private $checkMethod, $slash_trim;
 
 	/** @var CollectorInterface */
 	private $collector;
@@ -101,20 +101,23 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		$this->uri = $uri;
+		[$status,$handle,$param] = $this->dispatch($uri);
 
-		if(!$this->dispatch($this->dispatcher,$this->collector)){
-			return false;
+		if($status==self::NOT_FOUND){
+			return [$status,$handle,$param];
 		}
 
-		if(isset($httpMethod) && $this->checkMethod && !$this->checkMethod($httpMethod,$this->collector)){
-			return false;
+		if(isset($httpMethod) && $this->checkMethod && !$this->checkMethod($handle['method'],$httpMethod)){
+			$handle['callable'] = $this->collector->get405();
+
+			return [self::METHOD_NOT_ALLOWED,$handle,$param];
 		}
 
-		$this->buildHandle($this->collector);
-		$this->status=self::OK;
+		$routeid = $handle['routeid'];
 
-		return true;
+		$handle['callable'] = $this->collector->getHandle()[$routeid];
+
+		return [self::OK,$handle,$param];
 	}
 
 	/**
@@ -124,26 +127,22 @@ class Router implements RouterInterface
 	 *
 	 * Wenn nicht setze Status 404 und gebe den 404 Handle zurück
 	 *
-	 * @param DispatcherInterface $dispatcher
-	 * @param CollectorInterface $collector
-	 * @return bool
+	 * @param $uri
+	 * @return array[int,array,array]
 	 */
-	private function dispatch(DispatcherInterface $dispatcher,CollectorInterface $collector)
+	protected function dispatch($uri)
 	{
-		$dispatcher->setData($collector->getData());
+		$this->dispatcher->setData($this->collector->getData());
 
-		$response = $dispatcher->dispatch($this->uri);
+		$response = $this->dispatcher->dispatch($uri);
 
 		if($response[0]===DispatcherInterface::FOUND){
-			$this->handle=$response[1];
-			$this->param=$response[2];
-			return true;
+			return [self::OK,$response[1],$response[2]];
 		}
 
-		$this->status=self::NOT_FOUND;
-		$this->handle['callable']=$collector->get404();
+		$handle['callable']=$this->collector->get404();
 
-		return false;
+		return [self::NOT_FOUND,$handle,[]];
 	}
 
 	/**
@@ -153,16 +152,16 @@ class Router implements RouterInterface
 	 *
 	 * Sonst 405 und den 405 Handle
 	 *
+	 * @param $route_method
 	 * @param $httpMethod
-	 * @param CollectorInterface $collector
 	 * @return bool
 	 */
-	private function checkMethod($httpMethod, CollectorInterface $collector)
+	protected function checkMethod($route_method,$httpMethod)
 	{
 		$httpMethod = \strtolower($httpMethod);
 
 		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
-		foreach ((array)$this->handle['method'] as $item) {
+		foreach ((array)$route_method as $item) {
 			if($httpMethod === \strtolower($item)){
 				return true;
 			}
@@ -170,53 +169,14 @@ class Router implements RouterInterface
 
 		//Bei HEAD requests suche eine GET Route wenn fehlgeschlagen
 		if($httpMethod=='head'){
-			return $this->checkMethod('GET',$collector);
+			return $this->checkMethod($route_method,'GET');
 		}
-
-		$this->status=self::METHOD_NOT_ALLOWED;
-		$this->handle['callable']=$collector->get405();
 
 		return false;
 	}
 
 	/**
-	 * Holt von der gefunden Route den Handle vom Collector
-	 *
-	 * @param CollectorInterface $collector
-	 */
-	private function buildHandle(CollectorInterface $collector)
-	{
-		$routeid=$this->handle['routeid'];
-
-		$this->handle['callable'] = $collector->getHandle()[$routeid];
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getHandle()
-	{
-		return $this->handle;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getParam()
-	{
-		return $this->param;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getStatus()
-	{
-		return $this->status;
-	}
-
-	/**
-	 * @return CollectorInterface
+	 * @inheritdoc
 	 */
 	public function getCollector()
 	{
