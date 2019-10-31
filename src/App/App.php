@@ -186,11 +186,9 @@ class App implements RequestHandlerInterface
 		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
 		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
 
-		//bereite Queue vor
-
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
-		$fallback = $this->responseCreator ?? new ResponseCreator(
+		$this->responseCreator = $this->responseCreator ?? new ResponseCreator(
 				$this->responseFactory,
 				$this->streamFactory,
 				$resolverCreator,
@@ -198,14 +196,7 @@ class App implements RequestHandlerInterface
 				$this->container
 			);
 
-		$this->queueHandler = $this->queueHandler ?? new QueueHandler($fallback,$this->container);	//default Fallback
-
-		$this->routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
-			$this->getRouter(),		//router für den request
-			new NotFoundHandler($fallback),	//error handler
-			$this,
-			$this->getStrategyCollector()
-		);
+		$this->queueHandler = $this->queueHandler ?? new QueueHandler($this->responseCreator,$this->container);	//default Fallback
 	}
 
 	/**
@@ -223,8 +214,16 @@ class App implements RequestHandlerInterface
 			$this->queueHandler->add($item);
 		}
 
+		//Füge Routing Middleware hinzu
+		$routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
+				$this->getRouter(),		//router für den request
+				new NotFoundHandler($this->responseCreator),	//error handler
+				$this,
+				$this->getStrategyCollector()
+			);
+
 		//füge Route in der mitte hinzu
-		$this->queueHandler->add($this->routeMiddleware);
+		$this->queueHandler->add($routeMiddleware);
 	}
 
 	/**
