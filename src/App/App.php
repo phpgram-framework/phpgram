@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.2.7 */
+/** @version 1.2.8 */
 
 namespace Gram\App;
 
@@ -23,6 +23,9 @@ use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\RouteCollectorTrait;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\RouterInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\Route;
 use Gram\Route\RouteGroup;
 use Gram\Route\Router;
@@ -41,18 +44,32 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * Startet die Seite und führt die Middleware aus
  */
-class App
+class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $router=null,$middlewareCollector=null,$strategyCollector=null,$container=null;
-	protected $stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null,$queuHandler=null;
+	protected $stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null;
+
+	/** @var ContainerInterface */
+	protected $container=null;
+
+	/** @var RouterInterface */
+	protected $router=null;
+
+	/** @var QueueHandler */
+	protected $queueHandler = null;
 
 	/** @var ResponseFactoryInterface */
 	protected $responseFactory;
 
 	/** @var StreamFactoryInterface */
 	protected $streamFactory;
+
+	/** @var MiddlewareCollectorInterface */
+	protected $middlewareCollector=null;
+
+	/** @var StrategyCollectorInterface */
+	protected $strategyCollector=null;
 
 	private static $_instance;
 
@@ -65,7 +82,7 @@ class App
 	/**
 	 * Erstellt ein Routerobjekt zurück wenn es noch nicht erstellt wurde
 	 *
-	 * @return Router|null
+	 * @return RouterInterface
 	 */
 	public function getRouter()
 	{
@@ -84,7 +101,7 @@ class App
 	/**
 	 * Gibt einen Middlewarecollector zurück
 	 *
-	 * @return MiddlewareCollector|null
+	 * @return MiddlewareCollectorInterface
 	 */
 	public function getMWCollector()
 	{
@@ -98,7 +115,7 @@ class App
 	/**
 	 * Gibt ein Strategy Collector zurück
 	 *
-	 * @return StrategyCollector|null
+	 * @return StrategyCollectorInterface
 	 */
 	public function getStrategyCollector()
 	{
@@ -120,8 +137,10 @@ class App
 	 */
 	public function start(ServerRequestInterface $request)
 	{
+		$this->build();
+
 		try {
-			$response = $this->sendRequest($request);  //Starte den Stack und erstelle Response
+			$response = $this->handle($request);  //Starte den Stack und erstelle Response
 		} catch (\Exception $e) {
 			$stream = $this->streamFactory->createStream("<h1>Application Error</h1> <pre>".$e."</pre>");
 
@@ -131,23 +150,15 @@ class App
 		$emitter = new Emitter();
 
 		$emitter->emit($response);	//Gebe Header und Body vom Response aus
-
-		exit();	//schließe die Seite, keine weitere Ausgabe mehr möglich
 	}
 
 	/**
-	 * Eine Psr 18 Varainte mit ServerRequestInterface anstatt RequestInterface
-	 * Achtung: Ohne Überprüfung von Request und Response
-	 *
-	 * @param ServerRequestInterface $request
-	 * @return ResponseInterface
+	 * @inheritdoc
 	 * @throws \Exception
 	 */
-	public function sendRequest(ServerRequestInterface $request): ResponseInterface
+	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
-		$queue = $this->init();
-
-		$response = $queue->handle($request);	//Starte den Stack und erstelle Response
+		$response = $this->queueHandler->handle($request);	//Starte den Stack und erstelle Response
 
 		return $response;
 	}
@@ -163,9 +174,9 @@ class App
 	 *
 	 * Gebe zum Schluss den fertigen QueueHandler zurück
 	 *
-	 * @return QueueHandler
+	 * @return bool
 	 */
-	protected function init()
+	protected function build()
 	{
 		//setze Standard Objekte
 		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
@@ -182,29 +193,61 @@ class App
 				$this->container
 			);
 
-		$queue = $this->queuHandler ?? new QueueHandler($fallback,$this->container);	//default Fallback
+		$this->queueHandler = $this->queueHandler ?? new QueueHandler($fallback,$this->container);	//default Fallback
 
 		//___________________________________________________________________________
 
 		$routingMiddleware = new RouteMiddleware(
 			$this->getRouter(),		//router für den request
 			new NotFoundHandler($fallback),	//error handler
-			$queue,
-			$this->getMWCollector(),
+			$this,
 			$this->getStrategyCollector()
 		);
 
 		//Erstelle Middleware Stack
 		//Über die Routing Middleware, da diese die Funktion auch noch braucht
 
-		$routingMiddleware->buildStack(true);
+		$this->buildStack(true);
 
 		//füge Route in der mitte hinzu
-		$queue->add($routingMiddleware);
+		$this->queueHandler->add($routingMiddleware);
 
 		//______________________________________________________________________________
 
-		return $queue;
+		return true;
+	}
+
+	public function buildStack($addstd=false, int $routeid=null, array $groupid = null)
+	{
+		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
+		if($addstd===true){
+			foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
+				$this->queueHandler->add($item);
+			}
+			return;
+		}
+
+		if($routeid===null || $groupid===null){
+			return;
+		}
+
+		foreach ($groupid as $item) {
+			$grouMw=$this->middlewareCollector->getGroup($item);
+			//Füge Routegroup Mw hinzu
+			if ($grouMw!==null){
+				foreach ($grouMw as $item2) {
+					$this->queueHandler->add($item2);
+				}
+			}
+		}
+
+		$routeMw = $this->middlewareCollector->getRoute($routeid);
+		//Füge Route MW hinzu
+		if($routeMw!==null){
+			foreach ($routeMw as $item) {
+				$this->queueHandler->add($item);
+			}
+		}
 	}
 
 	public static function app()
@@ -241,7 +284,7 @@ class App
 
 	public function setQueueHandler(RequestHandlerInterface $queueHandler=null)
 	{
-		$this->queuHandler = $queueHandler;
+		$this->queueHandler = $queueHandler;
 	}
 
 	public function setContainer(ContainerInterface $container=null)
@@ -281,6 +324,11 @@ class App
 	public function setBase(string $base)
 	{
 		$this->getRouter()->getCollector()->setBase($base);
+	}
+
+	public function getBase()
+	{
+		return $this->getRouter()->getCollector()->getBase();
 	}
 
 	//Middleware
