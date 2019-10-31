@@ -75,7 +75,7 @@ class RouteMiddleware implements MiddlewareInterface
 		$routeid = $handle['routeid'];
 		$groupid = $handle['groupid'];
 
-		$this->app->buildStack(false,$routeid,$groupid);
+		$this->app->buildStack($routeid,$groupid);
 
 		//Prüfe ob es eine Route Strategie gibt
 		$strategy= $this->strategyCollector->getRoute($routeid);

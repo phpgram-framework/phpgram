@@ -36,6 +36,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
@@ -48,7 +49,7 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $stdStrategy=null,$resolverCreator=null,$options=[],$responseCreator=null;
+	protected $stdStrategy=null, $resolverCreator=null, $options=[];
 
 	/** @var ContainerInterface */
 	protected $container=null;
@@ -58,6 +59,12 @@ class App implements RequestHandlerInterface
 
 	/** @var QueueHandler */
 	protected $queueHandler = null;
+
+	/** @var MiddlewareInterface */
+	protected $routeMiddleware=null;
+
+	/** @var RequestHandlerInterface */
+	protected $responseCreator=null;
 
 	/** @var ResponseFactoryInterface */
 	protected $responseFactory;
@@ -139,6 +146,8 @@ class App implements RequestHandlerInterface
 	{
 		$this->build();
 
+		$this->init();
+
 		try {
 			$response = $this->handle($request);  //Starte den Stack und erstelle Response
 		} catch (\Exception $e) {
@@ -164,17 +173,12 @@ class App implements RequestHandlerInterface
 	}
 
 	/**
+	 * Setze alle long life Objects:
+	 *
 	 * Setzt alle wichtigen Handler und Middleware.
 	 * Startet den QueueHandler der die Abfolge der Middlewares verwaltet
 	 *
-	 * Füge mit der Routing Middleware weitere Middleware aus dem Collector hinzu die
-	 * zuerst gestartet werden sollen
-	 *
-	 * Füge dann die Routing Middleware dem Stack hinzu
-	 *
-	 * Gebe zum Schluss den fertigen QueueHandler zurück
-	 *
-	 * @return bool
+	 * @return void
 	 */
 	protected function build()
 	{
@@ -183,6 +187,7 @@ class App implements RequestHandlerInterface
 		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
 
 		//bereite Queue vor
+
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
 		$fallback = $this->responseCreator ?? new ResponseCreator(
@@ -195,48 +200,43 @@ class App implements RequestHandlerInterface
 
 		$this->queueHandler = $this->queueHandler ?? new QueueHandler($fallback,$this->container);	//default Fallback
 
-		//___________________________________________________________________________
-
-		$routingMiddleware = new RouteMiddleware(
+		$this->routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
 			$this->getRouter(),		//router für den request
 			new NotFoundHandler($fallback),	//error handler
 			$this,
 			$this->getStrategyCollector()
 		);
+	}
 
+	/**
+	 * Füge zuerst alle Std Mw hinzu
+	 * die zuerst aufgerufen werden sollen
+	 *
+	 * Füge dann die Routing Middleware dem Stack hinzu
+	 *
+	 */
+	public function init()
+	{
 		//Erstelle Middleware Stack
-		//Über die Routing Middleware, da diese die Funktion auch noch braucht
 
-		$this->buildStack(true);
+		foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
+			$this->queueHandler->add($item);
+		}
 
 		//füge Route in der mitte hinzu
-		$this->queueHandler->add($routingMiddleware);
-
-		//______________________________________________________________________________
-
-		return true;
+		$this->queueHandler->add($this->routeMiddleware);
 	}
 
 	/**
 	 * Erstellt bzw. erweiterte den Middleware Stack
 	 *
-	 * Kann entweder Std Mw hinzufügen
-	 * oder wenn eine routeid und groupid gegeben sind für diese die Mw hinzufügen
+	 * wenn eine routeid und groupid gegeben sind für diese die Mw hinzufügen
 	 *
-	 * @param bool $addstd
 	 * @param int|null $routeid
 	 * @param array|null $groupid
 	 */
-	public function buildStack($addstd=false, int $routeid=null, array $groupid = null)
+	public function buildStack(int $routeid=null, array $groupid = null)
 	{
-		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
-		if($addstd===true){
-			foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
-				$this->queueHandler->add($item);
-			}
-			return;
-		}
-
 		if($routeid===null || $groupid===null){
 			return;
 		}
@@ -295,6 +295,11 @@ class App implements RequestHandlerInterface
 	public function setQueueHandler(RequestHandlerInterface $queueHandler=null)
 	{
 		$this->queueHandler = $queueHandler;
+	}
+
+	public function setRouteMiddleware(MiddlewareInterface $routeMw)
+	{
+		$this->routeMiddleware = $routeMw;
 	}
 
 	public function setContainer(ContainerInterface $container=null)
