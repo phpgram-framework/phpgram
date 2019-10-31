@@ -37,9 +37,9 @@ class RouteCollector implements CollectorInterface
 {
 	use RouteCollectorTrait;
 
-	private $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
-	private $handler=[],$routeid=0,$routegroupid=0;
-	private $parser,$generator,$caching,$cache,$stack,$strategyCollector;
+	protected $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
+	protected $handler=[],$routeid=0,$routegroupid=0;
+	protected $parser,$generator,$caching,$cache,$stack,$strategyCollector;
 
 	/**
 	 * RouteCollector constructor.

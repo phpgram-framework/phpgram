@@ -17,9 +17,7 @@ namespace Gram\App;
 
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
-use Gram\Middleware\Handler\ResponseCreator;
 use Gram\Middleware\Handler\NotFoundHandler;
-use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\RouteCollectorTrait;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\StrategyCollector;
@@ -49,7 +47,7 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $stdStrategy=null, $resolverCreator=null, $options=[];
+	protected $stdStrategy=null, $resolverCreator=null, $router_options=[], $raw_options = [];
 
 	/** @var ContainerInterface */
 	protected $container=null;
@@ -96,7 +94,7 @@ class App implements RequestHandlerInterface
 		if(!isset($this->router)){
 
 			$this->router = new Router(
-				$this->options,
+				$this->router_options,
 				$this->getMWCollector(),
 				$this->getStrategyCollector()
 			);
@@ -148,13 +146,7 @@ class App implements RequestHandlerInterface
 
 		$this->init();
 
-		try {
-			$response = $this->handle($request);  //Starte den Stack und erstelle Response
-		} catch (\Exception $e) {
-			$stream = $this->streamFactory->createStream("<h1>Application Error</h1> <pre>".$e."</pre>");
-
-			$response = $this->responseFactory->createResponse(500)->withBody($stream);
-		}
+		$response = $this->handle($request);
 
 		$emitter = new Emitter();
 
@@ -163,11 +155,20 @@ class App implements RequestHandlerInterface
 
 	/**
 	 * @inheritdoc
-	 * @throws \Exception
+	 *
+	 * führt die Mw Stack aus
+	 *
+	 * fängt Exception ab und gibt diese gerendert aus
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
-		$response = $this->queueHandler->handle($request);	//Starte den Stack und erstelle Response
+		try {
+			$response = $this->queueHandler->handle($request); //Starte den Stack und erstelle Response
+		} catch (\Exception $e) {
+			$stream = $this->streamFactory->createStream("<h1>Application Error</h1> <pre>".$e."</pre>");
+
+			$response = $this->responseFactory->createResponse(500)->withBody($stream);
+		}
 
 		return $response;
 	}
@@ -182,13 +183,20 @@ class App implements RequestHandlerInterface
 	 */
 	protected function build()
 	{
+		//setze Default Raw Options
+		$this->raw_options +=[
+			'response_creator'=>'Gram\\Middleware\\Handler\\ResponseCreator',
+			'queue_handler'=>'Gram\\App\\QueueHandler',
+			'routeMw'=>'Gram\\Middleware\\RouteMiddleware'
+		];
+
 		//setze Standard Objekte
 		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
 		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
 
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
-		$this->responseCreator = $this->responseCreator ?? new ResponseCreator(
+		$this->responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
 				$this->responseFactory,
 				$this->streamFactory,
 				$resolverCreator,
@@ -196,7 +204,14 @@ class App implements RequestHandlerInterface
 				$this->container
 			);
 
-		$this->queueHandler = $this->queueHandler ?? new QueueHandler($this->responseCreator,$this->container);	//default Fallback
+		$this->queueHandler = $this->queueHandler ?? new $this->raw_options['queue_handler']($this->responseCreator,$this->container);	//default Fallback
+
+		$this->routeMiddleware = $this->routeMiddleware ?? new $this->raw_options['routeMw'](
+				$this->getRouter(),		//router für den request
+				new NotFoundHandler($this->responseCreator),	//error handler
+				$this,
+				$this->getStrategyCollector()
+			);
 	}
 
 	/**
@@ -206,7 +221,7 @@ class App implements RequestHandlerInterface
 	 * Füge dann die Routing Middleware dem Stack hinzu
 	 *
 	 */
-	public function init()
+	protected function init()
 	{
 		//Erstelle Middleware Stack
 
@@ -214,16 +229,8 @@ class App implements RequestHandlerInterface
 			$this->queueHandler->add($item);
 		}
 
-		//Füge Routing Middleware hinzu
-		$routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
-				$this->getRouter(),		//router für den request
-				new NotFoundHandler($this->responseCreator),	//error handler
-				$this,
-				$this->getStrategyCollector()
-			);
-
 		//füge Route in der mitte hinzu
-		$this->queueHandler->add($routeMiddleware);
+		$this->queueHandler->add($this->routeMiddleware);
 	}
 
 	/**
@@ -306,9 +313,14 @@ class App implements RequestHandlerInterface
 		$this->container = $container;
 	}
 
-	public function setOptions(array $options=[])
+	public function setRouterOptions(array $options=[])
 	{
-		$this->options=$options;
+		$this->router_options=$options;
+	}
+
+	public function setRawOptions(array $options=[])
+	{
+		$this->raw_options = $options;
 	}
 
 	//Routes

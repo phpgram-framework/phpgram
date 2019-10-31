@@ -37,7 +37,7 @@ use Gram\Route\Interfaces\RouterInterface as Router;
  */
 class RouteMiddleware implements MiddlewareInterface
 {
-	private $router,$notFoundHandler,$app,$strategyCollector;
+	protected $router,$notFoundHandler,$app,$strategyCollector;
 
 	public function __construct(
 		Router $router,
