@@ -13,8 +13,7 @@
 
 namespace Gram\Middleware;
 
-use Gram\App\QueueHandler;
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\App\App;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -38,20 +37,18 @@ use Gram\Route\Interfaces\RouterInterface as Router;
  */
 class RouteMiddleware implements MiddlewareInterface
 {
-	private $router,$notFoundHandler,$queueHandler,$middlewareCollector,$strategyCollector;
+	private $router,$notFoundHandler,$app,$strategyCollector;
 
 	public function __construct(
 		Router $router,
 		RequestHandlerInterface $notFoundHandler,
-		QueueHandler $queueHandler,
-		MiddlewareCollectorInterface $middlewareCollector,
+		App $app,
 		StrategyCollectorInterface $strategyCollector
 	){
 		$this->router=$router;
 		$this->notFoundHandler=$notFoundHandler;	//der handler der im errorfall getriggert werden soll
-		$this->middlewareCollector=$middlewareCollector;
 		$this->strategyCollector=$strategyCollector;
-		$this->queueHandler=$queueHandler;
+		$this->app=$app;
 	}
 
 	/// macht den request (normales routing)
@@ -61,16 +58,14 @@ class RouteMiddleware implements MiddlewareInterface
 		$uri=$request->getUri()->getPath();
 		$method=$request->getMethod();
 
-		$this->router->run($uri,$method);
+		[$status,$handle,$param] = $this->router->run($uri,$method);
 
-		$status=$this->router->getStatus();
-		$handle=$this->router->getHandle();
 
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request=$request
 			->withAttribute('callable',$handle['callable'])
 			->withAttribute('status',$status)
-			->withAttribute('param',$this->router->getParam());
+			->withAttribute('param',$param);
 
 		//Bei Fehler, 404 oder 405
 		if($status!==200){
@@ -80,7 +75,7 @@ class RouteMiddleware implements MiddlewareInterface
 		$routeid = $handle['routeid'];
 		$groupid = $handle['groupid'];
 
-		$this->buildStack(false,$routeid,$groupid);
+		$this->app->buildStack(false,$routeid,$groupid);
 
 		//Prüfe ob es eine Route Strategie gibt
 		$strategy= $this->strategyCollector->getRoute($routeid);
@@ -97,38 +92,5 @@ class RouteMiddleware implements MiddlewareInterface
 		$request=$request->withAttribute('strategy',$strategy);
 
 		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
-	}
-
-	public function buildStack($addstd=false, int $routeid=null, array $groupid = null)
-	{
-		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
-		if($addstd===true){
-			foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
-				$this->queueHandler->add($item);
-			}
-			return;
-		}
-
-		if($routeid===null || $groupid===null){
-			return;
-		}
-
-		foreach ($groupid as $item) {
-			$grouMw=$this->middlewareCollector->getGroup($item);
-			//Füge Routegroup Mw hinzu
-			if ($grouMw!==null){
-				foreach ($grouMw as $item2) {
-					$this->queueHandler->add($item2);
-				}
-			}
-		}
-
-		$routeMw = $this->middlewareCollector->getRoute($routeid);
-		//Füge Route MW hinzu
-		if($routeMw!==null){
-			foreach ($routeMw as $item) {
-				$this->queueHandler->add($item);
-			}
-		}
 	}
 }
