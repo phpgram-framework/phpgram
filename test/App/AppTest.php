@@ -30,11 +30,7 @@ class AppTest extends TestCase
 
 		$this->initRoutes();
 
-		$this->psr17 = new Psr17Factory();
-
-		$this->app->setFactory($this->psr17,$this->psr17);
-
-		$this->app->build();
+		$this->app->building();
 	}
 
 	private function initRoutes($method='get',$basepath ='')

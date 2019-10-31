@@ -38,4 +38,9 @@ class AppTestInit extends App
 	{
 		return $this->resolverCreator;
 	}
+
+	public function init()
+	{
+		parent::init();
+	}
 }
