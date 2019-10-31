@@ -10,13 +10,13 @@ class AppTestInit extends App
 	{
 	}
 
-	public function init()
+	public function building()
 	{
 		$factory = new Psr17Factory();
 
 		$this->setFactory($factory,$factory);
 
-		return parent::build();
+		parent::build();
 	}
 
 	public function getMiddlewareCollector()
@@ -37,10 +37,5 @@ class AppTestInit extends App
 	public function getResolveCreator()
 	{
 		return $this->resolverCreator;
-	}
-
-	public function build()
-	{
-		return parent::build();
 	}
 }

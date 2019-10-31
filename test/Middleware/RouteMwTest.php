@@ -78,9 +78,11 @@ class RouteMwTest extends TestCase
 
 		$app->setQueueHandler($this->queue);
 
-		$app->buildStack(true);	//Standard Mw hinzufügen
+		$app->setRouteMiddleware($this->routemw);
 
-		$this->queue->add($this->routemw);
+		$app->building();
+
+		$app->init();
 
 		$this->psr17 = new Psr17Factory();
 
