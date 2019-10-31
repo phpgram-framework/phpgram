@@ -6,6 +6,7 @@ use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
 use Gram\Test\Router\RouteMap;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 
 class AppTest extends TestCase
@@ -14,6 +15,9 @@ class AppTest extends TestCase
 
 	/** @var App */
 	protected $app;
+
+	/** @var Psr17Factory */
+	protected $psr17;
 
 	protected function setUp(): void
 	{
@@ -25,6 +29,10 @@ class AppTest extends TestCase
 		$this->app->addMiddle(new TestMw1());
 
 		$this->initRoutes();
+
+		$this->psr17 = new Psr17Factory();
+
+		$this->app->setFactory($this->psr17,$this->psr17);
 
 		$this->app->build();
 	}
