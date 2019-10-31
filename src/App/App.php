@@ -217,6 +217,16 @@ class App implements RequestHandlerInterface
 		return true;
 	}
 
+	/**
+	 * Erstellt bzw. erweiterte den Middleware Stack
+	 *
+	 * Kann entweder Std Mw hinzufügen
+	 * oder wenn eine routeid und groupid gegeben sind für diese die Mw hinzufügen
+	 *
+	 * @param bool $addstd
+	 * @param int|null $routeid
+	 * @param array|null $groupid
+	 */
 	public function buildStack($addstd=false, int $routeid=null, array $groupid = null)
 	{
 		//Füge Standard Middleware hinzu (die MW die immer ausgeführt wird)
