@@ -8,6 +8,7 @@ use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\RouteCollector;
 use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
+use Gram\Test\App\AppTestInit;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
@@ -35,8 +36,10 @@ class RouteMwTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->mwCollector = new MiddlewareCollector();
-		$this->strategyCollector = new StrategyCollector();
+		$app = new AppTestInit();
+
+		$this->mwCollector = $app->getMWCollector();
+		$this->strategyCollector = $app->getStrategyCollector();
 
 		$this->router = new Router(
 			[],
@@ -69,12 +72,13 @@ class RouteMwTest extends TestCase
 		$this->routemw = new RouteMiddleware(
 			$this->router,
 			$this->notFundHandler,
-			$this->queue,
-			$this->mwCollector,
+			$app,
 			$this->strategyCollector
 		);
 
-		$this->routemw->buildStack(true);	//Standard Mw hinzufügen
+		$app->setQueueHandler($this->queue);
+
+		$app->buildStack(true);	//Standard Mw hinzufügen
 
 		$this->queue->add($this->routemw);
 

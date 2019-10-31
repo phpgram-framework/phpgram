@@ -16,7 +16,7 @@ class AppTestInit extends App
 
 		$this->setFactory($factory,$factory);
 
-		return parent::init();
+		return parent::build();
 	}
 
 	public function getMiddlewareCollector()
