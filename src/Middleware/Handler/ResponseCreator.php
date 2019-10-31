@@ -118,8 +118,7 @@ class ResponseCreator implements RequestHandlerInterface
 		ServerRequestInterface $request,
 		ResponseInterface $response
 	) {
-		$creator->createResolver($callable);
-		$resolver = $creator->getResolver();
+		$resolver = $creator->createResolver($callable);
 
 		$resolver->setRequest($request);
 		$resolver->setResponse($response);

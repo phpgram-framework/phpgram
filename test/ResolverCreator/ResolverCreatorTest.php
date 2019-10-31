@@ -22,8 +22,7 @@ class ResolverCreatorTest extends TestCase
 		$toResolve = TestClass::class."@doSmth";
 
 		try{
-			$this->creator->createResolver($toResolve);
-			$resolver = $this->creator->getResolver();
+			$resolver = $this->creator->createResolver($toResolve);
 		}catch (\Exception $e){
 			echo $e;
 			$resolver = null;
@@ -39,8 +38,7 @@ class ResolverCreatorTest extends TestCase
 		};
 
 		try{
-			$this->creator->createResolver($toResolve);
-			$resolver = $this->creator->getResolver();
+			$resolver = $this->creator->createResolver($toResolve);
 		}catch (\Exception $e){
 			echo $e;
 			$resolver = null;

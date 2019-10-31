@@ -8,6 +8,8 @@
 	- speichert Werte nun nicht mehr in Klassen Variablen ab
 - App erstellt Objecte anders
 - App ist nun RequestHandlerInterface
+- Router benutzt nun keine Klassen Variablen zum Zwischenspeichern mehr
+- ResolveCreator gibt nun den Resolver direkt zurück ohne zwischen Function
 - Doc Anpassung
 - alle php core Functions mit \ versehen, um sicher zustellen, 
 dass auch die Core Functions verwendet werden  
