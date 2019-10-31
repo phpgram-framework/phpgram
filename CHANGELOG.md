@@ -3,9 +3,11 @@
 # 1.2.x
 
 ## 1.2.8
-- since 2019/10/30
+- since 2019/10/31
 - Response Creator und Route Mw update:
 	- speichert Werte nun nicht mehr in Klassen Variablen ab
+- App erstellt Objecte anders
+- App ist nun RequestHandlerInterface
 - Doc Anpassung
 - alle php core Functions mit \ versehen, um sicher zustellen, 
 dass auch die Core Functions verwendet werden  
