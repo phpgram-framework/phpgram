@@ -28,15 +28,10 @@ interface ResolverCreatorInterface
 	/**
 	 * Erstellt ein Callback anhand von Mustern
 	 *
-	 * @param $possibleCallable
-	 * @return mixed
-	 */
-	public function createResolver($possibleCallable);
-
-	/**
 	 * Gibt ein Callback zurück
 	 *
+	 * @param $possibleCallable
 	 * @return ResolverInterface
 	 */
-	public function getResolver():ResolverInterface;
+	public function createResolver($possibleCallable);
 }

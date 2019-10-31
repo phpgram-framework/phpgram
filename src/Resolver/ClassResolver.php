@@ -181,13 +181,13 @@ class ClassResolver implements ResolverInterface
 			throw new ClassNotAllowedException("No Class given in [$class]");
 		}
 
-		$extract = \explode('@',$class);
+		[$class_name,$method] = \explode('@',$class);
 
-		if($extract[0]==="" || $extract[1]===""){
+		if($class_name==="" || $method===""){
 			throw new ClassNotAllowedException("Cannot split Class and Method from [$class]");
 		}
 
-		$this->classname=$extract[0];
-		$this->function=$extract[1];
+		$this->classname=$class_name;
+		$this->function=$method;
 	}
 }

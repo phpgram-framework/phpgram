@@ -13,7 +13,6 @@
 
 namespace Gram\ResolverCreator;
 
-use Gram\Resolver\ResolverInterface;
 use Gram\Resolver\CallbackResolver;
 use Gram\Resolver\ClassResolver;
 use Gram\Resolver\HandlerResolver;
@@ -27,8 +26,6 @@ use Gram\Middleware\Handler\HandlerInterface;
  */
 class ResolverCreator implements ResolverCreatorInterface
 {
-	protected $resolver=null;
-
 	/**
 	 * @inheritdoc
 	 *
@@ -36,24 +33,19 @@ class ResolverCreator implements ResolverCreatorInterface
 	 *
 	 * Erstellt dann den entsprechenden Resolver
 	 *
-	 * @param $possibleCallable
 	 * @throws \Exception
 	 */
 	public function createResolver($possibleCallable)
 	{
 		if(\is_object($possibleCallable) && $possibleCallable instanceof HandlerInterface){
-			$this->resolver=$this->createHandlerCallback($possibleCallable);
-		}else{
-			$this->resolver=$this->createCallbackFor($possibleCallable);
+			return $this->createHandlerCallback($possibleCallable);
 		}
-	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getResolver():ResolverInterface
-	{
-		return $this->resolver;
+		if(\is_callable($possibleCallable)){
+			return $this->createCallbackFromCallable($possibleCallable);
+		}
+
+		return $this->createCallbackForClass($possibleCallable);
 	}
 
 	/**
@@ -93,21 +85,5 @@ class ResolverCreator implements ResolverCreatorInterface
 		$callback->set($handler);
 
 		return $callback;
-	}
-
-	/**
-	 * Prüfe ob der Controller callable ist,
-	 * wenn ja benutze den Callable Handler und nicht den Controller Handler
-	 * @param $callback
-	 * @return bool|CallbackResolver|ClassResolver
-	 * @throws \Exception
-	 */
-	private function createCallbackFor($callback)
-	{
-		if(\is_callable($callback)){
-			return $this->createCallbackFromCallable($callback);
-		}else{
-			return $this->createCallbackForClass($callback);
-		}
 	}
 }
