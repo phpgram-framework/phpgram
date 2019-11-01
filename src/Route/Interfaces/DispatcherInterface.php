@@ -24,17 +24,16 @@ interface DispatcherInterface
 	const FOUND=1;
 	const NOT_FOUND = 0;
 
-	public function setData(array $routes);
-
 	/**
 	 * Pürfe ob die Route in dem Array ist (static Route)
 	 *
 	 * Sonst führe den Dynamischen Dispatcher aus
 	 *
 	 * @param $uri
+	 * @param array $routes
 	 * @return array
 	 */
-	public function dispatch($uri);
+	public function dispatch($uri, array $routes=[]);
 
 	/**
 	 * Suche jede Gruppenregex ab

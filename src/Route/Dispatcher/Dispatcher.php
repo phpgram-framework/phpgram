@@ -23,31 +23,24 @@ use Gram\Route\Interfaces\DispatcherInterface;
  */
 abstract class Dispatcher implements DispatcherInterface
 {
-	private $routes;
-
-	public function setData(array $routes)
-	{
-		$this->routes=$routes;
-	}
-
 	/**
 	 * @inheritdoc
 	 */
-	public function dispatch($uri)
+	public function dispatch($uri, array $routes=[])
 	{
-		if(isset($this->routes['static'][$uri])){
-			return [self::FOUND,$this->routes['static'][$uri],[]];
+		if(isset($routes['static'][$uri])){
+			return [self::FOUND,$routes['static'][$uri],[]];
 		}
 
 		//wenn es keine Dnymic Routes gibt
-		if(!isset($this->routes['dynamic'])){
+		if(!isset($routes['dynamic'])){
 			return [self::NOT_FOUND];
 		}
 
 		return $this->dispatchDynamic(
 			$uri,
-			$this->routes['dynamic']['regexes'],
-			$this->routes['dynamic']['dynamichandler']
+			$routes['dynamic']['regexes'],
+			$routes['dynamic']['dynamichandler']
 		);
 	}
 }

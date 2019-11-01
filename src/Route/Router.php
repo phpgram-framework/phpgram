@@ -58,7 +58,6 @@ class Router implements RouterInterface
 		?MiddlewareCollectorInterface $middlewareCollector = null,
 		?StrategyCollectorInterface $strategyCollector = null
 	){
-
 		//setze Standard Optionen
 		$options +=[
 			'check_method'=>true,
@@ -132,9 +131,7 @@ class Router implements RouterInterface
 	 */
 	protected function dispatch($uri)
 	{
-		$this->dispatcher->setData($this->collector->getData());
-
-		$response = $this->dispatcher->dispatch($uri);
+		$response = $this->dispatcher->dispatch($uri,$this->collector->getData());
 
 		if($response[0]===DispatcherInterface::FOUND){
 			return [self::OK,$response[1],$response[2]];
