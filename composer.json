@@ -16,6 +16,8 @@
 		"micro framework",
 		"routing",
 		"router",
+		"middleware",
+		"di container",
 		"psr 7",
 		"psr 15",
 		"psr 17",
@@ -57,7 +59,7 @@
     },
 	"extra": {
 		"branch-alias": {
-			"dev-master": "1.2.x-dev"
+			"dev-master": "1.3.x-dev"
 		}
 	}
 }

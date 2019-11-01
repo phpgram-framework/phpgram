@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.2.8 */
+/** @version 1.3.0 */
 
 namespace Gram\App;
 
@@ -196,7 +196,7 @@ class App implements RequestHandlerInterface
 
 		//Wird am Ende ausgeführt um den Response zu erstellen
 		//erhält Factory um Response zu erstellen
-		$this->responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
+		$responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
 				$this->responseFactory,
 				$this->streamFactory,
 				$resolverCreator,
@@ -204,11 +204,11 @@ class App implements RequestHandlerInterface
 				$this->container
 			);
 
-		$this->queueHandler = $this->queueHandler ?? new $this->raw_options['queue_handler']($this->responseCreator,$this->container);	//default Fallback
+		$this->queueHandler = $this->queueHandler ?? new $this->raw_options['queue_handler']($responseCreator,$this->container);	//default Fallback
 
 		$this->routeMiddleware = $this->routeMiddleware ?? new $this->raw_options['routeMw'](
 				$this->getRouter(),		//router für den request
-				new NotFoundHandler($this->responseCreator),	//error handler
+				new NotFoundHandler($responseCreator),	//error handler
 				$this,
 				$this->getStrategyCollector()
 			);
@@ -277,47 +277,116 @@ class App implements RequestHandlerInterface
 
 	//Optionen
 
+	/**
+	 * Setze Psr 17 Response und Stream Factory
+	 *
+	 * Wird für Response Creator benötigt
+	 *
+	 * @param ResponseFactoryInterface $responseFactory
+	 * @param StreamFactoryInterface $streamFactory
+	 */
 	public function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory)
 	{
 		$this->responseFactory=$responseFactory;
 		$this->streamFactory=$streamFactory;
 	}
 
+	/**
+	 * Setzt die Standard Strategy
+	 *
+	 * Wenn keine gesetzt: @see StdAppStrategy
+	 *
+	 * @param StrategyInterface|null $stdStrategy
+	 */
 	public function setStrategy(StrategyInterface $stdStrategy=null)
 	{
 		$this->stdStrategy=$stdStrategy;
 	}
 
+	/**
+	 * Setzt den Standard Resolver Creator um das Callable aus den Routes um zuformen
+	 *
+	 * Wenn keiner gesetzt: @see ResolverCreator
+	 *
+	 * @param ResolverCreatorInterface|null $creator
+	 */
 	public function setResolverCreator(ResolverCreatorInterface $creator=null)
 	{
 		$this->resolverCreator=$creator;
 	}
 
+	/**
+	 * Setzt den RequestHandler der am Ende der Middleware Kette ausgeführt werden soll
+	 *
+	 * Standard: @see ResponseCreator
+	 *
+	 * @param RequestHandlerInterface|null $responseCreator
+	 */
 	public function setLastHandler(RequestHandlerInterface $responseCreator=null)
 	{
 		$this->responseCreator = $responseCreator;
 	}
 
+	/**
+	 * Setzt den RequestHandler der die Middleware abfolge überwacht
+	 *
+	 * Standard: @see QueueHandler
+	 *
+	 * @param RequestHandlerInterface|null $queueHandler
+	 */
 	public function setQueueHandler(RequestHandlerInterface $queueHandler=null)
 	{
 		$this->queueHandler = $queueHandler;
 	}
 
+	/**
+	 * Setzt die RouteMiddleware
+	 *
+	 * Standard: @see RouteMiddleware
+	 *
+	 * @param MiddlewareInterface $routeMw
+	 */
 	public function setRouteMiddleware(MiddlewareInterface $routeMw)
 	{
 		$this->routeMiddleware = $routeMw;
 	}
 
+	/**
+	 * Setzt den Psr 11 Container
+	 *
+	 * @param ContainerInterface|null $container
+	 */
 	public function setContainer(ContainerInterface $container=null)
 	{
 		$this->container = $container;
 	}
 
+	/**
+	 * Setzt Optionen für den Router:
+	 *
+	 * check_method: bool
+	 * slash_trim: bool
+	 * caching: bool
+	 * cache: string
+	 * dispatcher: Gram\\Route\\Dispatcher\\DynamicDispatcher
+	 * generator: Gram\\Route\\Generator\\DynamicGenerator
+	 * parser: Gram\\Route\\Parser\\StdParser
+	 * collector: Gram\\Route\\Collector\\RouteCollector
+	 *
+	 * @param array $options
+	 */
 	public function setRouterOptions(array $options=[])
 	{
 		$this->router_options=$options;
 	}
 
+	/**
+	 * Setze die Klassen die in @see build() erstellt werden sollen
+	 *
+	 * Kann auch durch bereits bestehende Objects überschrieben werden
+	 *
+	 * @param array $options
+	 */
 	public function setRawOptions(array $options=[])
 	{
 		$this->raw_options = $options;
@@ -359,6 +428,13 @@ class App implements RequestHandlerInterface
 
 	//Middleware
 
+	/**
+	 * Füge eine Middleware hinzu die unabhänig von den Routes ausgeführt werden soll
+	 *
+	 * @param $middleware
+	 * @param null $order
+	 * @return $this
+	 */
 	public function addMiddle($middleware,$order=null)
 	{
 		$this->getMWCollector()->addStd($middleware,$order);

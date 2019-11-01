@@ -1,9 +1,9 @@
 # CHANGELOG
 
-# 1.2.x
+# 1.3.x
 
-## 1.2.8
-- since 2019/10/31
+## 1.3.0
+- since 2019/11/01
 - Response Creator und Route Mw update:
 	- speichert Werte nun nicht mehr in Klassen Variablen ab
 - App erstellt Objecte anders
@@ -12,7 +12,10 @@
 - ResolveCreator gibt nun den Resolver direkt zurück ohne zwischen Function
 - Doc Anpassung
 - alle php core Functions mit \ versehen, um sicher zustellen, 
-dass auch die Core Functions verwendet werden  
+dass auch die Core Functions verwendet werden 
+
+
+# 1.2.x
 
 ## 1.2.7
 - since 2019/10/27
