@@ -2,6 +2,11 @@
 
 # 1.3.x
 
+## 1.3.1
+- since 201/11/05
+- ResolverCreator kann nur noch am Anfang gesetzt werden
+- Middleware Order (außer Betrieb) entfernt
+
 ## 1.3.0
 - since 2019/11/01
 - Response Creator und Route Mw update:
