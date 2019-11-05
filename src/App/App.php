@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.3.0 */
+/** @version 1.3.1 */
 
 namespace Gram\App;
 
@@ -432,12 +432,11 @@ class App implements RequestHandlerInterface
 	 * Füge eine Middleware hinzu die unabhänig von den Routes ausgeführt werden soll
 	 *
 	 * @param $middleware
-	 * @param null $order
 	 * @return $this
 	 */
-	public function addMiddle($middleware,$order=null)
+	public function addMiddle($middleware)
 	{
-		$this->getMWCollector()->addStd($middleware,$order);
+		$this->getMWCollector()->addStd($middleware);
 		return $this;
 	}
 }

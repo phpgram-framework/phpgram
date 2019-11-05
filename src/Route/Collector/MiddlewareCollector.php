@@ -31,18 +31,18 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 {
 	private $std=[],$route=[],$group=[];
 
-	public function addStd($middleware, $order = null)
+	public function addStd($middleware)
 	{
 		$this->std[]=$middleware;
 		return $this;
 	}
 
-	public function addRoute($routeid, $middleware, $order = null)
+	public function addRoute($routeid, $middleware)
 	{
 		$this->route[$routeid][]=$middleware;
 	}
 
-	public function addGroup($groupid, $middleware, $order = null)
+	public function addGroup($groupid, $middleware)
 	{
 		$this->group[$groupid][]=$middleware;
 	}

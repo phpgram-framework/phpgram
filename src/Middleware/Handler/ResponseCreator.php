@@ -75,7 +75,6 @@ class ResponseCreator implements RequestHandlerInterface
 
 		$param = $request->getAttribute('param',[]);
 		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
-		$creator = $request->getAttribute('creator',null) ?? $this->creator;
 		$status = $request->getAttribute('status',200);
 
 		//erstelle Response mit den Werten von den Middleware
@@ -87,7 +86,7 @@ class ResponseCreator implements RequestHandlerInterface
 		$response = $response->withHeader($content_typ_head["name"],$content_typ_head["value"]);
 
 		//Führe Callable aus
-		return $this->createBody($callable,$param,$strategy,$creator,$request,$response);
+		return $this->createBody($callable,$param,$strategy,$request,$response);
 	}
 
 	/**
@@ -105,7 +104,6 @@ class ResponseCreator implements RequestHandlerInterface
 	 * @param $callable
 	 * @param array $param
 	 * @param StrategyInterface $strategy
-	 * @param ResolverCreatorInterface $creator
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @return ResponseInterface
@@ -114,11 +112,10 @@ class ResponseCreator implements RequestHandlerInterface
 		$callable,
 		array $param=[],
 		StrategyInterface $strategy,
-		ResolverCreatorInterface $creator,
 		ServerRequestInterface $request,
 		ResponseInterface $response
 	) {
-		$resolver = $creator->createResolver($callable);
+		$resolver = $this->creator->createResolver($callable);
 
 		$resolver->setRequest($request);
 		$resolver->setResponse($response);

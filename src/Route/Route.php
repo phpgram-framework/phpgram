@@ -99,12 +99,11 @@ class Route
 	 * Kann nach dem definieren einer Route aufgerufen werden um mehre Middleware hinzu zufügen
 	 *
 	 * @param $middleware
-	 * @param null $order
 	 * @return $this
 	 */
-	public function addMiddleware($middleware,$order=null)
+	public function addMiddleware($middleware)
 	{
-		$this->stack->addRoute($this->routeid,$middleware,$order);
+		$this->stack->addRoute($this->routeid,$middleware);
 
 		return $this;
 	}

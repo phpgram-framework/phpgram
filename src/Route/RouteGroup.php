@@ -44,9 +44,9 @@ class RouteGroup
 		$this->strategyCollector=$strategyCollector;
 	}
 
-	public function addMiddleware($middleware,$order=null)
+	public function addMiddleware($middleware)
 	{
-		$this->stack->addGroup($this->groupid,$middleware,$order);
+		$this->stack->addGroup($this->groupid,$middleware);
 
 		return $this;
 	}
