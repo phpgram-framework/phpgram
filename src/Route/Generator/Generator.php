@@ -41,9 +41,9 @@ abstract class Generator implements GeneratorInterface
 			$this->mapRoute($route);
 		}
 
-		$dynamic = $this->generateDynamic($this->dynamic);	//Genereire Dynamic Routemap
+		$this->dynamic=$this->generateDynamic($this->dynamic);	//Genereire Dynamic Routemap
 
-		return ['static'=>$this->static,'dynamic'=>$dynamic];
+		return ['static'=>$this->static,'dynamic'=>$this->dynamic];
 	}
 
 	/**
@@ -59,17 +59,10 @@ abstract class Generator implements GeneratorInterface
 
 		//Ordne die Route in Static und Dynamic
 		if (\count($route->vars)===0){
-			$typ = 0;
+			$this->static[$route->path]=$route->handle;
 		}else{
-			$typ = 1;
-		}
-
-		foreach ($route->method as $item) {
-			if($typ===0){
-				$this->static[$item][$route->path]=$route->handle;
-			}elseif ($typ===1){
-				$this->dynamic[$item][]=$route;
-			}
+			$this->dynamic[]=$route;
 		}
 	}
+
 }
