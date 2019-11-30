@@ -9,7 +9,7 @@ use Gram\Test\Router\RouteMap;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 
-class AppTest extends TestCase
+class AppTest //extends TestCase
 {
 	private $map, $routes, $routehandler;
 
