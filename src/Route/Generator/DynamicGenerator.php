@@ -52,21 +52,23 @@ class DynamicGenerator extends Generator
 	{
 		$chunkSize=$this->getChunkSize(\count($routes));	//passe die chunk größe an
 
-		foreach ($routes as $route) {
-			//sammle solange Routes zum gruppieren bis chunk erreicht ist
-			if($this->chunkcount<$chunkSize-1){
-				$this->routeCollector($route);
-				++$this->chunkcount;
-				continue;
+		foreach ($routes as $method=>$route) {
+			foreach ($route as $routeitem) {
+				//sammle solange Routes zum gruppieren bis chunk erreicht ist
+				if($this->chunkcount<$chunkSize-1){
+					$this->routeCollector($routeitem);
+					++$this->chunkcount;
+					continue;
+				}
+
+				$this->routeCollector($routeitem);	//letzte Route für die liste noch hinzufügen
+
+				$this->chunkRoutes($method);	//routes chunken
 			}
 
-			$this->routeCollector($route);	//letzte Route für die liste noch hinzufügen
-
-			$this->chunkRoutes();	//routes chunken
-		}
-
-		if(!empty($this->routeCollector)){
-			$this->chunkRoutes();	//letze routes chunken
+			if(!empty($this->routeCollector)){
+				$this->chunkRoutes($method);	//letze routes chunken
+			}
 		}
 
 		return [
@@ -123,10 +125,10 @@ class DynamicGenerator extends Generator
 	 *
 	 * Speichere Handler an die gleiche Nummer wie die Routeliste
 	 */
-	private function chunkRoutes()
+	private function chunkRoutes($method)
 	{
-		$this->routeList[] = '~^(?|' . \implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
-		$this->handlerList[] = $this->handleCollector;	//übergibt die handler für die Routeliste
+		$this->routeList[$method][] = '~^(?|' . \implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
+		$this->handlerList[$method][] = $this->handleCollector;	//übergibt die handler für die Routeliste
 
 		$this->reset();
 	}

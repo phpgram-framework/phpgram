@@ -100,17 +100,19 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		[$status,$handle,$param] = $this->dispatch($uri);
+		[$status,$handle,$param] = $this->dispatch($httpMethod,$uri);
 
 		if($status==self::NOT_FOUND){
 			return [$status,$handle,$param];
 		}
 
+		/*
 		if(isset($httpMethod) && $this->checkMethod && !$this->checkMethod($handle['method'],$httpMethod)){
 			$handle['callable'] = $this->collector->get405();
 
 			return [self::METHOD_NOT_ALLOWED,$handle,$param];
 		}
+		*/
 
 		$routeid = $handle['routeid'];
 
@@ -126,12 +128,13 @@ class Router implements RouterInterface
 	 *
 	 * Wenn nicht setze Status 404 und gebe den 404 Handle zurück
 	 *
+	 * @param $method
 	 * @param $uri
 	 * @return array[int,array,array]
 	 */
-	protected function dispatch($uri)
+	protected function dispatch($method, $uri)
 	{
-		$response = $this->dispatcher->dispatch($uri,$this->collector->getData());
+		$response = $this->dispatcher->dispatch($method,$uri,$this->collector->getData());
 
 		if($response[0]===DispatcherInterface::FOUND){
 			return [self::OK,$response[1],$response[2]];

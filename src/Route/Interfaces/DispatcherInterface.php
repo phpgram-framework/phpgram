@@ -29,11 +29,12 @@ interface DispatcherInterface
 	 *
 	 * Sonst führe den Dynamischen Dispatcher aus
 	 *
+	 * @param $method
 	 * @param $uri
 	 * @param array $routes
 	 * @return array
 	 */
-	public function dispatch($uri, array $routes=[]);
+	public function dispatch($method, $uri, array $routes=[]);
 
 	/**
 	 * Suche jede Gruppenregex ab
