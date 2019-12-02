@@ -57,6 +57,8 @@ abstract class Generator implements GeneratorInterface
 	{
 		$route->createRoute();	//parse die Route
 
+		$route->handle['method']=$route->method;	//setze die Method in den Handle ein
+
 		//Ordne die Route in Static und Dynamic
 		if (\count($route->vars)===0){
 			$this->static[$route->path]=$route->handle;

@@ -31,7 +31,7 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class Route
 {
-	public $path,$handle,$vars,$parser,$stack,$strategyCollector,$groupid,$routeid;
+	public $path,$handle,$vars,$parser,$stack,$strategyCollector,$groupid,$routeid,$method;
 
 	/**
 	 * Route constructor.
@@ -52,7 +52,7 @@ class Route
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector
 	){
-		$this->handle['method']=$method;	//speichere Method für Dispatcher
+		$this->method=$method;	//speichere Method für Dispatcher
 		$this->handle['groupid']=$routegroupid;
 		$this->handle['routeid']=$routeid;
 
