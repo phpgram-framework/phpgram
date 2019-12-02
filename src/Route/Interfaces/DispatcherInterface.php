@@ -21,19 +21,21 @@ namespace Gram\Route\Interfaces;
  */
 interface DispatcherInterface
 {
-	const FOUND=1;
-	const NOT_FOUND = 0;
+	const FOUND = 200;
+	const NOT_FOUND = 404;
+	const NOT_ALLOWED = 405;
 
 	/**
 	 * Pürfe ob die Route in dem Array ist (static Route)
 	 *
 	 * Sonst führe den Dynamischen Dispatcher aus
 	 *
+	 * @param $method
 	 * @param $uri
 	 * @param array $routes
 	 * @return array
 	 */
-	public function dispatch($uri, array $routes=[]);
+	public function dispatch($method,$uri, array $routes=[]);
 
 	/**
 	 * Suche jede Gruppenregex ab

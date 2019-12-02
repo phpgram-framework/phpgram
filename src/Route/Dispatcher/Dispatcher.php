@@ -15,21 +15,20 @@ namespace Gram\Route\Dispatcher;
 
 use Gram\Route\Interfaces\DispatcherInterface;
 
-/**
- * Class Dispatcher
- * @package Gram\Route\Dispatcher
- *
- * Der Hauptdispatcher durchsucht nur die static Routes
- */
+
 abstract class Dispatcher implements DispatcherInterface
 {
 	/**
 	 * @inheritdoc
 	 */
-	public function dispatch($uri, array $routes=[])
+	public function dispatch($method,$uri, array $routes=[])
 	{
 		if(isset($routes['static'][$uri])){
-			return [self::FOUND,$routes['static'][$uri],[]];
+			$handler = $routes['static'][$uri];
+
+			$status = $this->checkMethod($method,$handler['method']);
+
+			return [$status,$handler,[]];
 		}
 
 		//wenn es keine Dnymic Routes gibt
@@ -37,10 +36,39 @@ abstract class Dispatcher implements DispatcherInterface
 			return [self::NOT_FOUND];
 		}
 
-		return $this->dispatchDynamic(
+		$response = $this->dispatchDynamic(
 			$uri,
 			$routes['dynamic']['regexes'],
 			$routes['dynamic']['dynamichandler']
 		);
+
+		if($response[0] === self::FOUND){
+			$handler = $response[1];
+
+			$status = $this->checkMethod($method,$handler['method']);
+
+			return [$status,$handler,$response[2]];
+		}
+
+		return [self::NOT_FOUND];
+	}
+
+	protected function checkMethod($method,array $route_method)
+	{
+		$httpMethod = \strtolower($method);
+
+		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
+		foreach ((array)$route_method as $item) {
+			if($httpMethod === \strtolower($item)){
+				return self::FOUND;
+			}
+		}
+
+		//Bei HEAD requests suche eine GET Route wenn fehlgeschlagen
+		if($httpMethod=='head'){
+			return $this->checkMethod('GET',$route_method);
+		}
+
+		return self::NOT_ALLOWED;
 	}
 }

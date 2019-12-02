@@ -35,11 +35,7 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class Router implements RouterInterface
 {
-	const NOT_FOUND = 404;
-	const METHOD_NOT_ALLOWED = 405;
-	const OK = 200;
-
-	private $checkMethod, $slash_trim;
+	private $slash_trim;
 
 	/** @var CollectorInterface */
 	private $collector;
@@ -60,7 +56,6 @@ class Router implements RouterInterface
 	){
 		//setze Standard Optionen
 		$options +=[
-			'check_method'=>true,
 			'slash_trim'=>true,
 			'caching'=>false,
 			'cache'=>null,
@@ -71,7 +66,6 @@ class Router implements RouterInterface
 		];
 
 		$this->slash_trim = $options['slash_trim'];
-		$this->checkMethod = $options['check_method'];
 
 		$middlewareCollector = $middlewareCollector ?? new MiddlewareCollector();
 		$strategyCollector = $strategyCollector ?? new StrategyCollector();
@@ -92,7 +86,7 @@ class Router implements RouterInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function run($uri,$httpMethod=null)
+	public function run($uri,$httpMethod)
 	{
 		$uri = \urldecode($uri);	//umlaute filtern
 
@@ -100,23 +94,17 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		[$status,$handle,$param] = $this->dispatch($uri);
+		[$status,$handle,$param] = $this->dispatch($httpMethod,$uri);
 
-		if($status==self::NOT_FOUND){
+		if($status!=DispatcherInterface::FOUND){
 			return [$status,$handle,$param];
-		}
-
-		if(isset($httpMethod) && $this->checkMethod && !$this->checkMethod($handle['method'],$httpMethod)){
-			$handle['callable'] = $this->collector->get405();
-
-			return [self::METHOD_NOT_ALLOWED,$handle,$param];
 		}
 
 		$routeid = $handle['routeid'];
 
 		$handle['callable'] = $this->collector->getHandle()[$routeid];
 
-		return [self::OK,$handle,$param];
+		return [$status,$handle,$param];
 	}
 
 	/**
@@ -126,50 +114,25 @@ class Router implements RouterInterface
 	 *
 	 * Wenn nicht setze Status 404 und gebe den 404 Handle zurück
 	 *
+	 * @param $method
 	 * @param $uri
 	 * @return array[int,array,array]
 	 */
-	protected function dispatch($uri)
+	protected function dispatch($method,$uri)
 	{
-		$response = $this->dispatcher->dispatch($uri,$this->collector->getData());
+		$response = $this->dispatcher->dispatch($method,$uri,$this->collector->getData());
 
 		if($response[0]===DispatcherInterface::FOUND){
-			return [self::OK,$response[1],$response[2]];
+			return $response;
 		}
 
-		$handle['callable']=$this->collector->get404();
-
-		return [self::NOT_FOUND,$handle,[]];
-	}
-
-	/**
-	 * Prüfe die Request Method
-	 *
-	 * Wenn es die richtige ist gebe ok zurück
-	 *
-	 * Sonst 405 und den 405 Handle
-	 *
-	 * @param $route_method
-	 * @param $httpMethod
-	 * @return bool
-	 */
-	protected function checkMethod($route_method,$httpMethod)
-	{
-		$httpMethod = \strtolower($httpMethod);
-
-		//Prüfe ob der Request mit der richtigen Methode durchgeführt wurde
-		foreach ((array)$route_method as $item) {
-			if($httpMethod === \strtolower($item)){
-				return true;
-			}
+		if($response[0]===DispatcherInterface::NOT_ALLOWED){
+			$handle['callable']=$this->collector->get405();
+		}else{
+			$handle['callable']=$this->collector->get404();
 		}
 
-		//Bei HEAD requests suche eine GET Route wenn fehlgeschlagen
-		if($httpMethod=='head'){
-			return $this->checkMethod($route_method,'GET');
-		}
-
-		return false;
+		return [$response[0],$handle,[]];
 	}
 
 	/**

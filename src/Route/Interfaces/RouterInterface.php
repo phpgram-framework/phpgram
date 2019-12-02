@@ -31,10 +31,10 @@ interface RouterInterface
 	 * Sollte ein Fehler auftauchen (404 oder 405) Gebe diese Handler zurück
 	 *
 	 * @param $uri
-	 * @param null $httpMethod
+	 * @param $httpMethod
 	 * @return mixed
 	 */
-	public function run($uri,$httpMethod=null);
+	public function run($uri,$httpMethod);
 
 	/**
 	 * @return CollectorInterface
