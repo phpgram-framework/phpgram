@@ -190,4 +190,39 @@ abstract class TestRoutes extends TestCase
 
 		self::assertEquals($this->routehandler[3],$handler['callable']);
 	}
+
+	public function testSimpleRoutesWithHead()
+	{
+		$this->initRoutes();
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'HEAD');
+
+		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+	}
+
+	public function test404()
+	{
+		$this->initRoutes();
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester1');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals('404',$status);
+		self::assertEquals('404',$handler['callable']);
+	}
+
+	public function test405()
+	{
+		$this->initRoutes();
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'POST');
+
+		self::assertEquals('405',$status);
+		self::assertEquals('405',$handler['callable']);
+	}
 }

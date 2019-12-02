@@ -24,15 +24,4 @@ class RouterTest extends TestRoutes
 		$this->routes = $this->map->map();
 		$this->routehandler = $this->map->handler();
 	}
-
-	public function testSimpleRoutesWithHead()
-	{
-		$this->initRoutes();
-
-		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
-
-		[$status,$handler,$param] = $this->router->run($uri->getPath(),'HEAD');
-
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
-	}
 }
