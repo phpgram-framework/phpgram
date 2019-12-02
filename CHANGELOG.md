@@ -1,9 +1,19 @@
 # CHANGELOG
 
+# 1.4.x
+
+## 1.4.0
+- since 2019/12/02
+- neuer Route Generator und Dispatcher hinzugefügt
+	- kann optional genutzt werden
+	- Generator ordnet Routes bei ihrer Http Method ein. 
+	- Sollte eine Route mehrere Http Methods haben wird diese mehrfach in der Routemap mit ihrer Id und Group Id auftauchen
+	- gut geeignet für opcache
+
 # 1.3.x
 
 ## 1.3.1
-- since 201/11/05
+- since 2019/11/05
 - ResolverCreator kann nur noch am Anfang gesetzt werden
 - Middleware Order (außer Betrieb) entfernt
 
