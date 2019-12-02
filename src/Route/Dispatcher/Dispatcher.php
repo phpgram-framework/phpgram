@@ -20,6 +20,8 @@ abstract class Dispatcher implements DispatcherInterface
 {
 	/**
 	 * @inheritdoc
+	 *
+	 * Hier wird die Http Method geprüft nachdem die Route gefunden wurde
 	 */
 	public function dispatch($method,$uri, array $routes=[])
 	{
@@ -31,7 +33,7 @@ abstract class Dispatcher implements DispatcherInterface
 			return [$status,$handler,[]];
 		}
 
-		//wenn es keine Dnymic Routes gibt
+		//wenn es keine Dynamic Routes gibt
 		if(!isset($routes['dynamic'])){
 			return [self::NOT_FOUND];
 		}
