@@ -38,9 +38,9 @@ class DynamicGenerator extends Generator
 	 */
 	public function generateDynamic(array $routes)
 	{
-		$chunkSize=$this->getChunkSize(\count($routes));	//passe die chunk größe an
-
 		foreach ($routes as $method=>$route) {
+			$chunkSize=$this->getChunkSize(\count($route));	//passe die chunk größe an
+
 			foreach ($route as $routeitem) {
 				//sammle solange Routes zum gruppieren bis chunk erreicht ist
 				if($this->chunkcount<$chunkSize-1){
