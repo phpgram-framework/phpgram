@@ -53,6 +53,19 @@ abstract class Dispatcher implements DispatcherInterface
 		return [self::NOT_FOUND];
 	}
 
+	/**
+	 * Prüfe die Http Method
+	 *
+	 * Wenn diese Head ist prüfe ob es auch eine Get Method gibt
+	 *
+	 * @param $method
+	 * Die zuprüfende Method
+	 *
+	 * @param array $route_method
+	 * Die Methods der Route
+	 *
+	 * @return int
+	 */
 	protected function checkMethod($method,array $route_method)
 	{
 		$httpMethod = \strtolower($method);
