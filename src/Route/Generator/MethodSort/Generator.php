@@ -11,23 +11,11 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Route\Generator;
+namespace Gram\Route\Generator\MethodSort;
 
 use Gram\Route\Interfaces\GeneratorInterface;
 use Gram\Route\Route;
 
-/**
- * Class Generator
- * @package Gram\Route\Generator
- *
- * Hauptgenerator wird für die static Routes genutzt
- *
- * Trennt zuerst die static von den dynamischen Routes
- *
- * Fügt die static Routes dem Array hinzu
- *
- * Führt danach den Dynamischen Generator aus
- */
 abstract class Generator implements GeneratorInterface
 {
 	const CHUNKSIZE = 10;
@@ -41,9 +29,9 @@ abstract class Generator implements GeneratorInterface
 			$this->mapRoute($route);
 		}
 
-		$this->dynamic=$this->generateDynamic($this->dynamic);	//Genereire Dynamic Routemap
+		$dynamic = $this->generateDynamic($this->dynamic);	//Genereire Dynamic Routemap
 
-		return ['static'=>$this->static,'dynamic'=>$this->dynamic];
+		return ['static'=>$this->static,'dynamic'=>$dynamic];
 	}
 
 	/**
@@ -57,13 +45,19 @@ abstract class Generator implements GeneratorInterface
 	{
 		$route->createRoute();	//parse die Route
 
-		$route->handle['method']=$route->method;	//setze die Method in den Handle ein
-
 		//Ordne die Route in Static und Dynamic
 		if (\count($route->vars)===0){
-			$this->static[$route->path]=$route->handle;
+			$typ = 0;
 		}else{
-			$this->dynamic[]=$route;
+			$typ = 1;
+		}
+
+		foreach ($route->method as $item) {
+			if($typ===0){
+				$this->static[$item][$route->path]=$route->handle;
+			}elseif ($typ===1){
+				$this->dynamic[$item][]=$route;
+			}
 		}
 	}
 }
