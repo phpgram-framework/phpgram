@@ -22,6 +22,24 @@ class DynamicDispatcher extends Dispatcher
 	 */
 	public function dispatchDynamic($uri, array $routes, array $handler)
 	{
+		//durchlaufe die Regexlisten
+		//$i = welche Regexliste
+		//count($matches) = nummer des handlers
+		foreach($routes as $i=>$regex) {
+			if(! \preg_match($regex,$uri,$matches)){
+				continue;	//wenn Route nicht Dabei ist nächsten Chunk prüfen
+			}
 
+			//wenn Regex im Chunk war
+			$route = $handler[$i][count($matches)];
+
+			$var=[];
+			foreach ($route[1] as $j=>$item) {
+				$var[$item]=$matches[$j+1];
+			}
+
+			return [self::FOUND,$route[0],$var];	//[status,handler,vars}
+		}
+		return [self::NOT_FOUND];
 	}
 }

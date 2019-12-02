@@ -22,19 +22,19 @@ abstract class Dispatcher implements DispatcherInterface
 	 */
 	public function dispatch($method,$uri, array $routes=[])
 	{
-		if(isset($routes['static'][$uri])){
-			return [self::FOUND,$routes['static'][$uri],[]];
+		if(isset($routes['static'][$method][$uri])){
+			return [self::FOUND,$routes['static'][$method][$uri],[]];
 		}
 
 		//wenn es keine Dnymic Routes gibt
-		if(!isset($routes['dynamic'])){
+		if(!isset($routes['dynamic']['regexes'][$method])){
 			return [self::NOT_FOUND];
 		}
 
 		return $this->dispatchDynamic(
 			$uri,
-			$routes['dynamic']['regexes'],
-			$routes['dynamic']['dynamichandler']
+			$routes['dynamic']['regexes'][$method],
+			$routes['dynamic']['dynamichandler'][$method]
 		);
 	}
 }
