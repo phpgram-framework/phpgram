@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Middleware\Handler;
+namespace Gram\Middleware;
 
 use Gram\Exceptions\CallableNotFoundException;
 use Gram\Strategy\StrategyInterface;
