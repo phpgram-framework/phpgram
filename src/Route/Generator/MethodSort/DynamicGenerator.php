@@ -13,13 +13,23 @@
 
 namespace Gram\Route\Generator\MethodSort;
 
-use Gram\Route\Route;
+use Gram\Route\Generator\DynamicGeneratorTrait;
 
+/**
+ * Class DynamicGenerator
+ * @package Gram\Route\Generator\MethodSort
+ *
+ * Ein Generator der die Routes ihrer Method zuordnet
+ *
+ * Based on:
+ * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
+ * https://github.com/nikic/FastRoute
+ */
 class DynamicGenerator extends Generator
 {
-	const CHUNKSIZE = 10;
+	use DynamicGeneratorTrait;
 
-	private $number=0,$chunkcount=0,$routeCollector,$handleCollector,$routeList,$handlerList;
+	const CHUNKSIZE = 10;
 
 	/**
 	 * Sammle solange Routes bis die Sammelmenge (chunk) erreicht ist ( @see DynamicGenerator::routeCollector() )
@@ -39,7 +49,7 @@ class DynamicGenerator extends Generator
 	public function generateDynamic(array $routes)
 	{
 		foreach ($routes as $method=>$route) {
-			$chunkSize=$this->getChunkSize(\count($route));	//passe die chunk größe an
+			$chunkSize=$this->getChunkSize(\count($route),self::CHUNKSIZE);	//passe die chunk größe an
 
 			foreach ($route as $routeitem) {
 				//sammle solange Routes zum gruppieren bis chunk erreicht ist
@@ -65,47 +75,6 @@ class DynamicGenerator extends Generator
 		];
 	}
 
-	private function reset()
-	{
-		//Sammler wieder zurück stellen
-		$this->routeCollector=[];
-		$this->handleCollector=[];
-		$this->chunkcount=0;
-		$this->number=0;	//Für die Placeholder
-	}
-
-	/**
-	 * Gibt die tatsächliche Chunkgröße an
-	 *
-	 * 1. Ermittle wie viele Routes gechunkt werden sollen
-	 *
-	 * 2. Errechne die Anzahl an Chunks die mit der Standardgröße erstellt werden könnten. (Runde die Anzahl)
-	 *
-	 * 3. Damit keine kleinen Chunks über bleiben:
-	 *
-	 * - Errechne die neue Chunkgröße, sodass alle Chunks immer voll sind:
-	 *
-	 * - indem die Anzahl an Routes / mit der Anzahl an Chunks aufgerundet wird
-	 *
-	 * - bsp.: Anzahl = 11, Chunksize = 10
-	 *
-	 * -> 21/10 = 2,1 -> runden: 2 -> die Anzahl an Chunks mit einer Größe von 10
-	 *
-	 * -> 21/2 = 10,5 -> aufrunden: 11 -> Größe an Chunks die am Ende immer voll sind
-	 *
-	 * @param $count
-	 *
-	 * Wie viele Routes gechunkt werden sollen
-	 *
-	 * @return int
-	 */
-	private function getChunkSize($count)
-	{
-		$approxChunks = \max(1, \round($count/self::CHUNKSIZE));	//wie viele Chunks lassen sich erstellen (muss min. einen geben)
-
-		return (int) \ceil($count / $approxChunks);		//die tatsächliche Größe, um die Anzahl an Chunks zu minimieren
-	}
-
 	/**
 	 * Fasse die Routes zusammen.
 	 *
@@ -121,35 +90,4 @@ class DynamicGenerator extends Generator
 
 		$this->reset();
 	}
-
-	/**
-	 * Fügt Routeing Placeholder hinzu: ()
-	 *
-	 * Wenn die Route bereits Variablen hat-> von den Platzhaltern abziehen, da diese bereits Placeholder sind
-	 *
-	 * Placeholder sind notwendig da die Routes zu einer regex zusammengefasst werden und das matcharray
-	 * die gleiche Länge haben muss
-	 *
-	 * wie die Position der richtigen Route in der Regex. Erst dann kann der richtige Handler geladen werden
-	 * (der die gleiche Position in seinem Array hat)
-	 *
-	 * bsp.: Route /video/{id} steht an 3. Stelle in der Regex -> /video/{id}()
-	 *
-	 * Route /video/add steht an 2. Stelle -> /video/add()
-	 *
-	 * Route /video/added steht an 4. Stelle -> /video/added()()()
-	 *
-	 * -> Placeholder werden aufgefüllt
-	 *
-	 * @param Route $route
-	 */
-	private function routeCollector(Route $route)
-	{
-		$varcount = \count($route->vars);	//zähle die Varaiblen die die Funktion erwartet (für Placeholder: () )
-		$this->number = \max($this->number,$varcount);	//passe Placeholderanzahl an
-		$this->routeCollector[]= $route->path. \str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
-		++$this->number;	//erhöhe da die nächste Route einen Playerholder mehr braucht
-		$this->handleCollector[$this->number]=[$route->handle,$route->vars];	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
-	}
-
 }
