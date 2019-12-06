@@ -4,9 +4,7 @@ namespace Gram\Test\Middleware;
 use Gram\App\QueueHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
-use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\RouteCollector;
-use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Router;
 use Gram\Test\App\AppTestInit;
 use Gram\Test\Middleware\DummyMw\TestMw1;
@@ -18,6 +16,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Gram\Exceptions\PageNotFoundException;
 
 class RouteMwTest extends TestCase
 {
@@ -91,6 +90,11 @@ class RouteMwTest extends TestCase
 		$this->request = $creator->fromGlobals();
 	}
 
+	/**
+	 * Testet die Ausgabe wenn Route gefunden
+	 *
+	 * @throws \Exception
+	 */
 	public function testRouterFound()
 	{
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/tester');
@@ -110,6 +114,11 @@ class RouteMwTest extends TestCase
 		self::assertEquals($expect,$string);
 	}
 
+	/**
+	 * Test die Ausgabe wenn die Route nicht gefunden wurde
+	 *
+	 * @throws \Exception
+	 */
 	public function testNotFound()
 	{
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/tester1');
@@ -129,5 +138,22 @@ class RouteMwTest extends TestCase
 		$expect = "Ein Stream für Not Found 1";
 
 		self::assertEquals($expect,$string);
+	}
+
+	/**
+	 * Test den lastHandler ob dieser eine Exception wirft,
+	 * sollte kein 404 Handler angegeben sein
+	 *
+	 * @throws \Exception
+	 */
+	public function testNotFoundWithOutHandler()
+	{
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/tester1');
+
+		$this->request = $this->request->withUri($uri);
+
+		self::expectException(PageNotFoundException::class);
+		$response = $this->queue->handle($this->request);
+
 	}
 }

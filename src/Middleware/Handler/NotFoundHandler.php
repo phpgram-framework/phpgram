@@ -13,6 +13,8 @@
 
 namespace Gram\Middleware\Handler;
 
+use Gram\Exceptions\PageNotAllowedException;
+use Gram\Exceptions\PageNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -32,8 +34,24 @@ class NotFoundHandler implements RequestHandlerInterface
 		$this->callbackHandler=$callbackHandler;
 	}
 
+	/**
+	 * @inheritdoc
+	 * @throws \Exception
+	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
-		return $this->callbackHandler->handle($request);
+		$callable = $request->getAttribute('callable',null);
+
+		if ($callable!==null){
+			return $this->callbackHandler->handle($request);
+		}
+
+		$status = $request->getAttribute('status',404);
+
+		if($status==405){
+			throw new PageNotAllowedException('405 Method not allowed');
+		}
+
+		throw new PageNotFoundException('404 Page Not Found');
 	}
 }

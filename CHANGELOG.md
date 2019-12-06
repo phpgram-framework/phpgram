@@ -9,6 +9,8 @@
 	- Generator ordnet Routes bei ihrer Http Method ein. 
 	- Sollte eine Route mehrere Http Methods haben wird diese mehrfach in der Routemap mit ihrer Id und Group Id auftauchen
 	- gut geeignet für opcache
+- NotFoundHandler wirft nun Exceptions, wenn kein Handler angegeben wurde
+
 
 # 1.3.x
 
