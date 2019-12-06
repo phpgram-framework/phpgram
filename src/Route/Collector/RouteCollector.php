@@ -119,7 +119,7 @@ class RouteCollector implements CollectorInterface
 	 */
 	public function getData()
 	{
-		if(file_exists($this->cache)){
+		if($this->caching && file_exists($this->cache)){
 			return require $this->cache;
 		}
 
