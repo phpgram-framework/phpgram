@@ -364,7 +364,6 @@ class App implements RequestHandlerInterface
 	/**
 	 * Setzt Optionen für den Router:
 	 *
-	 * check_method: bool
 	 * slash_trim: bool
 	 * caching: bool
 	 * cache: string
