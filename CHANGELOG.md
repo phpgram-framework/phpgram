@@ -3,7 +3,7 @@
 # 1.4.x
 
 ## 1.4.0
-- since 2019/12/02
+- since 2019/12/06
 - neuer Route Generator und Dispatcher hinzugefügt
 	- kann optional genutzt werden
 	- Generator ordnet Routes bei ihrer Http Method ein. 
