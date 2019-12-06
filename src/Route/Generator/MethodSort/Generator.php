@@ -23,6 +23,9 @@ abstract class Generator implements GeneratorInterface
 	private $dynamic=[];
 	private $static=[];
 
+	/**
+	 * @inheritdoc
+	 */
 	public function generate(array $routes)
 	{
 		foreach ($routes as $i=>$route) {

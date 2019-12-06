@@ -32,6 +32,8 @@ class DynamicGenerator extends Generator
 	const CHUNKSIZE = 10;
 
 	/**
+	 * @inheritdoc
+	 *
 	 * Sammle solange Routes bis die Sammelmenge (chunk) erreicht ist ( @see DynamicGenerator::routeCollector() )
 	 *
 	 * Wenn diese erreicht ist fasse die Routes zu einer Regex zusammen ( @see DynamicGenerator::chunkRoutes() )

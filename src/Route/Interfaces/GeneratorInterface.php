@@ -21,6 +21,20 @@ namespace Gram\Route\Interfaces;
  */
 interface GeneratorInterface
 {
+	/**
+	 * Bereitet die Routes vor
+	 * und unterteilt diese in Static und Dynamic Routes
+	 *
+	 * @param array $routes
+	 * @return mixed
+	 */
 	public function generate(array $routes);
+
+	/**
+	 * Generiert die Route map für die Dynamic Routes
+	 *
+	 * @param array $routes
+	 * @return mixed
+	 */
 	public function generateDynamic(array $routes);
 }
