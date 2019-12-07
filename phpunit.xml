@@ -1,0 +1,9 @@
+<phpunit
+	cacheResult="false"
+	>
+	<testsuites>
+		<testsuite name="gram">
+			<directory>test</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
