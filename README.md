@@ -2,6 +2,7 @@
 
 # phpgram
 
+[![pipeline status](https://gitlab.com/grammm/php-gram/phpgram/badges/master/pipeline.svg)](https://gitlab.com/grammm/php-gram/phpgram/commits/master)
 [![Packagist Version](https://img.shields.io/packagist/v/phpgram/phpgram)](https://packagist.org/packages/phpgram/phpgram)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/composer.json)
 [![Packagist](https://img.shields.io/packagist/l/phpgram/phpgram)](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
