@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.4.0 */
+/** @version 1.4.1 */
 
 namespace Gram\App;
 
@@ -47,7 +47,13 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $stdStrategy=null, $resolverCreator=null, $router_options=[], $raw_options = [];
+	protected $router_options=[], $raw_options = [];
+
+	/** @var StrategyInterface */
+	protected $stdStrategy=null;
+
+	/** @var ResolverCreatorInterface */
+	protected $resolverCreator=null;
 
 	/** @var ContainerInterface */
 	protected $container=null;
@@ -76,6 +82,7 @@ class App implements RequestHandlerInterface
 	/** @var StrategyCollectorInterface */
 	protected $strategyCollector=null;
 
+	/** @var self */
 	private static $_instance;
 
 	/**
@@ -132,6 +139,42 @@ class App implements RequestHandlerInterface
 	}
 
 	/**
+	 * Gibt den ResponseCreator zurück
+	 *
+	 * Sollte es diesen nicht geben wird er erstellt
+	 *
+	 * Factories und ggf. ResolverCreator sowie Strategy sollten vorher gesetzt werden
+	 *
+	 * @return RequestHandlerInterface
+	 */
+	public function getResponseCreator()
+	{
+		if (isset($this->responseCreator)) {
+			return $this->responseCreator;
+		}
+
+		$this->raw_options +=[
+			'response_creator'=>'Gram\\Middleware\\ResponseCreator'
+		];
+
+		//setze Standard Objekte
+		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
+		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
+
+		//Wird am Ende ausgeführt um den Response zu erstellen
+		//erhält Factory um Response zu erstellen
+		$this->responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
+				$this->responseFactory,
+				$this->streamFactory,
+				$resolverCreator,
+				$stdStrategy,
+				$this->container
+			);
+
+		return $this->responseCreator;
+	}
+
+	/**
 	 * Start der Seite
 	 *
 	 * Erhält den Request
@@ -181,34 +224,22 @@ class App implements RequestHandlerInterface
 	 *
 	 * @return void
 	 */
-	protected function build()
+	public function build()
 	{
 		//setze Default Raw Options
 		$this->raw_options +=[
-			'response_creator'=>'Gram\\Middleware\\ResponseCreator',
 			'queue_handler'=>'Gram\\App\\QueueHandler',
 			'routeMw'=>'Gram\\Middleware\\RouteMiddleware'
 		];
 
-		//setze Standard Objekte
-		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
-		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
-
-		//Wird am Ende ausgeführt um den Response zu erstellen
-		//erhält Factory um Response zu erstellen
-		$responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
-				$this->responseFactory,
-				$this->streamFactory,
-				$resolverCreator,
-				$stdStrategy,
-				$this->container
+		$this->queueHandler = $this->queueHandler ?? new $this->raw_options['queue_handler'](
+			$this->getResponseCreator(), //default Fallback
+			$this->container
 			);
-
-		$this->queueHandler = $this->queueHandler ?? new $this->raw_options['queue_handler']($responseCreator,$this->container);	//default Fallback
 
 		$this->routeMiddleware = $this->routeMiddleware ?? new $this->raw_options['routeMw'](
 				$this->getRouter(),		//router für den request
-				new NotFoundHandler($responseCreator),	//error handler
+				new NotFoundHandler($this->getResponseCreator()),	//error handler
 				$this,
 				$this->getStrategyCollector()
 			);
@@ -221,7 +252,7 @@ class App implements RequestHandlerInterface
 	 * Füge dann die Routing Middleware dem Stack hinzu
 	 *
 	 */
-	protected function init()
+	public function init()
 	{
 		//Erstelle Middleware Stack
 

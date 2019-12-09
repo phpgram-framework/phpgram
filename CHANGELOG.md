@@ -2,6 +2,14 @@
 
 # 1.4.x
 
+## 1.4.1
+- since 2019/12/09
+- Es kann nun auch auf ResponseCreator, zur Laufzeit, zugegriffen werden, mit `getResponseCreator()`
+	- Vorher müssen aber die Factories gesetzt sein
+	- Sollte eine andere Strategy verwendet werden muss diese auch vorher gesetzt sein
+	- Lösung: ResponseCreator in den Psr 11 Container legen und alle Middleware die diesen brauchen ebenfalls in den Container
+	- ResponseCreator wird zur Laufzeit erstellt in der App, dieser Container sollte das ebenfalls mit dem ResponseCreator tun
+	
 ## 1.4.0
 - since 2019/12/06
 - neuer Route Generator und Dispatcher hinzugefügt
