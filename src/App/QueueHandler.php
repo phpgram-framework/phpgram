@@ -74,15 +74,15 @@ class QueueHandler implements RequestHandlerInterface
 		$middleware = \array_shift($this->stack);	//hole das oberste element und lösche es aus dem array
 
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
-		if($this->container!==null && \is_string($middleware)){
-			if($this->container->has($middleware) === false){
+		if ($this->container!==null && \is_string($middleware)) {
+			if ($this->container->has($middleware) === false) {
 				throw new MiddlewareNotAllowedException("Middleware: [$middleware] not found");
 			}
 
 			$middleware = $this->container->get($middleware);
 		}
 
-		if($middleware instanceof MiddlewareInterface === false){
+		if ($middleware instanceof MiddlewareInterface === false) {
 			throw new MiddlewareNotAllowedException("Middleware needs to implement Psr 15 MiddlewareInterface");
 		}
 

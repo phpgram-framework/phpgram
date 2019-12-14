@@ -14,6 +14,7 @@
 namespace Gram\Middleware;
 
 use Gram\Exceptions\CallableNotFoundException;
+use Gram\Exceptions\StrategyNotAllowedException;
 use Gram\Strategy\StrategyInterface;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Psr\Container\ContainerInterface;
@@ -63,6 +64,7 @@ class ResponseCreator implements RequestHandlerInterface
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface
 	 * @throws CallableNotFoundException
+	 * @throws StrategyNotAllowedException
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
@@ -74,7 +76,24 @@ class ResponseCreator implements RequestHandlerInterface
 		}
 
 		$param = $request->getAttribute('param',[]);
-		$strategy = $request->getAttribute('strategy',null) ?? $this->stdstrategy;
+		$strategy = $request->getAttribute('strategy',null);
+
+		if ($strategy !== null) {
+			if ($this->container !== null && \is_string($strategy)) {
+				if ($this->container->has($strategy) === false) {
+					throw new StrategyNotAllowedException("Strategy: [$strategy] not found");
+				}
+
+				$strategy = $this->container->get($strategy);
+			}
+
+			if($strategy instanceof StrategyInterface === false) {
+				throw new StrategyNotAllowedException("Strategy needs to implement StrategyInterface");
+			}
+		} else {
+			$strategy = $this->stdstrategy;
+		}
+
 		$status = $request->getAttribute('status',200);
 
 		//erstelle Response mit den Werten von den Middleware

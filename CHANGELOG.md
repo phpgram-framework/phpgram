@@ -5,6 +5,7 @@
 ## 1.4.2
 - since
 - Möglichkeit Exceptions an zuzeigen eingebaut. Nun wird nur noch wenn gewünscht die Exception ausgegeben
+- Strategies können nun auch aus dem Container geladen werden
 
 ## 1.4.1
 - since 2019/12/09

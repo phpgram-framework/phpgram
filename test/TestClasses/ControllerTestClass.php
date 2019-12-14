@@ -31,4 +31,14 @@ class ControllerTestClass implements ClassInterface
 	{
 		throw new \Exception('');
 	}
+
+	public function buffered()
+	{
+		echo "buffer Test";
+	}
+
+	public function json()
+	{
+		return ["value1","value2","value3"];
+	}
 }
