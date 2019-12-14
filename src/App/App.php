@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.4.1 */
+/** @version 1.4.2 */
 
 namespace Gram\App;
 
@@ -47,7 +47,7 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $router_options=[], $raw_options = [];
+	protected $router_options=[], $raw_options = [], $debug_mode = 0;
 
 	/** @var StrategyInterface */
 	protected $stdStrategy=null;
@@ -208,7 +208,15 @@ class App implements RequestHandlerInterface
 		try {
 			$response = $this->queueHandler->handle($request); //Starte den Stack und erstelle Response
 		} catch (\Exception $e) {
-			$stream = $this->streamFactory->createStream("<h1>Application Error</h1> <pre>".$e."</pre>");
+			if($this->debug_mode === 0) {
+				$content = "<h1>Application Error</h1> <pre>".$e."</pre>";
+			}elseif ($this->debug_mode === 1){
+				$content = "<h1>Application Error</h1>";
+			}else{
+				$content = "";
+			}
+
+			$stream = $this->streamFactory->createStream($content);
 
 			$response = $this->responseFactory->createResponse(500)->withBody($stream);
 		}
@@ -408,6 +416,20 @@ class App implements RequestHandlerInterface
 	public function setRouterOptions(array $options=[])
 	{
 		$this->router_options=$options;
+	}
+
+	/**
+	 * Entscheidet wie mit Exceptions verfahren werden soll:
+	 *
+	 * 0 = Exception vollständig ausgeben (für dev)
+	 * 1 = Nur Anzeigen, dass es einen Error gab, keine Exception ausgeben
+	 * 2 = Nur Status 500 ausgeben
+	 *
+	 * @param int $type
+	 */
+	public function debugMode($type = 0)
+	{
+		$this->debug_mode = $type;
 	}
 
 	/**

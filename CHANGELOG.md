@@ -2,6 +2,10 @@
 
 # 1.4.x
 
+## 1.4.2
+- since
+- Möglichkeit Exceptions an zuzeigen eingebaut. Nun wird nur noch wenn gewünscht die Exception ausgegeben
+
 ## 1.4.1
 - since 2019/12/09
 - Es kann nun auch auf ResponseCreator, zur Laufzeit, zugegriffen werden, mit `getResponseCreator()`
