@@ -17,6 +17,11 @@
 use Gram\App\App;
 
 use Gram\Strategy\StdAppStrategy;
+
+//debug mode setzen: 0 = Exception werfen, 1 = Nur Angeben, dass es einen Error gab, 2 = Exception ausgeben
+
+App::app()->debugMode(0);	//0 ist voreingestellt
+
 App::app()->setStrategy(new StdAppStrategy()); //ggf. Strategy verändern. StdAppStrategy ist immer als Standard gesetzt wenn nichts überschrieben wurde
 
 App::app()->set404("Er404@404"); //404 Handler setzen
