@@ -1,6 +1,8 @@
 <?php
 namespace Gram\Test\Router;
 
+use Gram\Test\TestClasses\ControllerTestClass;
+use Gram\Test\TestClasses\TestClassDi;
 
 class RouteMap
 {
@@ -11,7 +13,8 @@ class RouteMap
 			'/test/vars/{var:a}/tester',
 			'/test/vars/{var}/tester',
 			'/',
-			'/abc'
+			'/abc',
+			'/exception'
 		];
 	}
 
@@ -22,7 +25,20 @@ class RouteMap
 			"TestHandler1",
 			"TestHandler2",
 			"Start",
-			"abc"
+			"abc",
+			"exception"
+		];
+	}
+
+	public function realHandler()
+	{
+		return [
+			ControllerTestClass::class."@getSomeValue",
+			TestClassDi::class."@testDi",
+			ControllerTestClass::class."@getSomeValue",
+			ControllerTestClass::class."@index",
+			"abc",
+			ControllerTestClass::class."@exception"
 		];
 	}
 }

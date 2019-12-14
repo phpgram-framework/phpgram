@@ -4,6 +4,12 @@ namespace Gram\Test\TestClasses;
 use Gram\Middleware\Classes\ClassInterface;
 use Gram\Middleware\Classes\ClassTrait;
 
+/**
+ * Class TestClass
+ * @package Gram\Test\TestClasses
+ *
+ * Test class für Class Resolver Tests
+ */
 class TestClass implements ClassInterface
 {
 	use ClassTrait;
