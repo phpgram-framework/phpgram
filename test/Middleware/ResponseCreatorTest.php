@@ -131,4 +131,20 @@ class ResponseCreatorTest extends TestCase
 
 		self::assertEquals('["value1","value2","value3"]',$body);
 	}
+
+	public function testWithFunction()
+	{
+		$func = function () {
+			return "test_func";
+		};
+
+		$this->request = $this->request->withAttribute('callable',$func)
+			->withAttribute('status',200);
+
+		$response = $this->responseCreator->handle($this->request);
+
+		$body = $response->getBody()->__toString();
+
+		self::assertEquals("test_func",$body);
+	}
 }
