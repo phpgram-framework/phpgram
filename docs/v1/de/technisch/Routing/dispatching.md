@@ -12,7 +12,7 @@
 <?php
 abstract class Dispatcher implements DispatcherInterface
 
-class DynamicDispatcher extends Dispatcher
+class GroupCountBased extends Dispatcher
 ````
 
 ## Dispatcher allgemein

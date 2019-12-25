@@ -11,21 +11,23 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Route\Generator\MethodSort;
+namespace Gram\Route\Generator\Std;
 
 use Gram\Route\Generator\DynamicGeneratorTrait;
 
 /**
- * Class DynamicGenerator
- * @package Gram\Route\Generator\MethodSort
+ * Class GroupCountBased
+ * @package Gram\Route\Generator\Std
  *
- * Ein Generator der die Routes ihrer Method zuordnet
+ * Erstellt Routelisten mit Group Count Based (GCB)
+ *
+ * Wird von den Collector Klassen aufgerufen um die Routes und Handler zusammen zufassen
  *
  * Based on:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
-class DynamicGenerator extends Generator
+class GroupCountBased extends StaticGenerator
 {
 	use DynamicGeneratorTrait;
 
@@ -50,25 +52,23 @@ class DynamicGenerator extends Generator
 	 */
 	public function generateDynamic(array $routes)
 	{
-		foreach ($routes as $method=>$route) {
-			$chunkSize=$this->getChunkSize(\count($route),self::CHUNKSIZE);	//passe die chunk größe an
+		$chunkSize=$this->getChunkSize(\count($routes),self::CHUNKSIZE);	//passe die chunk größe an
 
-			foreach ($route as $routeitem) {
-				//sammle solange Routes zum gruppieren bis chunk erreicht ist
-				if($this->chunkcount<$chunkSize-1){
-					$this->routeCollector($routeitem);
-					++$this->chunkcount;
-					continue;
-				}
-
-				$this->routeCollector($routeitem);	//letzte Route für die liste noch hinzufügen
-
-				$this->chunkRoutes($method);	//routes chunken
+		foreach ($routes as $route) {
+			//sammle solange Routes zum gruppieren bis chunk erreicht ist
+			if($this->chunkcount<$chunkSize-1){
+				$this->routeCollector($route);
+				++$this->chunkcount;
+				continue;
 			}
 
-			if(!empty($this->routeCollector)){
-				$this->chunkRoutes($method);	//letze routes chunken
-			}
+			$this->routeCollector($route);	//letzte Route für die liste noch hinzufügen
+
+			$this->chunkRoutes();	//routes chunken
+		}
+
+		if(!empty($this->routeCollector)){
+			$this->chunkRoutes();	//letze routes chunken
 		}
 
 		return [
@@ -83,12 +83,11 @@ class DynamicGenerator extends Generator
 	 * Muster: (?| Routes mit | dazwischen )
 	 *
 	 * Speichere Handler an die gleiche Nummer wie die Routeliste
-	 * @param $method
 	 */
-	private function chunkRoutes($method)
+	private function chunkRoutes()
 	{
-		$this->routeList[$method][] = '~^(?|' . \implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
-		$this->handlerList[$method][] = $this->handleCollector;	//übergibt die handler für die Routeliste
+		$this->routeList[] = '~^(?|' . \implode('|', $this->routeCollector) . ')$~x'; //wandle die Routes in ein gemeinsames Regex um
+		$this->handlerList[] = $this->handleCollector;	//übergibt die handler für die Routeliste
 
 		$this->reset();
 	}

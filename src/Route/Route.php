@@ -14,7 +14,6 @@
 namespace Gram\Route;
 
 use Gram\Route\Interfaces\MiddlewareCollectorInterface;
-use Gram\Route\Interfaces\ParserInterface;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
 
 /**
@@ -26,12 +25,10 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  * wird vom Routecollecotr aufgerufen wenn eine neue Route hinzugefügt wird
  *
  * Bietet die Möglichkeit Middleware und Strategy für die Route hinzu zufügen
- *
- * Parst auch die Route mithilfe des Parsers
  */
 class Route
 {
-	public $path,$handle,$vars,$parser,$stack,$strategyCollector,$groupid,$routeid,$method;
+	public $path,$handle,$vars,$stack,$strategyCollector,$groupid,$routeid,$method;
 
 	/**
 	 * Route constructor.
@@ -39,7 +36,6 @@ class Route
 	 * @param $method
 	 * @param $routegroupid
 	 * @param $routeid
-	 * @param ParserInterface $parser
 	 * @param MiddlewareCollectorInterface $stack
 	 * @param StrategyCollectorInterface $strategyCollector
 	 */
@@ -48,7 +44,6 @@ class Route
 		$method,
 		$routegroupid,
 		$routeid,
-		ParserInterface $parser,
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector
 	){
@@ -59,40 +54,8 @@ class Route
 		$this->path=$path;
 		$this->groupid=$routegroupid;
 		$this->routeid=$routeid;
-		$this->parser=$parser;
 		$this->stack=$stack;
 		$this->strategyCollector=$strategyCollector;
-	}
-
-	private function parseRoute(ParserInterface $parser)
-	{
-		return $parser->parse($this->path);
-	}
-
-	/**
-	 * Parst die Route für die Parameter
-	 */
-	public function createRoute()
-	{
-		$data=$this->parseRoute($this->parser);	//die geparste Route
-		$url="";
-		$var=[];
-		foreach ($data[0] as $datum) {
-			if(is_string($datum)){
-				//füge es einfach der url wieder zu
-				$url.= \preg_quote($datum, '~');
-				continue;
-			}
-
-			//füge var hinzu
-			if(\is_array($datum)){
-				$var[]=$datum[0];	//varaiblen name
-				$url.='('.$datum[1].')';
-			}
-		}
-
-		$this->path=$url;
-		$this->vars=$var;
 	}
 
 	/**

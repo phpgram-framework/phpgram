@@ -13,8 +13,8 @@ class MethodSortRouterTest extends TestRoutes
 
 		$this->mwCollector = new MiddlewareCollector();
 		$this->router = new Router([
-			'dispatcher'=>'Gram\\Route\\Dispatcher\\MethodSort\\DynamicDispatcher',
-			'generator'=>'Gram\\Route\\Generator\\MethodSort\\DynamicGenerator',
+			'dispatcher'=>'Gram\\Route\\Dispatcher\\MethodSort\\GroupCountBased',
+			'generator'=>'Gram\\Route\\Generator\\MethodSort\\GroupCountBased',
 		],$this->mwCollector);
 		$this->collector = $this->router->getCollector();
 		$this->collector->set404("404");

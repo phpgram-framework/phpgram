@@ -14,6 +14,7 @@
 namespace Gram\Route\Generator;
 
 use Gram\Route\Interfaces\GeneratorInterface;
+use Gram\Route\Interfaces\ParserInterface;
 use Gram\Route\Route;
 
 /**
@@ -32,8 +33,24 @@ abstract class Generator implements GeneratorInterface
 {
 	const CHUNKSIZE = 10;
 
-	private $dynamic=[];
-	private $static=[];
+	protected $dynamic = [];
+	protected $static = [];
+
+	/** @var ParserInterface */
+	protected $parser;
+
+	public function __construct(ParserInterface $parser)
+	{
+		$this->parser = $parser;
+	}
+
+	/**
+	 * Trenne die Routes in Static und Dynamic auf
+	 *
+	 * @param Route $route
+	 * @return mixed
+	 */
+	abstract public function mapRoute(Route $route);
 
 	/**
 	 * @inheritdoc
@@ -44,29 +61,28 @@ abstract class Generator implements GeneratorInterface
 			$this->mapRoute($route);
 		}
 
-		$this->dynamic=$this->generateDynamic($this->dynamic);	//Genereire Dynamic Routemap
-
-		return ['static'=>$this->static,'dynamic'=>$this->dynamic];
+		return ['static'=>$this->static,'dynamic'=>$this->generateDynamic($this->dynamic)];
 	}
 
-	/**
-	 * Unterteile die Routes in static und dynamic
-	 *
-	 * Führe dazu den Routeparser im Route Objekt aus
-	 *
-	 * @param Route $route
-	 */
-	private function mapRoute(Route $route)
+	protected function createRoute(string $path)
 	{
-		$route->createRoute();	//parse die Route
+		$data=$this->parser->parse($path);	//die geparste Route
+		$url="";
+		$var=[];
+		foreach ($data[0] as $datum) {
+			if(is_string($datum)){
+				//füge es einfach der url wieder zu
+				$url.= \preg_quote($datum, '~');
+				continue;
+			}
 
-		$route->handle['method']=$route->method;	//setze die Method in den Handle ein
-
-		//Ordne die Route in Static und Dynamic
-		if (\count($route->vars)===0){
-			$this->static[$route->path]=$route->handle;
-		}else{
-			$this->dynamic[]=$route;
+			//füge var hinzu
+			if(\is_array($datum)){
+				$var[]=$datum[0];	//varaiblen name
+				$url.='('.$datum[1].')';
+			}
 		}
+
+		return [$url,$var];
 	}
 }

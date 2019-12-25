@@ -17,7 +17,6 @@ use Gram\Route\Route;
 use Gram\Route\Interfaces\CollectorInterface;
 use Gram\Route\Interfaces\GeneratorInterface;
 use Gram\Route\Interfaces\MiddlewareCollectorInterface;
-use Gram\Route\Interfaces\ParserInterface;
 use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\RouteGroup;
 
@@ -39,11 +38,10 @@ class RouteCollector implements CollectorInterface
 
 	protected $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
 	protected $handler=[],$routeid=0,$routegroupid=0;
-	protected $parser,$generator,$caching,$cache,$stack,$strategyCollector;
+	protected $generator,$caching,$cache,$stack,$strategyCollector;
 
 	/**
 	 * RouteCollector constructor.
-	 * @param ParserInterface $parser
 	 * @param GeneratorInterface $generator
 	 * @param MiddlewareCollectorInterface $stack
 	 * @param StrategyCollectorInterface $strategyCollector
@@ -51,14 +49,12 @@ class RouteCollector implements CollectorInterface
 	 * @param null $routecache
 	 */
 	public function __construct(
-		ParserInterface $parser,
 		GeneratorInterface $generator,
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector,
 		$routecaching=false,
 		$routecache=null
 	){
-		$this->parser=$parser;
 		$this->caching=$routecaching;
 		$this->cache=$routecache;
 		$this->generator=$generator;
@@ -80,7 +76,6 @@ class RouteCollector implements CollectorInterface
 			$method,
 			$this->routegroupsids,
 			$this->routeid,
-			$this->parser,
 			$this->stack,
 			$this->strategyCollector
 		);

@@ -11,11 +11,11 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Route\Dispatcher;
+namespace Gram\Route\Dispatcher\Std;
 
 /**
- * Class DynamicDispatcher
- * @package Gram\Route\Dispatcher
+ * Class GroupCountBased
+ * @package Gram\Route\Dispatcher\Std
  *
  * Sucht den richtigen Handler, anhand der aufgerufenen Url, in der übergebenen Regexliste
  *
@@ -27,7 +27,7 @@ namespace Gram\Route\Dispatcher;
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
-class DynamicDispatcher extends Dispatcher
+class GroupCountBased extends Dispatcher
 {
 	/**
 	 * @inheritdoc

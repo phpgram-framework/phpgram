@@ -11,11 +11,14 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Route\Dispatcher;
+namespace Gram\Route\Dispatcher\Std;
 
 use Gram\Route\Interfaces\DispatcherInterface;
 
-
+/**
+ * Class Dispatcher
+ * @package Gram\Route\Dispatcher\Std
+ */
 abstract class Dispatcher implements DispatcherInterface
 {
 	/**

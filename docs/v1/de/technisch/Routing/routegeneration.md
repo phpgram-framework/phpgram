@@ -19,7 +19,7 @@ class RouteCollector implements CollectorInterface
 <?php
 abstract class Generator implements GeneratorInterface
 
-class DynamicGenerator extends Generator
+class GroupCountBased extends Generator
 ````
 - eine abstract class die die Static Routes erzeugt (da das bei jedem Generator gleich sein wird)
 
@@ -27,7 +27,7 @@ class DynamicGenerator extends Generator
 
 - hier werden die Routes nach dem Group Count Based Prinzip generiert von [FastRoute](http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html)
 
-- der DynamicGenerator wird aufgerufen mit einer Method im Generator
+- der GroupCountBased wird aufgerufen mit einer Method im Generator
 
 ### Static Routes
 ````php
@@ -61,7 +61,7 @@ $this->static[$route->path]=$route->handle;
 
 ````php
 <?php
-class DynamicGenerator extends Generator
+class GroupCountBased extends Generator
 {
 	public function generateDynamic(array $routes)	
 }

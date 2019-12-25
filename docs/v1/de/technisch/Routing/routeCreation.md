@@ -51,7 +51,6 @@ class Route
 		$method,
 		$routegroupid,
 		$routeid,
-		ParserInterface $parser,
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector
     )

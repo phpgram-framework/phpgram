@@ -13,8 +13,11 @@
 
 namespace Gram\Route\Dispatcher\MethodSort;
 
-
-class DynamicDispatcher extends Dispatcher
+/**
+ * Class GroupCountBased
+ * @package Gram\Route\Dispatcher\MethodSort
+ */
+class GroupCountBased extends Dispatcher
 {
 
 	/**

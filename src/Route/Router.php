@@ -59,8 +59,8 @@ class Router implements RouterInterface
 			'slash_trim'=>true,
 			'caching'=>false,
 			'cache'=>null,
-			'dispatcher'=>'Gram\\Route\\Dispatcher\\DynamicDispatcher',
-			'generator'=>'Gram\\Route\\Generator\\DynamicGenerator',
+			'dispatcher'=>'Gram\\Route\\Dispatcher\\Std\\GroupCountBased',
+			'generator'=>'Gram\\Route\\Generator\\Std\\GroupCountBased',
 			'parser'=>'Gram\\Route\\Parser\\StdParser',
 			'collector'=>'Gram\\Route\\Collector\\RouteCollector'
 		];
@@ -72,15 +72,14 @@ class Router implements RouterInterface
 
 		//Erstelle den Collector, der wird auch für andere Klassen verfügbar sein
 		$this->collector= new $options['collector'](
-			new $options['parser'],
-			new $options['generator'],
+			new $options['generator'](new $options['parser']),
 			$middlewareCollector,
 			$strategyCollector,
 			$options['caching'],
 			$options['cache']
 		);
 
-		$this->dispatcher= new $options['dispatcher'];	//erstelle Dispatcher
+		$this->dispatcher = new $options['dispatcher'];	//erstelle Dispatcher
 	}
 
 	/**

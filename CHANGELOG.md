@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# 1.5.x
+
+## 1.5.0
+- Route:
+	- Parsen der Route findet nun im Generator und nicht mehr direkt in der Route statt
+	- Es wurde ein allgemeiner Generator dafür erstellt
+	- Die normalen Generatoren und Dispatcher sind nun im Ordner Std
+ 
+
 # 1.4.x
 
 ## 1.4.2
