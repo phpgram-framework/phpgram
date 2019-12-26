@@ -28,7 +28,7 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class Route
 {
-	public $path,$handle,$vars,$stack,$strategyCollector,$groupid,$routeid,$method;
+	public $path,$handle,$vars = [],$stack,$strategyCollector,$groupid,$routeid,$method;
 
 	/**
 	 * Route constructor.

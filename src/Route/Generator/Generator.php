@@ -57,7 +57,7 @@ abstract class Generator implements GeneratorInterface
 	 */
 	public function generate(array $routes)
 	{
-		foreach ($routes as $i=>$route) {
+		foreach ($routes as $route) {
 			$this->mapRoute($route);
 		}
 

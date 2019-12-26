@@ -28,13 +28,11 @@ class RouteGroup
 
 	/**
 	 * RouteGroup constructor.
-	 * @param $prefix
 	 * @param $groupid
 	 * @param MiddlewareCollectorInterface $stack
 	 * @param StrategyCollectorInterface $strategyCollector
 	 */
 	public function __construct(
-		$prefix,
 		$groupid,
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector

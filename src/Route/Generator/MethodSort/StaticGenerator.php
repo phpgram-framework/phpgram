@@ -29,11 +29,7 @@ abstract class StaticGenerator extends Generator
 		[$route->path,$route->vars] = $this->createRoute($route->path);	//parse die Route
 
 		//Ordne die Route in Static und Dynamic
-		if (\count($route->vars)===0){
-			$typ = 0;
-		}else{
-			$typ = 1;
-		}
+		$typ = \count($route->vars) === 0 ? 0 : 1;
 
 		foreach ($route->method as $item) {
 			if($typ===0){
