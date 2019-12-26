@@ -13,11 +13,9 @@
 
 namespace Gram\Async\Util;
 
-use Gram\App\QueueHandler as GramQueue;
-use Gram\Exceptions\MiddlewareNotAllowedException;
+use Gram\Middleware\QueueHandler as GramQueue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 
 /**
  * Class QueueHandler
@@ -30,11 +28,16 @@ use Psr\Http\Server\MiddlewareInterface;
 class QueueHandler extends GramQueue
 {
 
+	/**
+	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
+	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
+	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		$mw = $request->getAttribute('mw',[]);
 
-		if(count($mw)===0){
+		if(count($mw) === 0) {
 			return $this->last->handle($request);
 		}
 
@@ -42,18 +45,7 @@ class QueueHandler extends GramQueue
 
 		$request = $request->withAttribute('mw',$mw);
 
-		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
-		if($this->container!==null && \is_string($middleware)){
-			if($this->container->has($middleware) === false){
-				throw new MiddlewareNotAllowedException("Middleware: [$middleware] not found");
-			}
-
-			$middleware = $this->container->get($middleware);
-		}
-
-		if($middleware instanceof MiddlewareInterface === false){
-			throw new MiddlewareNotAllowedException("Middleware needs to implement Psr 15 MiddlewareInterface");
-		}
+		$middleware = $this->checkMiddleware($middleware);
 
 		return $middleware->process($request,$this);	//führe die middleware aus
 	}

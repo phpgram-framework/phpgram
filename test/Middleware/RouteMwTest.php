@@ -1,7 +1,7 @@
 <?php
 namespace Gram\Test\Middleware;
 
-use Gram\App\QueueHandler;
+use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\RouteCollector;

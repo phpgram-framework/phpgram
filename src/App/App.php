@@ -15,6 +15,7 @@
 
 namespace Gram\App;
 
+use Gram\Middleware\QueueHandler;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
@@ -236,7 +237,7 @@ class App implements RequestHandlerInterface
 	{
 		//setze Default Raw Options
 		$this->raw_options +=[
-			'queue_handler'=>'Gram\\App\\QueueHandler',
+			'queue_handler'=>'Gram\\Middleware\\QueueHandler',
 			'routeMw'=>'Gram\\Middleware\\RouteMiddleware'
 		];
 

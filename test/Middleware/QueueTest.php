@@ -1,7 +1,7 @@
 <?php
 namespace Gram\Test\Middleware;
 
-use Gram\App\QueueHandler;
+use Gram\Middleware\QueueHandler;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;

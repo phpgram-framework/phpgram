@@ -2,7 +2,7 @@
 
 ````php
 <?php
-namespace Gram\App;
+namespace Gram\Middleware;
 class QueueHandler implements RequestHandlerInterface
 ````
 

@@ -10,6 +10,7 @@
 - Async Requests:
 	 - Es werden jetzt auch ohne eien Erweitertung Async Requests unterstüzt
 	 - Dazu einfach die AsyncApp anstatt der normalen App Class verwenden
+- QueueHandler ist nun im Middleware Ordner und im Middleware Namespace
 
 # 1.4.x
 
