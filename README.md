@@ -23,6 +23,8 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 
 - Define Output Strategies
 
+- Supports Async Requests
+
 
 ## Documentation
 - [start](https://gitlab.com/grammm/php-gram/phpgram/blob/master/docs/index.md)
