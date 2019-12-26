@@ -47,7 +47,7 @@ class CallbackResolver implements ResolverInterface
 	 * @param null $callback
 	 * @throws \Exception
 	 */
-	public function set($callback=null)
+	public function set($callback=null):void
 	{
 		if(! \is_callable($callback)){
 			throw new CallableNotAllowedException("No callable given");

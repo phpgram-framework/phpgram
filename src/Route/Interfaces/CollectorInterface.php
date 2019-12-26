@@ -62,9 +62,9 @@ interface CollectorInterface
 	 *
 	 * Wenn nicht werden die Daten erst generiert
 	 *
-	 * @return mixed
+	 * @return array
 	 */
-	public function getData();
+	public function getData():array;
 
 	public function getHandle();
 	public function get404();

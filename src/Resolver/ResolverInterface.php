@@ -38,25 +38,25 @@ interface ResolverInterface
 	/**
 	 * Erstellt das Callback
 	 *
-	 * @return mixed
+	 * @return void
 	 */
-	public function set();
+	public function set():void;
 
 	/**
 	 * Gibt das Request Object
 	 *
 	 * @param ServerRequestInterface $request
-	 * @return mixed
+	 * @return void
 	 */
-	public function setRequest(ServerRequestInterface $request);
+	public function setRequest(ServerRequestInterface $request):void;
 
 	/**
 	 * Gibt das Response Object
 	 *
 	 * @param ResponseInterface $response
-	 * @return mixed
+	 * @return void
 	 */
-	public function setResponse(ResponseInterface $response);
+	public function setResponse(ResponseInterface $response):void;
 
 	/**
 	 * Nimmt das Response Object wieder zurück
@@ -69,7 +69,7 @@ interface ResolverInterface
 	 * Wenn ein Container genutzt wird, gebe den Container dem Resolver
 	 *
 	 * @param ContainerInterface|null $container
-	 * @return mixed
+	 * @return void
 	 */
-	public function setContainer(ContainerInterface $container=null);
+	public function setContainer(ContainerInterface $container=null):void;
 }

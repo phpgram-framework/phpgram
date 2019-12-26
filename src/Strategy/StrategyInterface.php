@@ -26,9 +26,9 @@ interface StrategyInterface
 	/**
 	 * Gebe speziellen Header (Content Typ) zurück
 	 *
-	 * @return mixed
+	 * @return array('name'=>, 'value'=>)
 	 */
-	public function getHeader();
+	public function getHeader():array;
 
 	/**
 	 * Führe das erhaltene Callable (von Callablecreator) aus

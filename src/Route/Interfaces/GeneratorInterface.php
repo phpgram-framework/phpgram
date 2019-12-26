@@ -26,15 +26,15 @@ interface GeneratorInterface
 	 * und unterteilt diese in Static und Dynamic Routes
 	 *
 	 * @param array $routes
-	 * @return mixed
+	 * @return array
 	 */
-	public function generate(array $routes);
+	public function generate(array $routes):array;
 
 	/**
 	 * Generiert die Route map für die Dynamic Routes
 	 *
 	 * @param array $routes
-	 * @return mixed
+	 * @return array
 	 */
-	public function generateDynamic(array $routes);
+	public function generateDynamic(array $routes):array;
 }

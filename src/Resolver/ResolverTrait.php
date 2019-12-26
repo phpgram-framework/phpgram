@@ -37,7 +37,7 @@ trait ResolverTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function setRequest(ServerRequestInterface $request)
+	public function setRequest(ServerRequestInterface $request):void
 	{
 		$this->request = $request;
 	}
@@ -45,7 +45,7 @@ trait ResolverTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function setResponse(ResponseInterface $response)
+	public function setResponse(ResponseInterface $response):void
 	{
 		$this->response = $response;
 	}
@@ -61,7 +61,7 @@ trait ResolverTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function setContainer(ContainerInterface $container = null)
+	public function setContainer(ContainerInterface $container = null):void
 	{
 		$this->container = $container;
 	}

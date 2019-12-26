@@ -13,6 +13,7 @@
 	- Die normalen Generatoren und Dispatcher sind nun im Ordner Std
 - QueueHandler ist nun im Middleware Ordner und im Middleware Namespace
 - Allgemein Code Quality verbessert
+- Strategy getHeader() Method muss nun ein Array zurück geben
 
 # 1.4.x
 

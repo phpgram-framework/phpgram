@@ -27,7 +27,7 @@ class RouteCollector extends GramRouteCollector
 {
 	protected $data;
 
-	public function getData()
+	public function getData():array
 	{
 		if(!isset($this->data)){
 			$this->data = $this->generator->generate($this->routes);

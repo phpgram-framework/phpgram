@@ -112,7 +112,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getData()
+	public function getData():array
 	{
 		if($this->caching && file_exists($this->cache)){
 			return require $this->cache;

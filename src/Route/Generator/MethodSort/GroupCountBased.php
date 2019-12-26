@@ -48,7 +48,7 @@ class GroupCountBased extends StaticGenerator
 	 * @return array
 	 * Gebe Route und Handlerliste zurück
 	 */
-	public function generateDynamic(array $routes)
+	public function generateDynamic(array $routes):array
 	{
 		foreach ($routes as $method=>$route) {
 			$chunkSize=$this->getChunkSize(\count($route),self::CHUNKSIZE);	//passe die chunk größe an

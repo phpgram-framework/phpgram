@@ -47,7 +47,7 @@ class HandlerResolver implements ResolverInterface
 	 * @param HandlerInterface|null $handler
 	 * @throws \Exception
 	 */
-	public function set(HandlerInterface $handler=null)
+	public function set(HandlerInterface $handler=null):void
 	{
 		if($handler===null){
 			throw new ClassNotAllowedException("No Handler set");

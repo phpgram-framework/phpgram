@@ -34,7 +34,7 @@ class JsonStrategy implements StrategyInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getHeader()
+	public function getHeader():array
 	{
 		return ["name"=>'Content-Type',"value"=>'application/json'];
 	}

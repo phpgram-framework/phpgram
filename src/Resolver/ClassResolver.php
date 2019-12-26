@@ -175,7 +175,7 @@ class ClassResolver implements ResolverInterface
 	 * @param string $class
 	 * @throws \Exception
 	 */
-	public function set($class="")
+	public function set($class=""):void
 	{
 		if($class===""){
 			throw new ClassNotAllowedException("No Class given in [$class]");
