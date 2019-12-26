@@ -51,25 +51,25 @@ class App implements RequestHandlerInterface
 	protected $router_options=[], $raw_options = [], $debug_mode = 0;
 
 	/** @var StrategyInterface */
-	protected $stdStrategy=null;
+	protected $stdStrategy;
 
 	/** @var ResolverCreatorInterface */
-	protected $resolverCreator=null;
+	protected $resolverCreator;
 
-	/** @var ContainerInterface */
-	protected $container=null;
+	/** @var ContainerInterface|null */
+	protected $container;
 
 	/** @var RouterInterface */
-	protected $router=null;
+	protected $router;
 
 	/** @var QueueHandler */
-	protected $queueHandler = null;
+	protected $queueHandler;
 
 	/** @var MiddlewareInterface */
-	protected $routeMiddleware=null;
+	protected $routeMiddleware;
 
 	/** @var RequestHandlerInterface */
-	protected $responseCreator=null;
+	protected $responseCreator;
 
 	/** @var ResponseFactoryInterface */
 	protected $responseFactory;
@@ -78,10 +78,10 @@ class App implements RequestHandlerInterface
 	protected $streamFactory;
 
 	/** @var MiddlewareCollectorInterface */
-	protected $middlewareCollector=null;
+	protected $middlewareCollector;
 
 	/** @var StrategyCollectorInterface */
-	protected $strategyCollector=null;
+	protected $strategyCollector;
 
 	/** @var self */
 	private static $_instance;

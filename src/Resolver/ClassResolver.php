@@ -69,7 +69,7 @@ class ClassResolver implements ResolverInterface
 
 		$this->response = $class->getResponse();
 
-		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+		return $return ?? '';	//default: immer einen String zurück geben
 	}
 
 	/**

@@ -35,6 +35,7 @@ class QueueHandler extends GramQueue
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
+		/** @var array $mw */
 		$mw = $request->getAttribute('mw',[]);
 
 		if(count($mw) === 0) {

@@ -40,7 +40,7 @@ class HandlerResolver implements ResolverInterface
 
 		$this->response = $this->handler->getResponse();
 
-		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+		return $return ?? '';	//default: immer einen String zurück geben
 	}
 
 	/**

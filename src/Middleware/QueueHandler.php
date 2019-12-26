@@ -30,7 +30,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class QueueHandler implements RequestHandlerInterface
 {
-	protected $stack, $last, $container;
+	protected $stack = [], $last, $container;
 
 	public function __construct(RequestHandlerInterface $last, ContainerInterface $container=null)
 	{

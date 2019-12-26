@@ -31,8 +31,8 @@ trait ResolverTrait
 	/** @var ResponseInterface */
 	public $response;
 
-	/** @var ContainerInterface */
-	public $container = null;
+	/** @var ContainerInterface|null */
+	public $container;
 
 	/**
 	 * @inheritdoc

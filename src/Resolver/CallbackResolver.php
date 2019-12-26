@@ -40,7 +40,7 @@ class CallbackResolver implements ResolverInterface
 
 		$return = \call_user_func_array($callback,$param);
 
-		return ($return===null)?'':$return;	//default: immer einen String zurück geben
+		return $return ?? '';	//default: immer einen String zurück geben
 	}
 
 	/**
