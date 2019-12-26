@@ -119,7 +119,7 @@ class ClassResolverTest extends TestCase
 
 		$container = new Container();
 
-		$container[TestClass::class]=function ($c){
+		$container[TestClass::class]=function (){
 			return new TestClass();
 		};
 
@@ -130,5 +130,14 @@ class ClassResolverTest extends TestCase
 		$this->initResolve($resolve);
 
 		self::assertEquals(TestClass::class." right Testresult",$this->body);
+	}
+
+	public function testWithoutReturn()
+	{
+		$resolve = TestClass::class."@testWithoutReturn";
+
+		$this->initResolve($resolve);
+
+		self::assertEquals('',$this->body);
 	}
 }

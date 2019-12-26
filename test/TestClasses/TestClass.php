@@ -34,4 +34,9 @@ class TestClass implements ClassInterface
 
 		return "$string1 $param2 $param3";
 	}
+
+	public function testWithoutReturn()
+	{
+
+	}
 }
