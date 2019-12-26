@@ -1,7 +1,7 @@
 {
 	"name":"phpgram/phpgram",
 	"license": "MIT",
-	"description": "A very fast and lightweight Php Framework for small to enterprise applications.",
+	"description": "A very fast and lightweight Php Framework for small to enterprise applications. Also supports Asynchronous Requests",
 	"authors": [
 		{
 			"name": "Jörn Heinemann",
@@ -21,7 +21,9 @@
 		"psr 7",
 		"psr 15",
 		"psr 17",
-		"psr 11"
+		"psr 11",
+		"async",
+		"asynchronous"
 	],
 
 	"support": {
@@ -59,7 +61,7 @@
     },
 	"extra": {
 		"branch-alias": {
-			"dev-master": "1.4.x-dev"
+			"dev-master": "1.5.x-dev"
 		}
 	}
 }

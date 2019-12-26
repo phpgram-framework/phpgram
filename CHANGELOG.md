@@ -7,7 +7,9 @@
 	- Parsen der Route findet nun im Generator und nicht mehr direkt in der Route statt
 	- Es wurde ein allgemeiner Generator dafür erstellt
 	- Die normalen Generatoren und Dispatcher sind nun im Ordner Std
- 
+- Async Requests:
+	 - Es werden jetzt auch ohne eien Erweitertung Async Requests unterstüzt
+	 - Dazu einfach die AsyncApp anstatt der normalen App Class verwenden
 
 # 1.4.x
 
