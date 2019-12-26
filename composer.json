@@ -25,7 +25,6 @@
 		"async",
 		"asynchronous"
 	],
-
 	"support": {
 		"issues": "https://gitlab.com/grammm/php-gram/phpgram/issues",
 		"source": "https://gitlab.com/grammm/php-gram/phpgram"
@@ -54,11 +53,6 @@
 			"Gram\\Test\\":"test/"
 		}
 	},
-	"config": {
-        "preferred-install": {
-            "*": "dist"
-        }
-    },
 	"extra": {
 		"branch-alias": {
 			"dev-master": "1.5.x-dev"
