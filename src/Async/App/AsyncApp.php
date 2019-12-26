@@ -35,6 +35,9 @@ class AsyncApp extends App
 	{
 	}
 
+	/**
+	 * Tausche Klassen aus
+	 */
 	public function build()
 	{
 		$this->setRawOptions([
@@ -45,6 +48,14 @@ class AsyncApp extends App
 		parent::build();
 	}
 
+	/**
+	 * @inheritdoc
+	 *
+	 * Setze alle Std Mw in dn Request ein
+	 *
+	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
+	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		$mw = $this->middlewareCollector->getStdMiddleware();
@@ -55,6 +66,14 @@ class AsyncApp extends App
 		return parent::handle($request);
 	}
 
+	/**
+	 * Setze alle gefunden Mw in den Request ein
+	 *
+	 * @param ServerRequestInterface $request
+	 * @param int|null $routeid
+	 * @param array|null $groupid
+	 * @return ServerRequestInterface
+	 */
 	public function buildAsyncStack(ServerRequestInterface $request, int $routeid = null, array $groupid = null):ServerRequestInterface
 	{
 		if($routeid===null || $groupid===null){
@@ -93,6 +112,11 @@ class AsyncApp extends App
 		return self::$_instance;
 	}
 
+	/**
+	 * Setze den neuen Collector ein
+	 *
+	 * @return \Gram\Route\Interfaces\RouterInterface
+	 */
 	public function getRouter()
 	{
 		if(!isset($this->router)){
