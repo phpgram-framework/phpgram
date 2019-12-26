@@ -406,8 +406,8 @@ class App implements RequestHandlerInterface
 	 * slash_trim: bool
 	 * caching: bool
 	 * cache: string
-	 * dispatcher: Gram\\Route\\Dispatcher\\DynamicDispatcher
-	 * generator: Gram\\Route\\Generator\\DynamicGenerator
+	 * dispatcher: Gram\\Route\\Dispatcher\\Std\\GroupCountBased
+	 * generator: Gram\\Route\\Generator\\Std\\GroupCountBased
 	 * parser: Gram\\Route\\Parser\\StdParser
 	 * collector: Gram\\Route\\Collector\\RouteCollector
 	 *
