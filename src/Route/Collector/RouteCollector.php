@@ -95,11 +95,11 @@ class RouteCollector implements CollectorInterface
 		$pre = $this->prefix;
 		$oldgroupids=$this->routegroupsids;	//Alle Gruppen in der die Route drin ist
 
-		$this->prefix=$this->prefix.$prefix;
-		$this->routegroupid=$this->routegroupid+1;
+		$this->prefix.=$prefix;
+		++$this->routegroupid;
 		$this->routegroupsids[]=$this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
 
-		$group = new RouteGroup($this->prefix,$this->routegroupid,$this->stack,$this->strategyCollector);
+		$group = new RouteGroup($this->routegroupid,$this->stack,$this->strategyCollector);
 
 		\call_user_func($groupcollector);
 
