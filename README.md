@@ -17,17 +17,14 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 
 - Middleware via [Psr-15](https://www.php-fig.org/psr/psr-15/) 
 
-- [Psr 11](https://www.php-fig.org/psr/psr-11/) Container Support for Automatic Dependency Injection for Classes (in constructor) and Functions (with ``__get()``)
+- [Psr 11](https://www.php-fig.org/psr/psr-11/) Container Support for Automatic Dependency Injection (Autowiring) for Classes (in constructor) and Functions (with ``__get()``)
 
-- Response Creation (via [Psr-17](https://www.php-fig.org/psr/psr-17/) Response Factory)
+- Response Creation (via [Psr-17](https://www.php-fig.org/psr/psr-17/) Response Factory) and Strategies
 
-- Define Output Strategies
-
-- Supports Async Requests
+- **Supports Async Requests** with `Gram\Async\App\AsyncApp`
 
 
-## Documentation
-- [start](https://gitlab.com/grammm/php-gram/phpgram/blob/master/docs/index.md)
+## [Documentation](https://gitlab.com/grammm/php-gram/phpgram/blob/master/docs/index.md)
 
 ## Install
 
