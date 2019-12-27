@@ -56,7 +56,7 @@
 <?php
 use Gram\App\App;
 
-App::app()->addGroup("/admin",function (){
+App::app()->group("/admin",function (){
 	//Route braucht keine Url wenn diese bei /admin ausgeführt werden soll
 	App::app()->get("","AdminIndexHandler");
 	//Normale Route
@@ -64,9 +64,9 @@ App::app()->addGroup("/admin",function (){
 	
 	//Nested Groups
 	//2. Group /settings
-	App::app()->addGroup("/settings",function (){
+	App::app()->group("/settings",function (){
 		//3. Group /dep
-		App::app()->addGroup("/dep",function (){
+		App::app()->group("/dep",function (){
 			//Routes
 			App::app()->get("","DepIndexHandler");
 			

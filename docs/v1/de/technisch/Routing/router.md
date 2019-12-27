@@ -5,9 +5,7 @@
 namespace Gram\Route;
 class Router implements RouterInterface
 {
-	const NOT_FOUND = 404;
-	const METHOD_NOT_ALLOWED = 405;
-	const OK = 200;
+	
 }
 ```
 - Router müssen ``Gram\Route\Interfaces\RouterInterface`` implementieren

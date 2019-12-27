@@ -36,13 +36,7 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 	1. ``$request->getAttribute('status',200);`` welcher Status soll im Head stehen
 
-	1. ``$request->getAttribute('reason','');`` welcher Grund soll für den Status angegeben werden (kann auch leer sein dann wird der Default Grund gesetzt)
-
-	1. ``$request->getAttribute('header',[])`` weitere Header, müssen folgendes Muster enthalten header['name'] und header['value']
-
 	1. ``$request->getAttribute('strategy',null) ?? $this->stdstrategy;`` die Strategy wie der Output des callable zu behandeln ist (z. B. json encode oder Buffern), wenn nichts gesetzt: die Standard Strategy
-
-	1. ``$request->getAttribute('creator',null) ?? $this->creator;`` wie das callable erstellt werden kann und wie es ausgeführt werden kann (wenn nichts gesetzt führe den Standard aus)
 
 2. hole von der Strategy den ``content-typ``
 

@@ -72,7 +72,7 @@ class Route
 <?php
 class RouteCollector implements CollectorInterface
 {
-	public function addGroup($prefix,callable $groupcollector):RouteGroup
+	public function group($prefix,callable $groupcollector):RouteGroup
 }
 ````
 - mehrere Routes können zu einer Gruppe mit einem Prefix zusammengefasst werden

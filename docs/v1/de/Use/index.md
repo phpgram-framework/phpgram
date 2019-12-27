@@ -42,7 +42,7 @@ App::app()->get("/video/{id:n}","Video@watch")->addMiddleware(new Caching);
 
 //Nested Group mit Middleware
 
-App::app()->addGroup("/admin",function (){
+App::app()->group("/admin",function (){
 	//Route braucht keine Url wenn diese bei /admin ausgeführt werden soll
 	App::app()->get("","AdminIndexHandler");
 	//Normale Route
@@ -50,9 +50,9 @@ App::app()->addGroup("/admin",function (){
 	
 	//Nested Groups
 	//2. Group /settings
-	App::app()->addGroup("/settings",function (){
+	App::app()->group("/settings",function (){
 		//3. Group /dep
-		App::app()->addGroup("/dep",function (){
+		App::app()->group("/dep",function (){
 			//Routes
 			App::app()->get("","DepIndexHandler");
 			
@@ -64,7 +64,7 @@ App::app()->addGroup("/admin",function (){
 
 //Gruppe mit einer anderen Strategy z. B. für json
 use Gram\Strategy\JsonStrategy;
-App::app()->addGroup("/",function (){
+App::app()->group("/",function (){
 	App::app()->getpost("video/vote/{id:n}","Video@vote");
 	App::app()->getpost("video/getComment/{id:n}","Video@getComments");
 })->addStrategy(new JsonStrategy());

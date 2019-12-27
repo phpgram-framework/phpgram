@@ -84,7 +84,7 @@ class Auth implements MiddlewareInterface
 	}
 }
 
-use Gram\App\QueueHandler;
+use Gram\Middleware\QueueHandler;
 /**
  * Class AuthInterrupt
  * Verändert den Request und unterbricht die Middleware Kette (siehe Middleware)
