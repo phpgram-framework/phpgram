@@ -26,7 +26,7 @@ interface StrategyInterface
 	/**
 	 * Gebe speziellen Header (Content Typ) zurück
 	 *
-	 * @return array('name'=>, 'value'=>)
+	 * @return array('name'=>string, 'value'=>string)
 	 */
 	public function getHeader():array;
 
