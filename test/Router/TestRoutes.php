@@ -37,6 +37,53 @@ abstract class TestRoutes extends TestCase
 			->addMiddleware("Group 1 1");
 	}
 
+	/**
+	 * Nested Groups
+	 *
+	 * @param string $method
+	 * @param string $basepath
+	 */
+	protected function initExtendedGroups($method='get',$basepath ='')
+	{
+		$this->collector->setBase($basepath);
+
+		$this->collector->addGroup("/group1",function () use($method){
+			$this->collector->{$method}("","test");
+			$this->collector->{$method}("/two","test2");
+			$this->collector->{$method}("/{id}","testid1");
+
+			$this->collector->addGroup("/group2",function () use($method){
+				$this->collector->{$method}("","test3");
+				$this->collector->{$method}("/two","test4");
+				$this->collector->{$method}("/{id}","testid2");
+
+				$this->collector->addGroup("/group3",function () use($method){
+					$this->collector->{$method}("","test5");
+					$this->collector->{$method}("/two","test6");
+					$this->collector->{$method}("/{id}","testid3");
+
+					$this->collector->addGroup("/group4",function () use($method){
+						$this->collector->{$method}("","test7");
+						$this->collector->{$method}("/two","test8");
+						$this->collector->{$method}("/{id}","testid4");
+					})
+						->addMiddleware('mwGroup41')
+						->addMiddleware('mwGroup42')
+						->addStrategy('strGroup4');
+				})
+					->addMiddleware('mwGroup31')
+					->addMiddleware('mwGroup32')
+					->addStrategy('strGroup3');
+			})
+				->addMiddleware('mwGroup21')
+				->addMiddleware('mwGroup22')
+				->addStrategy('strGroup2');
+		})
+			->addMiddleware('mwGroup11')
+			->addMiddleware('mwGroup12')
+			->addStrategy('strGroup1');
+	}
+
 	public function testRouterInit()
 	{
 		$router = new Router();
@@ -224,5 +271,126 @@ abstract class TestRoutes extends TestCase
 
 		self::assertEquals('405',$status);
 		self::assertEquals('405',$handler['callable']);
+	}
+
+	/**
+	 * Werte die Routegrups aus
+	 *
+	 * Hole von jeder Gruppe ihre Mw
+	 *
+	 * @param $groupid
+	 */
+	protected function evaluateExtendedGroups($groupid)
+	{
+		foreach ($groupid as $i=>$item) {
+			if($i==0){
+				continue;
+			}
+
+			$mwGroup = $this->mwCollector->getGroup($item);
+
+			self::assertEquals("mwGroup".$i."1",$mwGroup[0]);
+			self::assertEquals("mwGroup".$i."2",$mwGroup[1]);
+		}
+	}
+
+	public function testExtendedGroup1()
+	{
+		$this->initExtendedGroups();
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('test',$handler['callable']);
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/21/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('testid1',$handler['callable']);
+	}
+
+	public function testExtendedGroup2()
+	{
+		$this->initExtendedGroups();
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/group2/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('test3',$handler['callable']);
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/group2/21/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('testid2',$handler['callable']);
+	}
+
+	public function testExtendedGroup3()
+	{
+		$this->initExtendedGroups();
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('test5',$handler['callable']);
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/21/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('testid3',$handler['callable']);
+	}
+
+	public function testExtendedGroup4()
+	{
+		$this->initExtendedGroups();
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/group4/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('test7',$handler['callable']);
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/group4/21/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$groupid=$handler['groupid'];
+
+		$this->evaluateExtendedGroups($groupid);
+
+		self::assertEquals('testid4',$handler['callable']);
 	}
 }
