@@ -3,7 +3,7 @@
 # 1.5.x
 
 ## 1.5.0
-- since 2019/12/29
+- since 2019/12/27
 - Async Requests:
 	 - Es werden jetzt auch ohne eine Erweitertung Async Requests unterstüzt
 	 - Dazu einfach die AsyncApp anstatt der normalen App Class verwenden
