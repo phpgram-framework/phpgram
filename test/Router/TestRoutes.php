@@ -25,7 +25,7 @@ abstract class TestRoutes extends TestCase
 	{
 		$this->collector->setBase($basepath);
 
-		$this->collector->addGroup("",function () use($method){
+		$this->collector->group("",function () use($method){
 			//init Collector
 			foreach ($this->routes as $key=>$route) {
 				$this->collector->{$method}($route,$this->routehandler[$key])
@@ -47,22 +47,22 @@ abstract class TestRoutes extends TestCase
 	{
 		$this->collector->setBase($basepath);
 
-		$this->collector->addGroup("/group1",function () use($method){
+		$this->collector->group("/group1",function () use($method){
 			$this->collector->{$method}("","test");
 			$this->collector->{$method}("/two","test2");
 			$this->collector->{$method}("/{id}","testid1");
 
-			$this->collector->addGroup("/group2",function () use($method){
+			$this->collector->group("/group2",function () use($method){
 				$this->collector->{$method}("","test3");
 				$this->collector->{$method}("/two","test4");
 				$this->collector->{$method}("/{id}","testid2");
 
-				$this->collector->addGroup("/group3",function () use($method){
+				$this->collector->group("/group3",function () use($method){
 					$this->collector->{$method}("","test5");
 					$this->collector->{$method}("/two","test6");
 					$this->collector->{$method}("/{id}","testid3");
 
-					$this->collector->addGroup("/group4",function () use($method){
+					$this->collector->group("/group4",function () use($method){
 						$this->collector->{$method}("","test7");
 						$this->collector->{$method}("/two","test8");
 						$this->collector->{$method}("/{id}","testid4");

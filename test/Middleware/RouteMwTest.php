@@ -57,7 +57,7 @@ class RouteMwTest extends TestCase
 
 		$method = 'GET';
 
-		$this->routeCollector->addGroup("",function () use($method,$routehandler,$routes){
+		$this->routeCollector->group("",function () use($method,$routehandler,$routes){
 			//init Collector
 			foreach ($routes as $key=>$route) {
 				$this->routeCollector->any($route,$routehandler[$key])

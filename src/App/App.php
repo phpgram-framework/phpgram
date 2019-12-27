@@ -452,9 +452,9 @@ class App implements RequestHandlerInterface
 		return $this->getRouter()->getCollector()->add($path,$handler,$method);
 	}
 
-	public function addGroup($prefix,callable $groupcollector):RouteGroup
+	public function group($prefix,callable $groupcollector):RouteGroup
 	{
-		return $this->getRouter()->getCollector()->addGroup($prefix,$groupcollector);
+		return $this->getRouter()->getCollector()->group($prefix,$groupcollector);
 	}
 
 	//Spezielle Routes

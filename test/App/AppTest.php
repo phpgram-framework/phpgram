@@ -63,7 +63,7 @@ class AppTest extends TestCase
 	{
 		$this->app->setBase($basepath);
 
-		$this->app->addGroup("",function () use($method){
+		$this->app->group("",function () use($method){
 			//init Collector
 			foreach ($this->routes as $key=>$route) {
 				$this->app->{$method}($route,$this->routehandler[$key])

@@ -90,7 +90,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function addGroup($prefix,callable $groupcollector):RouteGroup
+	public function group($prefix,callable $groupcollector):RouteGroup
 	{
 		$pre = $this->prefix;
 		$oldgroupids=$this->routegroupsids;	//Alle Gruppen in der die Route drin ist

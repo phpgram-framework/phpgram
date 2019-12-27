@@ -14,6 +14,7 @@
 - QueueHandler ist nun im Middleware Ordner und im Middleware Namespace
 - Allgemein Code Quality verbessert
 - Strategy getHeader() Method muss nun ein Array zurück geben
+- Route Collector: addGroup() wurde zu group() umbenannt
 
 # 1.4.x
 

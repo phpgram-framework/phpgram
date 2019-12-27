@@ -53,7 +53,7 @@ interface CollectorInterface
 	 * @param callable $groupcollector
 	 * @return RouteGroup
 	 */
-	public function addGroup($prefix,callable $groupcollector):RouteGroup;
+	public function group($prefix,callable $groupcollector):RouteGroup;
 
 	/**
 	 * Gibt dem Dispatcher die benötigten Daten

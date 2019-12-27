@@ -26,7 +26,7 @@ trait RouteCollectorTrait
 {
 	abstract function add(string $path,$handler,array $method):Route;
 
-	abstract public function addGroup($prefix,callable $groupcollector):RouteGroup;
+	abstract public function group($prefix,callable $groupcollector):RouteGroup;
 
 	public function get(string $route,$handler)
 	{
