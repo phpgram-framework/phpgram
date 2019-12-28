@@ -3,7 +3,7 @@
 # 1.5.x
 
 ## 1.5.0
-- since 2019/12/27
+- since 
 - Async Requests:
 	 - Es werden jetzt auch ohne eine Erweitertung Async Requests unterstüzt
 	 - Dazu einfach die AsyncApp anstatt der normalen App Class verwenden
@@ -13,8 +13,9 @@
 	- Die normalen Generatoren und Dispatcher sind nun im Ordner Std
 - QueueHandler ist nun im Middleware Ordner und im Middleware Namespace
 - Allgemein Code Quality verbessert
-- Strategy getHeader() Method muss nun ein Array zurück geben
 - Route Collector: addGroup() wurde zu group() umbenannt
+- Strategy:
+	- Erstellt nun den Response
 
 # 1.4.x
 

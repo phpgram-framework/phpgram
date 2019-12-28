@@ -14,6 +14,9 @@
 namespace Gram\Strategy;
 
 use Gram\Resolver\ResolverInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class JsonStrategy
@@ -23,6 +26,8 @@ use Gram\Resolver\ResolverInterface;
  */
 class JsonStrategy implements StrategyInterface
 {
+	use StrategyTrait;
+
 	protected $options, $depth;
 
 	public function __construct($options = 0, $depth = 512)
@@ -30,27 +35,41 @@ class JsonStrategy implements StrategyInterface
 		$this->options=$options;
 		$this->depth=$depth;
 	}
-	
-	/**
-	 * @inheritdoc
-	 */
-	public function getHeader():array
-	{
-		return ["name"=>'Content-Type',"value"=>'application/json'];
-	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(ResolverInterface $resolver, array $param)
+	public function invoke(
+		ResolverInterface $resolver,
+		array $param,
+		ServerRequestInterface $request,
+		ResponseInterface $response,
+		StreamFactoryInterface $streamFactory
+	):ResponseInterface
 	{
-		$result = $resolver->resolve($param);
 
-		if(!$this->ableToJson($result)){
-			return $result;
+		$this->prepareResolver($request,$response,$resolver);
+
+		$content = $resolver->resolve($param);
+
+		if(!$this->ableToJson($content)){
+			return $content;
 		}
 
-		return \json_encode($result,$this->options,$this->depth);
+		$content = \json_encode($content,$this->options,$this->depth);
+
+		if($content instanceof ResponseInterface) {
+			return $content;
+		}
+
+		$response = $resolver->getResponse();
+
+		return $this->createBody($content,$response,$streamFactory);
+	}
+
+	protected function getContentTypHeader(): array
+	{
+		return ['Content-Type','application/json'];
 	}
 
 	/**

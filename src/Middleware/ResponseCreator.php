@@ -99,13 +99,11 @@ class ResponseCreator implements RequestHandlerInterface
 		//erstelle Response mit den Werten von den Middleware
 		$response = $this->responseFactory->createResponse($status);
 
-		//erstelle header der Strategy
-		$content_typ_head = $strategy->getHeader();
-
-		$response = $response->withHeader($content_typ_head["name"],$content_typ_head["value"]);
+		$resolver = $this->creator->createResolver($callable);
+		$resolver->setContainer($this->container);
 
 		//Führe Callable aus
-		return $this->createBody($callable,$param,$strategy,$request,$response);
+		return $strategy->invoke($resolver,$param,$request,$response,$this->streamFactory);
 	}
 
 	/**

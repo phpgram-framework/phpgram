@@ -14,6 +14,9 @@
 namespace Gram\Strategy;
 
 use Gram\Resolver\ResolverInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class StdAppStrategy
@@ -23,19 +26,34 @@ use Gram\Resolver\ResolverInterface;
  */
 class StdAppStrategy implements StrategyInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function getHeader():array
-	{
-		return ["name"=>'Content-Type',"value"=>'text/html'];
-	}
+	use StrategyTrait;
 
 	/**
 	 * @inheritdoc
 	 */
-	public function invoke(ResolverInterface $resolver, array $param)
+	public function invoke(
+		ResolverInterface $resolver,
+		array $param,
+		ServerRequestInterface $request,
+		ResponseInterface $response,
+		StreamFactoryInterface $streamFactory
+	):ResponseInterface
 	{
-		return $resolver->resolve($param);
+		$this->prepareResolver($request,$response,$resolver);
+
+		$content = $resolver->resolve($param);
+
+		if($content instanceof ResponseInterface) {
+			return $content;
+		}
+
+		$response = $resolver->getResponse();
+
+		return $this->createBody($content,$response,$streamFactory);
+	}
+
+	protected function getContentTypHeader(): array
+	{
+		return ['Content-Type','text/html'];
 	}
 }

@@ -14,6 +14,9 @@
 namespace Gram\Strategy;
 
 use Gram\Resolver\ResolverInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Interface StrategyInterface
@@ -23,21 +26,24 @@ use Gram\Resolver\ResolverInterface;
  */
 interface StrategyInterface
 {
-	/**
-	 * Gebe speziellen Header (Content Typ) zurück
-	 *
-	 * @return array('name'=>string, 'value'=>string)
-	 */
-	public function getHeader():array;
 
 	/**
-	 * Führe das erhaltene Callable (von Callablecreator) aus
+	 * Führe das erhaltene Callable (von ResolverCreator)
 	 *
-	 * Erstelle dann je nach Strategy den Return für den Response
+	 * Erstelle dann je nach Strategy den Response
 	 *
 	 * @param ResolverInterface $resolver
 	 * @param array $param
-	 * @return mixed
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param StreamFactoryInterface $streamFactory
+	 * @return ResponseInterface
 	 */
-	public function invoke(ResolverInterface $resolver, array $param);
+	public function invoke(
+		ResolverInterface $resolver,
+		array $param,
+		ServerRequestInterface $request,
+		ResponseInterface $response,
+		StreamFactoryInterface $streamFactory
+	):ResponseInterface;
 }
