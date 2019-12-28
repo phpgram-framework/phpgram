@@ -76,7 +76,9 @@ class ResponseCreatorTest extends TestCase
 		$response = $this->responseCreator->handle($this->request);
 
 		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
 
+		self::assertEquals('text/html',$head[0]);
 		self::assertEquals('Gram\Test\TestClasses\TestClass right Testresult',$body);
 	}
 
@@ -89,7 +91,9 @@ class ResponseCreatorTest extends TestCase
 		$response = $this->responseCreator->handle($this->request);
 
 		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
 
+		self::assertEquals('text/html',$head[0]);
 		self::assertEquals("buffer Test",$body);
 	}
 
@@ -102,7 +106,9 @@ class ResponseCreatorTest extends TestCase
 		$response = $this->responseCreator->handle($this->request);
 
 		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
 
+		self::assertEquals('text/html',$head[0]);
 		self::assertEquals("buffer Test",$body);
 	}
 
@@ -115,7 +121,9 @@ class ResponseCreatorTest extends TestCase
 		$response = $this->responseCreator->handle($this->request);
 
 		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
 
+		self::assertEquals('application/json',$head[0]);
 		self::assertEquals('["value1","value2","value3"]',$body);
 	}
 
@@ -128,7 +136,9 @@ class ResponseCreatorTest extends TestCase
 		$response = $this->responseCreator->handle($this->request);
 
 		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
 
+		self::assertEquals('application/json',$head[0]);
 		self::assertEquals('["value1","value2","value3"]',$body);
 	}
 
