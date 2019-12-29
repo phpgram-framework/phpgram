@@ -49,11 +49,9 @@ class JsonStrategy implements StrategyInterface
 
 		$content = $resolver->resolve($param);
 
-		if(!$this->ableToJson($content)){
-			return $this->createBody($resolver,$content);
+		if($this->ableToJson($content)){
+			$content = \json_encode($content,$this->options,$this->depth);
 		}
-
-		$content = \json_encode($content,$this->options,$this->depth);
 
 		return $this->createBody($resolver,$content);
 	}
