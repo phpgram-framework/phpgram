@@ -56,6 +56,9 @@ class JsonStrategy implements StrategyInterface
 		return $this->createBody($resolver,$content);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function getContentTypHeader(): array
 	{
 		return ['Content-Type','application/json'];

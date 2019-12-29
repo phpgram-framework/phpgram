@@ -1,6 +1,6 @@
 # Strategy
 
-- entscheidet wie der Output des callable im [ResponseCreator](../Middleware/responsehandle.md) zu erstellen ist
+- entscheidet wie der Output des callable in den Response gepackt werden soll
 
 - es muss immer einen return geben der als Content in dem Response gespeichert wird
 
@@ -15,23 +15,34 @@
 ````php
 <?php
 namespace Gram\Strategy;
+
+use Gram\Resolver\ResolverInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 interface StrategyInterface
 {
-	public function getHeader();
-
-	public function invoke(ResolverInterface $resolver, array $param);
+	public function invoke(
+    		ResolverInterface $resolver,
+    		array $param,
+    		ServerRequestInterface $request,
+    		ResponseInterface $response
+    	):ResponseInterface;
 }
 ````
-- mit ``getHeader()`` kann der Content-Typ Header gesetzt werden
 
 - mit ``invoke()`` wird der [Resolver](../Resolver/index.md) ausgeführt mit den Route Paramtern und dem Request Objekt
 
-- der Request kann hier nicht mehr geändert werden 
+- Strategy muss den Body des Response erstellen
 
 ## phpgram Standard Strategies
 
-- StdAppStrategy: diese führt das Resolver aus und gibt das Return des Resolvers zurück
+- StdAppStrategy: diese führt das Resolver aus und packt den Return in den Response
 
 - BufferAppStrategy: erbt von StdAppStrategy öffnet den Output Buffer bevor der Resolver ausgeführt wird und gibt den Inhalt des Buffers zurück
 
 - JsonStrategy: wandelt das return des Resolvers in ein json Dateiformat um
+
+## Hilfstrait
+
+- es kann das Trait: `Gram\Strategy\StrategyTrait` verwendet werden um den Resolver vor zubereiten und den Response Body zu erstellen

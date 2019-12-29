@@ -44,6 +44,9 @@ class StdAppStrategy implements StrategyInterface
 		return $this->createBody($resolver,$content);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function getContentTypHeader(): array
 	{
 		return ['Content-Type','text/html'];
