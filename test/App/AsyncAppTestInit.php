@@ -21,11 +21,11 @@ class AsyncAppTestInit extends AsyncApp
 	{
 	}
 
-	public function building()
+	public function build()
 	{
 		$factory = new Psr17Factory();
 
-		$this->setFactory($factory,$factory);
+		$this->setFactory($factory);
 
 		parent::build();
 	}

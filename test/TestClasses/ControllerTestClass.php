@@ -14,6 +14,10 @@ class ControllerTestClass implements ClassInterface
 {
 	use ClassTrait;
 
+	public static $staticCounter = 0;
+
+	public $instanceCounter = 0;
+
 	public function index()
 	{
 		return "hallo";
@@ -40,5 +44,21 @@ class ControllerTestClass implements ClassInterface
 	public function json()
 	{
 		return ["value1","value2","value3"];
+	}
+
+	public function returnResponse()
+	{
+		$this->response->getBody()->write('hello');
+
+		return $this->response;
+	}
+
+	public function testAsync()
+	{
+		$this->instanceCounter++;
+
+		self::$staticCounter += $this->instanceCounter;
+
+		return self::$staticCounter.$this->instanceCounter;
 	}
 }

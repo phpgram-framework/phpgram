@@ -61,7 +61,6 @@ class ResponseCreatorTest extends TestCase
 
 		$this->responseCreator = new ResponseCreator(
 			$this->psr17,
-			$this->psr17,
 			$resolveCreator,
 			$strategy,
 			$this->container
@@ -156,5 +155,20 @@ class ResponseCreatorTest extends TestCase
 		$body = $response->getBody()->__toString();
 
 		self::assertEquals("test_func",$body);
+	}
+
+	public function testIfCallableReturnsResponseBuffered()
+	{
+		$this->request = $this->request->withAttribute('callable',ControllerTestClass::class."@returnResponse")
+			->withAttribute('status',200)
+			->withAttribute('strategy',BufferAppStrategy::class);
+
+		$response = $this->responseCreator->handle($this->request);
+
+		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
+
+		self::assertEquals('text/html',$head[0]);
+		self::assertEquals("hello",$body);
 	}
 }

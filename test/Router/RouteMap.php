@@ -14,7 +14,8 @@ class RouteMap
 			'/test/vars/{var}/tester',
 			'/',
 			'/abc',
-			'/exception'
+			'/exception',
+			'/test/vars/{var}/async',
 		];
 	}
 
@@ -26,7 +27,8 @@ class RouteMap
 			"TestHandler2",
 			"Start",
 			"abc",
-			"exception"
+			"exception",
+			"async"
 		];
 	}
 
@@ -38,7 +40,8 @@ class RouteMap
 			ControllerTestClass::class."@getSomeValue",
 			ControllerTestClass::class."@index",
 			"abc",
-			ControllerTestClass::class."@exception"
+			ControllerTestClass::class."@exception",
+			ControllerTestClass::class."@testAsync"
 		];
 	}
 }

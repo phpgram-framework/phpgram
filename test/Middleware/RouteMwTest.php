@@ -79,7 +79,7 @@ class RouteMwTest extends TestCase
 
 		$app->setRouteMiddleware($this->routemw);
 
-		$app->building();
+		$app->build();
 
 		$app->init();
 
@@ -153,7 +153,6 @@ class RouteMwTest extends TestCase
 		$this->request = $this->request->withUri($uri);
 
 		self::expectException(PageNotFoundException::class);
-		$response = $this->queue->handle($this->request);
-
+		$this->queue->handle($this->request);
 	}
 }
