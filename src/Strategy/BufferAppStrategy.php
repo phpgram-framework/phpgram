@@ -16,7 +16,6 @@ namespace Gram\Strategy;
 use Gram\Resolver\ResolverInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class BufferAppStrategy
@@ -35,23 +34,21 @@ class BufferAppStrategy extends StdAppStrategy
 		ResolverInterface $resolver,
 		array $param,
 		ServerRequestInterface $request,
-		ResponseInterface $response,
-		StreamFactoryInterface $streamFactory
+		ResponseInterface $response
 	):ResponseInterface
 	{
 		$this->prepareResolver($request,$response,$resolver);
 
 		\ob_start();
-		$resolver->resolve($param);
+		$result = $resolver->resolve($param);
 
 		$content = \ob_get_clean();
 
-		if($content instanceof ResponseInterface) {
-			return $content;
+		//prüfe ob ein Response zurück gegeben wurde
+		if($result instanceof ResponseInterface) {
+			return $result;
 		}
 
-		$response = $resolver->getResponse();
-
-		return $this->createBody($content,$response,$streamFactory);
+		return $this->createBody($resolver,$content);
 	}
 }

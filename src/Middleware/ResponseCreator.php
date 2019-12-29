@@ -21,12 +21,11 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class ResponseHandler
- * @package Gram\Middleware\Handler
+ * @package Gram\Middleware
  *
  * Ein Standard Psr 15 Handler der Requests zu Response umbaut
  *
@@ -34,13 +33,22 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * Kann auch von anderen Klassen aufgerufen werden um einen Response zu erstellen
  */
-class ResponseCreator implements RequestHandlerInterface
+final class ResponseCreator implements RequestHandlerInterface
 {
-	private $stdstrategy, $creator, $container, $responseFactory, $streamFactory;
+	/** @var StrategyInterface  */
+	private $stdstrategy;
+
+	/** @var ResolverCreatorInterface */
+	private $creator;
+
+	/** @var ContainerInterface */
+	private $container;
+
+	/** @var ResponseFactoryInterface */
+	private $responseFactory;
 
 	public function __construct(
 		ResponseFactoryInterface $responseFactory,
-		StreamFactoryInterface $streamFactory,
 		ResolverCreatorInterface $creator,
 		StrategyInterface $strategy,
 		ContainerInterface $container=null
@@ -48,7 +56,6 @@ class ResponseCreator implements RequestHandlerInterface
 		$this->stdstrategy=$strategy;
 		$this->creator=$creator;
 		$this->responseFactory=$responseFactory;
-		$this->streamFactory=$streamFactory;
 		$this->container = $container;
 	}
 
@@ -103,58 +110,6 @@ class ResponseCreator implements RequestHandlerInterface
 		$resolver->setContainer($this->container);
 
 		//Führe Callable aus
-		return $strategy->invoke($resolver,$param,$request,$response,$this->streamFactory);
-	}
-
-	/**
-	 * Erstelle den Content für den Body
-	 *
-	 * Erstelle aus dem callable ein CallbackInterface
-	 *
-	 * führe das CallbackInterface mit der gesetzen Strategy aus
-	 *
-	 * Nehme des return des Callbacks entgegen
-	 *
-	 * Nehme den Response des Callbacks entgegen, da diese ggf. verändert wurden
-	 * durch das Callback
-	 *
-	 * @param $callable
-	 * @param array $param
-	 * @param StrategyInterface $strategy
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @return ResponseInterface
-	 */
-	protected function createBody(
-		$callable,
-		array $param=[],
-		StrategyInterface $strategy,
-		ServerRequestInterface $request,
-		ResponseInterface $response
-	) {
-		$resolver = $this->creator->createResolver($callable);
-
-		$resolver->setRequest($request);
-		$resolver->setResponse($response);
-		$resolver->setContainer($this->container);
-
-		$content = $strategy->invoke($resolver,$param);
-
-		if($content instanceof ResponseInterface){
-			//Wenn der Return bereits ein Response ist
-			return $content;
-		}
-
-		$response = $resolver->getResponse();
-
-		if(\is_string($content)){
-			//Wenn Return ein String ist erstelle Body aus zurück gegebem String
-			$body = $this->streamFactory->createStream($content);
-		}else {
-			//Sonst erstelle Body aus einer Resource
-			$body = $this->streamFactory->createStreamFromResource($content);
-		}
-
-		return $response->withBody($body);
+		return $strategy->invoke($resolver,$param,$request,$response);
 	}
 }

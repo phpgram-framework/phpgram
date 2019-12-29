@@ -16,7 +16,6 @@ namespace Gram\Strategy;
 use Gram\Resolver\ResolverInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Interface StrategyInterface
@@ -36,14 +35,12 @@ interface StrategyInterface
 	 * @param array $param
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
-	 * @param StreamFactoryInterface $streamFactory
 	 * @return ResponseInterface
 	 */
 	public function invoke(
 		ResolverInterface $resolver,
 		array $param,
 		ServerRequestInterface $request,
-		ResponseInterface $response,
-		StreamFactoryInterface $streamFactory
+		ResponseInterface $response
 	):ResponseInterface;
 }

@@ -3,7 +3,7 @@
 # 1.5.x
 
 ## 1.5.0
-- since 
+- since 2019/12/30
 - Async Requests:
 	 - Es werden jetzt auch ohne eine Erweitertung Async Requests unterstüzt
 	 - Dazu einfach die AsyncApp anstatt der normalen App Class verwenden
@@ -16,6 +16,9 @@
 - Route Collector: addGroup() wurde zu group() umbenannt
 - Strategy:
 	- Erstellt nun den Response
+	- Ein Response mit string Content kann mithilfe eines Traits erstellt werden
+	- Für alle anderen Inhalte muss entweder eine neue Strategy geschrieben werden oder der Response direkt zurückgegeben werden
+	- Buffer Strategy kann nun auch einen Response aus dem Buffer zurück geben
 
 # 1.4.x
 

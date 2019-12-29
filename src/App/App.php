@@ -34,7 +34,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -73,9 +72,6 @@ class App implements RequestHandlerInterface
 
 	/** @var ResponseFactoryInterface */
 	protected $responseFactory;
-
-	/** @var StreamFactoryInterface */
-	protected $streamFactory;
 
 	/** @var MiddlewareCollectorInterface */
 	protected $middlewareCollector;
@@ -166,7 +162,6 @@ class App implements RequestHandlerInterface
 		//erhält Factory um Response zu erstellen
 		$this->responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
 				$this->responseFactory,
-				$this->streamFactory,
 				$resolverCreator,
 				$stdStrategy,
 				$this->container
@@ -217,9 +212,9 @@ class App implements RequestHandlerInterface
 				$content = "";
 			}
 
-			$stream = $this->streamFactory->createStream($content);
+			$response = $this->responseFactory->createResponse(500);
 
-			$response = $this->responseFactory->createResponse(500)->withBody($stream);
+			$response->getBody()->write($content);
 		}
 
 		return $response;
@@ -318,17 +313,15 @@ class App implements RequestHandlerInterface
 	//Optionen
 
 	/**
-	 * Setze Psr 17 Response und Stream Factory
+	 * Setze Psr 17 Response Factory
 	 *
 	 * Wird für Response Creator benötigt
 	 *
 	 * @param ResponseFactoryInterface $responseFactory
-	 * @param StreamFactoryInterface $streamFactory
 	 */
-	public function setFactory(ResponseFactoryInterface $responseFactory,StreamFactoryInterface $streamFactory)
+	public function setFactory(ResponseFactoryInterface $responseFactory)
 	{
 		$this->responseFactory=$responseFactory;
-		$this->streamFactory=$streamFactory;
 	}
 
 	/**

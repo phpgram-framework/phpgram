@@ -16,7 +16,6 @@ namespace Gram\Strategy;
 use Gram\Resolver\ResolverInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class StdAppStrategy
@@ -35,21 +34,14 @@ class StdAppStrategy implements StrategyInterface
 		ResolverInterface $resolver,
 		array $param,
 		ServerRequestInterface $request,
-		ResponseInterface $response,
-		StreamFactoryInterface $streamFactory
+		ResponseInterface $response
 	):ResponseInterface
 	{
 		$this->prepareResolver($request,$response,$resolver);
 
 		$content = $resolver->resolve($param);
 
-		if($content instanceof ResponseInterface) {
-			return $content;
-		}
-
-		$response = $resolver->getResponse();
-
-		return $this->createBody($content,$response,$streamFactory);
+		return $this->createBody($resolver,$content);
 	}
 
 	protected function getContentTypHeader(): array

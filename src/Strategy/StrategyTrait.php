@@ -16,7 +16,6 @@ namespace Gram\Strategy;
 use Gram\Resolver\ResolverInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
 trait StrategyTrait
 {
@@ -36,26 +35,18 @@ trait StrategyTrait
 	}
 
 	protected function createBody(
-		$content,
-		ResponseInterface $response,
-		StreamFactoryInterface $streamFactory,
-		bool $writeInResponse = true
+		ResolverInterface $resolver,
+		$content
 	):ResponseInterface
 	{
-		if(\is_string($content)){
-			if($writeInResponse) {
-				$response->getBody()->write($content);
-
-				return $response;
-			}
-
-			//Wenn Return ein String ist erstelle Body aus zurück gegebem String
-			$body = $streamFactory->createStream($content);
-		}else {
-			//Sonst erstelle Body aus einer Resource
-			$body = $streamFactory->createStreamFromResource($content);
+		if($content instanceof ResponseInterface) {
+			return $content;
 		}
 
-		return $response->withBody($body);
+		$response = $resolver->getResponse();
+
+		$response->getBody()->write($content);
+
+		return $response;
 	}
 }
