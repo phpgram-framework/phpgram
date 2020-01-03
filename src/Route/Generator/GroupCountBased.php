@@ -11,9 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Route\Generator\MethodSort;
-
-use Gram\Route\Generator\DynamicGeneratorTrait;
+namespace Gram\Route\Generator;
 
 /**
  * Class GroupCountBased
@@ -25,7 +23,7 @@ use Gram\Route\Generator\DynamicGeneratorTrait;
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
-class GroupCountBased extends StaticGenerator
+class GroupCountBased extends Generator
 {
 	use DynamicGeneratorTrait;
 
@@ -52,7 +50,6 @@ class GroupCountBased extends StaticGenerator
 	{
 		foreach ($routes as $method=>$route) {
 			$chunkSize=$this->getChunkSize(\count($route),self::CHUNKSIZE);	//passe die chunk größe an
-
 			foreach ($route as $routeitem) {
 				//sammle solange Routes zum gruppieren bis chunk erreicht ist
 				if($this->chunkcount<$chunkSize-1){

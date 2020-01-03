@@ -45,14 +45,6 @@ abstract class Generator implements GeneratorInterface
 	}
 
 	/**
-	 * Trenne die Routes in Static und Dynamic auf
-	 *
-	 * @param Route $route
-	 * @return mixed
-	 */
-	abstract public function mapRoute(Route $route);
-
-	/**
 	 * @inheritdoc
 	 */
 	public function generate(array $routes):array
@@ -62,6 +54,28 @@ abstract class Generator implements GeneratorInterface
 		}
 
 		return ['static'=>$this->static,'dynamic'=>$this->generateDynamic($this->dynamic)];
+	}
+
+	/**
+	 * Trenne die Routes in Static und Dynamic auf
+	 *
+	 * @param Route $route
+	 * @return void
+	 */
+	public function mapRoute(Route $route)
+	{
+		[$route->path,$route->vars] = $this->createRoute($route->path);	//parse die Route
+
+		//Ordne die Route in Static und Dynamic
+		$typ = \count($route->vars) === 0 ? 0 : 1;
+
+		foreach ($route->method as $item) {
+			if($typ===0){
+				$this->static[$item][$route->path]=$route->routeid;
+			}elseif ($typ===1){
+				$this->dynamic[$item][]=$route;
+			}
+		}
 	}
 
 	protected function createRoute(string $path)

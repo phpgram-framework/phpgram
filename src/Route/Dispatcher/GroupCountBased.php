@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\Route\Dispatcher\MethodSort;
+namespace Gram\Route\Dispatcher;
 
 /**
  * Class GroupCountBased
