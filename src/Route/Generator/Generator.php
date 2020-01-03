@@ -31,8 +31,6 @@ use Gram\Route\Route;
  */
 abstract class Generator implements GeneratorInterface
 {
-	const CHUNKSIZE = 10;
-
 	protected $dynamic = [];
 	protected $static = [];
 
