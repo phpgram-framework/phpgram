@@ -95,6 +95,6 @@ trait DynamicGeneratorTrait
 		$this->number = \max($this->number,$varcount);	//passe Placeholderanzahl an
 		$this->routeCollector[]= $route->path. \str_repeat('()', $this->number - $varcount);	//gruppiere die routes, füge placeholder hinzu abzgl. der Varialben
 		++$this->number;	//erhöhe da die nächste Route einen Playerholder mehr braucht
-		$this->handleCollector[$this->number]=[$route->handle,$route->vars];	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
+		$this->handleCollector[$this->number]=[$route->routeid,$route->vars];	//gruppiere die Handler an der gleichen Stelle wie die Regex, hier number +1 da der Match mindestens bei 1 anfängt
 	}
 }

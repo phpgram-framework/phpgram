@@ -2,6 +2,13 @@
 
 # 1.5.x
 
+## 1.5.1
+- since 2020/01/03
+- Router:
+	- Es wird jetzt nur noch MethodSort genutzt
+	- Es wird in der Routemap nur noch die Route Id gespeichert. (dadurch ist diese kleiner und verbraucht weniger Ram)
+	- Router holt sich die Infos aus dem Routeobject
+
 ## 1.5.0
 - since 2019/12/30
 - Async Requests:

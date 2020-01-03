@@ -28,11 +28,12 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class Route
 {
-	public $path,$handle,$vars = [],$stack,$strategyCollector,$groupid,$routeid,$method;
+	public $path,$handle,$vars = [],$stack,$strategyCollector,$groupid=[],$routeid,$method;
 
 	/**
 	 * Route constructor.
 	 * @param string $path
+	 * @param $handle
 	 * @param $method
 	 * @param $routegroupid
 	 * @param $routeid
@@ -41,6 +42,7 @@ class Route
 	 */
 	public function __construct(
 		string $path,
+		$handle,
 		$method,
 		$routegroupid,
 		$routeid,
@@ -48,10 +50,8 @@ class Route
 		StrategyCollectorInterface $strategyCollector
 	){
 		$this->method=$method;	//speichere Method für Dispatcher
-		$this->handle['groupid']=$routegroupid;
-		$this->handle['routeid']=$routeid;
-
 		$this->path=$path;
+		$this->handle = $handle;
 		$this->groupid=$routegroupid;
 		$this->routeid=$routeid;
 		$this->stack=$stack;

@@ -33,7 +33,7 @@ abstract class StaticGenerator extends Generator
 
 		foreach ($route->method as $item) {
 			if($typ===0){
-				$this->static[$item][$route->path]=$route->handle;
+				$this->static[$item][$route->path]=$route->routeid;
 			}elseif ($typ===1){
 				$this->dynamic[$item][]=$route;
 			}

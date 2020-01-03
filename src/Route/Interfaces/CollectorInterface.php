@@ -66,7 +66,14 @@ interface CollectorInterface
 	 */
 	public function getData():array;
 
-	public function getHandle();
+	/**
+	 * Gibt zu einer geg. Route Id die passende Route zurück
+	 *
+	 * @param int $routeId
+	 * @return Route|null
+	 */
+	public function getRoute(int $routeId):Route;
+
 	public function get404();
 	public function get405();
 	public function set404($handle);

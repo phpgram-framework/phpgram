@@ -37,7 +37,7 @@ class RouteCollector implements CollectorInterface
 	use RouteCollectorTrait;
 
 	protected $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
-	protected $handler=[],$routeid=0,$routegroupid=0;
+	protected $routeid=0,$routegroupid=0;
 	protected $generator,$caching,$cache,$stack,$strategyCollector;
 
 	/**
@@ -69,10 +69,9 @@ class RouteCollector implements CollectorInterface
 	{
 		$path=$this->basepath.$this->prefix.$path;
 
-		$this->handler[$this->routeid]=$handler;
-
 		$route = new Route(
 			$path,
+			$handler,
 			$method,
 			$this->routegroupsids,
 			$this->routeid,
@@ -130,9 +129,12 @@ class RouteCollector implements CollectorInterface
 		return $data;
 	}
 
-	public function getHandle()
+	/**
+	 * @inheritdoc
+	 */
+	public function getRoute(int $routeId):Route
 	{
-		return $this->handler;
+		return $this->routes[$routeId] ?? null;
 	}
 
 	public function get404()

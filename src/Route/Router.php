@@ -59,8 +59,8 @@ class Router implements RouterInterface
 			'slash_trim'=>true,
 			'caching'=>false,
 			'cache'=>null,
-			'dispatcher'=>'Gram\\Route\\Dispatcher\\Std\\GroupCountBased',
-			'generator'=>'Gram\\Route\\Generator\\Std\\GroupCountBased',
+			'dispatcher'=>'Gram\\Route\\Dispatcher\\MethodSort\\GroupCountBased',
+			'generator'=>'Gram\\Route\\Generator\\MethodSort\\GroupCountBased',
 			'parser'=>'Gram\\Route\\Parser\\StdParser',
 			'collector'=>'Gram\\Route\\Collector\\RouteCollector'
 		];
@@ -93,42 +93,33 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		[$status,$handle,$param] = $this->dispatch($httpMethod,$uri);
+		$response = $this->dispatcher->dispatch($httpMethod,$uri,$this->collector->getData());
 
-		if($status!=DispatcherInterface::FOUND){
-			return [$status,$handle,$param];
-		}
-
-		$routeid = $handle['routeid'];
-
-		$handle['callable'] = $this->collector->getHandle()[$routeid];
-
-		return [$status,$handle,$param];
+		return $this->getHandle($response);
 	}
 
-	/**
-	 * Gebe dem Dispatcher die Daten vom Collector
-	 *
-	 * Wenn etwas gefunden setze handle und parameter und Status ok
-	 *
-	 * Wenn nicht setze Status 404 und gebe den 404 Handle zurück
-	 *
-	 * @param $method
-	 * @param $uri
-	 * @return array[int,array,array]
-	 */
-	protected function dispatch($method,$uri)
+	protected function getHandle(array $response)
 	{
-		$response = $this->dispatcher->dispatch($method,$uri,$this->collector->getData());
+		if($response[0]===DispatcherInterface::FOUND) {
+			$route = $this->collector->getRoute($response[1]);
 
-		if($response[0]===DispatcherInterface::FOUND){
-			return $response;
+			if($route===null){
+				$handle['callable'] = $this->collector->get404();
+			} else{
+				$handle = [
+					'groupid'=>$route->groupid,
+					'routeid'=>$route->routeid,
+					'callable'=>$route->handle
+				];
+			}
+
+			return [$response[0],$handle,$response[2]];
 		}
 
 		if($response[0]===DispatcherInterface::NOT_ALLOWED){
-			$handle['callable']=$this->collector->get405();
-		}else{
-			$handle['callable']=$this->collector->get404();
+			 $handle['callable'] = $this->collector->get405();
+		}else {
+			$handle['callable'] = $this->collector->get404();
 		}
 
 		return [$response[0],$handle,[]];
