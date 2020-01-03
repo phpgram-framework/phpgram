@@ -8,6 +8,7 @@
 	- Es wird jetzt nur noch MethodSort genutzt
 	- Es wird in der Routemap nur noch die Route Id gespeichert. (dadurch ist diese kleiner und verbraucht weniger Ram)
 	- Router holt sich die Infos aus dem Routeobject
+	- MarkBased generator und dispatcher hinzugefügt
 
 ## 1.5.0
 - since 2019/12/30
