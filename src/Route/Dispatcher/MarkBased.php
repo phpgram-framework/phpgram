@@ -14,16 +14,15 @@
 namespace Gram\Route\Dispatcher;
 
 /**
- * Class GroupCountBased
- * @package Gram\Route\Dispatcher\MethodSort
+ * Class MarkBased
+ * @package Gram\Route\Dispatcher
  *
  * Based on:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  * https://github.com/nikic/FastRoute
  */
-class GroupCountBased extends Dispatcher
+class MarkBased extends Dispatcher
 {
-
 	/**
 	 * @inheritdoc
 	 */
@@ -38,7 +37,7 @@ class GroupCountBased extends Dispatcher
 			}
 
 			//wenn Regex im Chunk war
-			$route = $handler[$i][count($matches)];
+			$route = $handler[$i][$matches['MARK']];
 
 			$var=[];
 			foreach ($route[1] as $j=>$item) {

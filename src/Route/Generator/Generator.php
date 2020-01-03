@@ -76,6 +76,12 @@ abstract class Generator implements GeneratorInterface
 		}
 	}
 
+	/**
+	 * Verarbeite die geparste Route
+	 *
+	 * @param string $path
+	 * @return array
+	 */
 	protected function createRoute(string $path)
 	{
 		$data=$this->parser->parse($path);	//die geparste Route

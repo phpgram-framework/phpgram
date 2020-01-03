@@ -23,8 +23,20 @@ trait DynamicGeneratorTrait
 {
 	protected $routeList,$handlerList;
 
+	/**
+	 * Gibt die jeweilige angepeilte chunksize zurück
+	 *
+	 * @return int
+	 */
 	abstract protected function getChunkSize():int;
 
+	/**
+	 * Erstellt Regex für den jeweiligen Chunk
+	 *
+	 * @param array $chunk
+	 * @param $method
+	 * @return mixed
+	 */
 	abstract protected function chunkRoutes(array $chunk,$method);
 
 	/**
@@ -51,6 +63,7 @@ trait DynamicGeneratorTrait
 
 			$chunks = \array_chunk($route,$chunkSize,true);
 
+			//schleife, da diese schneller als array_map() ist
 			foreach ($chunks as $chunk) {
 				$this->chunkRoutes($chunk,$method);
 			}
