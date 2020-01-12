@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.5.1 */
+/** @version 1.5.2 */
 
 namespace Gram\App;
 
@@ -395,13 +395,23 @@ class App implements RequestHandlerInterface
 	}
 
 	/**
+	 * Gibt den Psr 11 Container wieder zurück
+	 *
+	 * @return ContainerInterface
+	 */
+	public function getContainer():ContainerInterface
+	{
+		return $this->container;
+	}
+
+	/**
 	 * Setzt Optionen für den Router:
 	 *
 	 * slash_trim: bool
 	 * caching: bool
 	 * cache: string
-	 * dispatcher: Gram\\Route\\Dispatcher\\Std\\GroupCountBased
-	 * generator: Gram\\Route\\Generator\\Std\\GroupCountBased
+	 * dispatcher: Gram\\Route\\Dispatcher\\MarkBased
+	 * generator: Gram\\Route\\Generator\\MarkBased
 	 * parser: Gram\\Route\\Parser\\StdParser
 	 * collector: Gram\\Route\\Collector\\RouteCollector
 	 *

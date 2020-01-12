@@ -1,7 +1,7 @@
 <?php
 namespace Gram\Test\Resolver;
 
-use Gram\Resolver\CallbackResolver;
+use Gram\Resolver\ClosureResolver;
 use Gram\Test\TestClasses\TestClass;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class FunctionResolverTest extends TestCase
 {
-	/** @var CallbackResolver */
+	/** @var ClosureResolver */
 	private $resolver;
 	/** @var ServerRequestInterface */
 	private $request;
@@ -26,7 +26,7 @@ class FunctionResolverTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->resolver = new CallbackResolver();
+		$this->resolver = new ClosureResolver();
 		$factory = new Psr17Factory();
 		$requestCreator = new ServerRequestCreator($factory,$factory,$factory,$factory);
 

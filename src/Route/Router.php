@@ -59,8 +59,8 @@ class Router implements RouterInterface
 			'slash_trim'=>true,
 			'caching'=>false,
 			'cache'=>null,
-			'dispatcher'=>'Gram\\Route\\Dispatcher\\GroupCountBased',
-			'generator'=>'Gram\\Route\\Generator\\GroupCountBased',
+			'dispatcher'=>'Gram\\Route\\Dispatcher\\MarkBased',
+			'generator'=>'Gram\\Route\\Generator\\MarkBased',
 			'parser'=>'Gram\\Route\\Parser\\StdParser',
 			'collector'=>'Gram\\Route\\Collector\\RouteCollector'
 		];

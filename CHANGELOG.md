@@ -2,6 +2,14 @@
 
 # 1.5.x
 
+## 1.5.2
+- since 2020/01/13
+- CallableResolver aufgeteilt in ClosureResolver und CallableResolver
+	- ClosureResolver ist für anonymous functions
+	- CallableResolver für alle anderen callable, wie Klassen mit der Method __invoke()
+- App gibt jetzt auch den Psr 11 Container wieder zurück
+- Router: als Standard Generator und Dispatcher werden nun MarkBased verwendet
+
 ## 1.5.1
 - since 2020/01/03
 - Router:

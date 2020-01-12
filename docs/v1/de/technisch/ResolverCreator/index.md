@@ -31,8 +31,6 @@ der Standard Creator kann folgende Muster erkennen und verarbeiten (siehe dazu a
 
 - Class Resolver: ein Array indem der erste Wert der Klassen- und der zweite der Funktionsname ist
 
-- Controller Resolver: ein zusammengesetzer String (Controller@Function)
-
 - Handler Resolver: ein Objekt das das Interface ``Gram\Middleware\Handler\HandlerInterface`` implementiert hat
 
 Wenn ein Muster passt wird das entsprechende Resolver mit den Resolver Klassen erstellt (siehe [Resolver](../Resolver/index.md))

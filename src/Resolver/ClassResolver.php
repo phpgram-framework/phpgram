@@ -121,8 +121,7 @@ class ClassResolver implements ResolverInterface
 	{
 		$dependencies = [];
 
-		foreach($parameters as $parameter)
-		{
+		foreach($parameters as $parameter) {
 			$dependencies[] = $this->resolveParam($parameter);
 		}
 

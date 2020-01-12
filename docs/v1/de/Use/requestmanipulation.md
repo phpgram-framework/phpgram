@@ -34,12 +34,6 @@
 
 	- Als Standard wird die in [App](../technisch/App/index.md) angegebene Standard Strategy gesetzt
 
-- ``'creator'``
-	
-	- Der ResolverCreator mit dem das ``callable`` zu einem Resolver, mit Mustererkennung, umgeformt werden soll
-	
-	- Als Standard wird der in App als Standard gesetzte Creator ausgeführt
-
 ## Veränderungsmöglichkeiten
 
 - Solange der Request nicht beim ResponseCreator angekommen ist können alle Attribute verändert werden

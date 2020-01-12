@@ -12,7 +12,10 @@ class GroupCountBasedTest extends TestRoutes
 		$this->psr17 = new Psr17Factory();
 
 		$this->mwCollector = new MiddlewareCollector();
-		$this->router = new Router([],$this->mwCollector);
+		$this->router = new Router([
+			'dispatcher'=>'Gram\\Route\\Dispatcher\\GroupCountBased',
+			'generator'=>'Gram\\Route\\Generator\\GroupCountBased'
+		],$this->mwCollector);
 		$this->collector = $this->router->getCollector();
 		$this->collector->set404("404");
 		$this->collector->set405("405");

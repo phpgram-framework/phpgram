@@ -1,9 +1,11 @@
 <?php
 namespace Gram\Test\ResolverCreator;
 
-use Gram\Resolver\CallbackResolver;
+use Gram\Resolver\CallableResolver;
 use Gram\Resolver\ClassResolver;
+use Gram\Resolver\ClosureResolver;
 use Gram\ResolverCreator\ResolverCreator;
+use Gram\Test\TestClasses\CallableClass;
 use Gram\Test\TestClasses\TestClass;
 use PHPUnit\Framework\TestCase;
 
@@ -44,6 +46,20 @@ class ResolverCreatorTest extends TestCase
 			$resolver = null;
 		}
 
-		self::assertInstanceOf(CallbackResolver::class,$resolver);
+		self::assertInstanceOf(ClosureResolver::class,$resolver);
+	}
+
+	public function testCallableResolverCreation()
+	{
+		$toResolve = new CallableClass();
+
+		try{
+			$resolver = $this->creator->createResolver($toResolve);
+		}catch (\Exception $e){
+			echo $e;
+			$resolver = null;
+		}
+
+		self::assertInstanceOf(CallableResolver::class,$resolver);
 	}
 }

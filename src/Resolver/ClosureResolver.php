@@ -21,7 +21,7 @@ use Gram\Exceptions\CallableNotAllowedException;
  *
  * Speichert ein Callable und gibt es wieder zurück
  */
-class CallbackResolver implements ResolverInterface
+class ClosureResolver implements ResolverInterface
 {
 	use ResolverTrait;
 
@@ -44,13 +44,13 @@ class CallbackResolver implements ResolverInterface
 	}
 
 	/**
-	 * @param null $callback
+	 * @param \Closure|null $callback
 	 * @throws \Exception
 	 */
-	public function set($callback=null):void
+	public function set(\Closure $callback=null):void
 	{
-		if(! \is_callable($callback)){
-			throw new CallableNotAllowedException("No callable given");
+		if(! $callback instanceof \Closure){
+			throw new CallableNotAllowedException("No Closure given");
 		}
 
 		$this->callback=$callback;

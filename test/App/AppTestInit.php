@@ -29,11 +29,6 @@ class AppTestInit extends App
 		return $this->stdStrategy;
 	}
 
-	public function getContainer()
-	{
-		return $this->container;
-	}
-
 	public function getResolveCreator()
 	{
 		return $this->resolverCreator;

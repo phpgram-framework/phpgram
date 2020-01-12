@@ -13,8 +13,10 @@
 
 namespace Gram\ResolverCreator;
 
-use Gram\Resolver\CallbackResolver;
+use Gram\Exceptions\CallableNotAllowedException;
+use Gram\Resolver\CallableResolver;
 use Gram\Resolver\ClassResolver;
+use Gram\Resolver\ClosureResolver;
 use Gram\Resolver\HandlerResolver;
 use Gram\Middleware\Handler\HandlerInterface;
 
@@ -41,11 +43,19 @@ class ResolverCreator implements ResolverCreatorInterface
 			return $this->createHandlerCallback($possibleCallable);
 		}
 
-		if(\is_callable($possibleCallable)){
+		if($possibleCallable instanceof \Closure){
+			return $this->createCallbackFromClosure($possibleCallable);
+		}
+
+		if(\is_string($possibleCallable)) {
+			return $this->createCallbackForClass($possibleCallable);
+		}
+
+		if(\is_callable($possibleCallable)) {
 			return $this->createCallbackFromCallable($possibleCallable);
 		}
 
-		return $this->createCallbackForClass($possibleCallable);
+		throw new CallableNotAllowedException("Pattern doesn't match!");
 	}
 
 	/**
@@ -62,13 +72,13 @@ class ResolverCreator implements ResolverCreatorInterface
 	}
 
 	/**
-	 * @param callable $callable
-	 * @return CallbackResolver
+	 * @param \Closure $callable
+	 * @return ClosureResolver
 	 * @throws \Exception
 	 */
-	private function createCallbackFromCallable(callable $callable)
+	private function createCallbackFromClosure(\Closure $callable)
 	{
-		$callback= new CallbackResolver();
+		$callback= new ClosureResolver();
 		$callback->set($callable);
 
 		return $callback;
@@ -83,6 +93,19 @@ class ResolverCreator implements ResolverCreatorInterface
 	{
 		$callback = new HandlerResolver();
 		$callback->set($handler);
+
+		return $callback;
+	}
+
+	/**
+	 * @param callable $callable
+	 * @return CallableResolver
+	 * @throws \Gram\Exceptions\CallableNotAllowedException
+	 */
+	private function createCallbackFromCallable(callable $callable)
+	{
+		$callback = new CallableResolver();
+		$callback->set($callable);
 
 		return $callback;
 	}
