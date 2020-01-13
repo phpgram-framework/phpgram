@@ -155,4 +155,28 @@ class RouteMwTest extends TestCase
 		self::expectException(PageNotFoundException::class);
 		$this->queue->handle($this->request);
 	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function testRouteMwDirectly()
+	{
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/tester');
+
+		$this->request = $this->request->withUri($uri);
+
+		$lastHandler = $this->queue->getLast();
+
+		$response = $this->routemw->process($this->request,$lastHandler);
+
+		$status = $response->getStatusCode();
+
+		self::assertEquals(200,$status);
+
+		$string = $response->getBody()->__toString();
+
+		$expect = "Ein Stream für TestHandler2 ";
+
+		self::assertEquals($expect,$string);
+	}
 }
