@@ -10,11 +10,8 @@
 	</testsuites>
 
 	<filter>
-		<whitelist>
-			<directory>./src/</directory>
-			<exclude>
-				<directory>src/Exceptions/</directory>
-			</exclude>
+		<whitelist addUncoveredFilesFromWhitelist="false">
+			<directory>src</directory>
 		</whitelist>
 	</filter>
 </phpunit>
