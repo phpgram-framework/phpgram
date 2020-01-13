@@ -12,6 +12,9 @@
 	<filter>
 		<whitelist processUncoveredFilesFromWhitelist="true">
 			<directory>src</directory>
+			<exclude>
+                <directory>src/Exceptions</directory>
+            </exclude>
 		</whitelist>
 	</filter>
 </phpunit>
