@@ -42,7 +42,7 @@ abstract class Dispatcher implements DispatcherInterface
 		}
 
 		//alle Http Methods aus Static und Dynamic
-		$methods = \array_merge(\array_keys($routes['static']),\array_keys($routes['dynamic']['regexes']));
+		$methods = \array_unique(\array_merge(\array_keys($routes['static']),\array_keys($routes['dynamic']['regexes'])));
 
 		//durchlaufe alle Http Methods
 		foreach ($methods as $item) {

@@ -37,8 +37,25 @@ use Gram\Route\Interfaces\RouterInterface as Router;
  */
 class RouteMiddleware implements MiddlewareInterface
 {
-	protected $router,$notFoundHandler,$app,$strategyCollector;
+	/** @var Router */
+	protected $router;
 
+	/** @var RequestHandlerInterface */
+	protected $notFoundHandler;
+
+	/** @var App */
+	protected $app;
+
+	/** @var StrategyCollectorInterface */
+	protected $strategyCollector;
+
+	/**
+	 * RouteMiddleware constructor.
+	 * @param Router $router
+	 * @param RequestHandlerInterface $notFoundHandler
+	 * @param App $app
+	 * @param StrategyCollectorInterface $strategyCollector
+	 */
 	public function __construct(
 		Router $router,
 		RequestHandlerInterface $notFoundHandler,
@@ -55,17 +72,7 @@ class RouteMiddleware implements MiddlewareInterface
 
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		$uri=$request->getUri()->getPath();
-		$method=$request->getMethod();
-
-		[$status,$handle,$param] = $this->router->run($uri,$method);
-
-
-		//handle kann z. b. der controller als auch der 404 handle sein
-		$request=$request
-			->withAttribute('callable',$handle['callable'])
-			->withAttribute('status',$status)
-			->withAttribute('param',$param);
+		[$request,$status,$handle] = $this->route($request);
 
 		//Bei Fehler, 404 oder 405
 		if($status!==200){
@@ -77,8 +84,47 @@ class RouteMiddleware implements MiddlewareInterface
 
 		$this->app->buildStack($routeid,$groupid);
 
+		$strategy = $this->getStrategy($routeid,$groupid);
+
+		$request=$request->withAttribute('strategy',$strategy);
+
+		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
+	}
+
+	/**
+	 * Führt den Router aus
+	 *
+	 * @param ServerRequestInterface $request
+	 * @return array
+	 */
+	protected function route(ServerRequestInterface $request)
+	{
+		$uri = $request->getUri()->getPath();
+		$method = $request->getMethod();
+
+		[$status,$handle,$param] = $this->router->run($uri,$method);
+
+		//handle kann z. b. der controller als auch der 404 handle sein
+		$request=$request
+			->withAttribute('callable',$handle['callable'])
+			->withAttribute('status',$status)
+			->withAttribute('param',$param);
+
+		return [$request,$status,$handle];
+	}
+
+	/**
+	 * Hole Strategy von Collector für die Route
+	 *
+	 * @param $routeid
+	 * @param $groupid
+	 * @return mixed
+	 */
+	protected function getStrategy($routeid,$groupid)
+	{
 		//Prüfe ob es eine Route Strategie gibt
-		$strategy= $this->strategyCollector->getRoute($routeid);
+		$strategy = $this->strategyCollector->getRoute($routeid);
+
 		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
 		if($strategy===null){
 			foreach ($groupid as $item) {
@@ -89,8 +135,6 @@ class RouteMiddleware implements MiddlewareInterface
 			}
 		}
 
-		$request=$request->withAttribute('strategy',$strategy);
-
-		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
+		return $strategy;
 	}
 }

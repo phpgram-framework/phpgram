@@ -34,16 +34,7 @@ class RoutingMiddleware extends RouteMiddleware
 
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		$uri=$request->getUri()->getPath();
-		$method=$request->getMethod();
-
-		[$status,$handle,$param] = $this->router->run($uri,$method);
-
-		//handle kann z. b. der controller als auch der 404 handle sein
-		$request=$request
-			->withAttribute('callable',$handle['callable'])
-			->withAttribute('status',$status)
-			->withAttribute('param',$param);
+		[$request,$status,$handle] = $this->route($request);
 
 		//Bei Fehler, 404 oder 405
 		if($status!==200){
@@ -55,17 +46,7 @@ class RoutingMiddleware extends RouteMiddleware
 
 		$request = $this->app->buildAsyncStack($request,$routeid,$groupid);
 
-		//Prüfe ob es eine Route Strategie gibt
-		$strategy= $this->strategyCollector->getRoute($routeid);
-		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
-		if($strategy===null){
-			foreach ($groupid as $item) {
-				$check = $this->strategyCollector->getGroup($item);
-				if($check!==null){
-					$strategy=$check;
-				}
-			}
-		}
+		$strategy = $this->getStrategy($routeid,$groupid);
 
 		$request=$request->withAttribute('strategy',$strategy);
 

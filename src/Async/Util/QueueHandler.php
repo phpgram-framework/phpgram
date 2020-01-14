@@ -38,7 +38,7 @@ class QueueHandler extends GramQueue
 		/** @var array $mw */
 		$mw = $request->getAttribute('mw',[]);
 
-		if(count($mw) === 0) {
+		if(\count($mw) === 0) {
 			return $this->last->handle($request);
 		}
 

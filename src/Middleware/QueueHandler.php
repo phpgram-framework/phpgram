@@ -67,7 +67,7 @@ class QueueHandler implements RequestHandlerInterface
 	{
 		//wenn es keine Middleware gibt gebe das Ergebnis des handlers aus der zuletzt getriggert werden soll
 
-		if (count($this->stack) === 0) {
+		if (\count($this->stack) === 0) {
 			return $this->last->handle($request);
 		}
 
