@@ -59,6 +59,13 @@ class ControllerTestClass implements ClassInterface
 
 		self::$staticCounter += $this->instanceCounter;
 
-		return self::$staticCounter.$this->instanceCounter;
+		//Werte die die Mws in den Request packen
+		$words = $this->request->getAttribute('words',[]);
+		$wordString = "";
+		foreach ($words as $word) {
+			$wordString .= $word;
+		}
+
+		return self::$staticCounter.$this->instanceCounter." Mws: ".$wordString;
 	}
 }

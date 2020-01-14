@@ -40,7 +40,8 @@ class AsyncAppTest extends AbstractAppTest
 			$j = $i+1;
 
 			//instance Varaiblen werden immer erneuert, static nicht
-			self::assertEquals($j."1",$body);
+			//teste zudem die Werte die die Mws in den Request packen
+			self::assertEquals($j."1 Mws: 123",$body);
 			self::assertEquals(200,$status);
 		}
 
