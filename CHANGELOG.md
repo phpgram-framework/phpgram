@@ -8,6 +8,7 @@
 	- Bereiche mit Methods aufgeteilt, damit die Async Mw nicht alles doppelt machen muss
 - Dispatcher: 
 	- bei 405 bzw. 404 werden doppelte Http Methods nur noch einmal durchsucht
+- QueueHandler unterstüzt nun auch callable Middleware
 
 ## 1.5.2
 - since 2020/01/13

@@ -105,7 +105,7 @@ class RouteMiddleware implements MiddlewareInterface
 		[$status,$handle,$param] = $this->router->run($uri,$method);
 
 		//handle kann z. b. der controller als auch der 404 handle sein
-		$request=$request
+		$request = $request
 			->withAttribute('callable',$handle['callable'])
 			->withAttribute('status',$status)
 			->withAttribute('param',$param);

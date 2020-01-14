@@ -46,9 +46,7 @@ class QueueHandler extends GramQueue
 
 		$request = $request->withAttribute('mw',$mw);
 
-		$middleware = $this->checkMiddleware($middleware);
-
-		return $middleware->process($request,$this);	//führe die middleware aus
+		return $this->executeMiddleware($request, $middleware);
 	}
 
 }

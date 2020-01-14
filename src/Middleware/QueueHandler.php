@@ -27,10 +27,19 @@ use Psr\Http\Server\RequestHandlerInterface;
  * Verwaltet die Middleware
  *
  * Wenn eine Middleware weiter gegangen werden soll wird diese Handle Funktion wieder aufgerufen
+ *
+ * Führt Psr 15 und callable Middleware aus
  */
 class QueueHandler implements RequestHandlerInterface
 {
-	protected $stack = [], $last, $container;
+	/** @var array */
+	protected $stack = [];
+
+	/** @var RequestHandlerInterface */
+	protected $last;
+
+	/** @var ContainerInterface */
+	protected $container;
 
 	public function __construct(RequestHandlerInterface $last, ContainerInterface $container=null)
 	{
@@ -49,10 +58,6 @@ class QueueHandler implements RequestHandlerInterface
 	}
 
 	/**
-	 * Laufe "rekursiv" durch alle Middlewares durch
-	 *
-	 * Alle Middlewares rufen diese Function dieses Objekts (this) wieder auf.
-	 *
 	 * Wenn ein Event eingetreten ist wird ein anderer Handler aufgerufen und dieses Response zürck gegeben.
 	 *
 	 * Sonst laufe durch den ganzen Middleware stack und führe den letzten Handler aus
@@ -73,17 +78,20 @@ class QueueHandler implements RequestHandlerInterface
 
 		$middleware = \array_shift($this->stack);	//hole das oberste element und lösche es aus dem array
 
-		$middleware = $this->checkMiddleware($middleware);
-
-		return $middleware->process($request,$this);	//führe die middleware aus
+		return $this->executeMiddleware($request, $middleware);
 	}
 
 	/**
+	 * Laufe "rekursiv" durch alle Middlewares durch
+	 *
+	 * Alle Middlewares rufen die Method @see handle() dieses Objekts (this) wieder auf.
+	 *
+	 * @param ServerRequestInterface $request
 	 * @param $middleware
-	 * @return MiddlewareInterface
+	 * @return ResponseInterface
 	 * @throws MiddlewareNotAllowedException
 	 */
-	protected function checkMiddleware($middleware)
+	protected function executeMiddleware(ServerRequestInterface $request, $middleware):ResponseInterface
 	{
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
 		if ($this->container !== null && \is_string($middleware)) {
@@ -94,10 +102,14 @@ class QueueHandler implements RequestHandlerInterface
 			$middleware = $this->container->get($middleware);
 		}
 
-		if ($middleware instanceof MiddlewareInterface === false) {
-			throw new MiddlewareNotAllowedException("Middleware needs to implement Psr 15 MiddlewareInterface");
+		if ($middleware instanceof MiddlewareInterface) {
+			return $middleware->process($request,$this);
 		}
 
-		return $middleware;
+		if(\is_callable($middleware)) {
+			return $middleware($request,$this);
+		}
+
+		throw new MiddlewareNotAllowedException("Middleware needs to implement Psr 15 MiddlewareInterface or from type Callable!");
 	}
 }

@@ -2,6 +2,7 @@
 namespace Gram\Test\Middleware;
 
 use Gram\Middleware\QueueHandler;
+use Gram\Test\Middleware\DummyMw\CallableMw4;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
@@ -12,6 +13,7 @@ use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class QueueTest extends TestCase
 {
@@ -47,6 +49,9 @@ class QueueTest extends TestCase
 		}
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	public function testTheQueue()
 	{
 		$this->addMwNormal();
@@ -60,6 +65,9 @@ class QueueTest extends TestCase
 		self::assertEquals($expect,$string);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	public function testQueueWithFail()
 	{
 		$this->addMwNormal();
@@ -86,6 +94,9 @@ class QueueTest extends TestCase
 		return $container;
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	public function testQueueWithContainer()
 	{
 		$psr11 = new \Pimple\Psr11\Container($this->initContainer());
@@ -130,7 +141,46 @@ class QueueTest extends TestCase
 			$string = $e->getMessage();
 		}
 
-		$expect = "Middleware needs to implement Psr 15 MiddlewareInterface";
+		$expect = "Middleware needs to implement Psr 15 MiddlewareInterface or from type Callable!";
+
+		self::assertEquals($expect,$string);
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function testQueueWithCallable()
+	{
+		$queue = new QueueHandler(new DummyLastHandler());
+
+		$callableMw1 = function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+			$words = $request->getAttribute('words',[]);
+
+			$words[]="mw1";
+
+			$request = $request->withAttribute('words',$words);
+
+			return $next->handle($request);
+		};
+
+		$callableMw2 = function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+			$words = $request->getAttribute('words',[]);
+
+			$words[]="mw2";
+
+			$request = $request->withAttribute('words',$words);
+
+			return $next->handle($request);
+		};
+
+		$queue->add($callableMw1);
+		$queue->add($callableMw2);
+		$queue->add(new CallableMw4());
+
+		$response = $queue->handle($this->request);
+		$string = $response->getBody()->__toString();
+
+		$expect = "Ein Stream für callableMws mw1mw2 at the end: mw3";
 
 		self::assertEquals($expect,$string);
 	}
