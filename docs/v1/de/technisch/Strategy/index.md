@@ -2,7 +2,7 @@
 
 - entscheidet wie der Output des callable in den Response gepackt werden soll
 
-- es muss immer einen return geben der als Content in dem Response gespeichert wird
+- führen den Resolver aus und packen den Content in den Response, diesen geben sie auch wieder zurück
 
 - Strategies können als Standard in der [App](../App/index.md) Klasse gesetzt oder bei einer Routegroup bzw. Route gesetzt werden
 
@@ -31,7 +31,7 @@ interface StrategyInterface
 }
 ````
 
-- mit ``invoke()`` wird der [Resolver](../Resolver/index.md) ausgeführt mit den Route Paramtern und dem Request Objekt
+- mit ``invoke()`` wird der [Resolver](../Resolver/index.md) ausgeführt mit den Route Paramtern und dem Request und Response Objekt
 
 - Strategy muss den Body des Response erstellen
 

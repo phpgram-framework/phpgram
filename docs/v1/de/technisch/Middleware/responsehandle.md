@@ -14,7 +14,7 @@ class ResponseCreator implements RequestHandlerInterface
 
 - kann dank es [QueueHandler](queuehandle.md) von anderen Middleware ausgeführt werden um einen anderen Response zu erstellen sollt ein Event eingetroffen sein
 
-- bekommt Factories für Response und Stream übergeben
+- bekommt Psr 17 Factory für Response übergeben
 
 - bekommt einen ResolverCreatorInterface und StrategyInterface übergeben, die ausgeführt werden, sollte nichts anderes, im request übergeben worden sein
 
@@ -38,29 +38,13 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 	1. ``$request->getAttribute('strategy',null) ?? $this->stdstrategy;`` die Strategy wie der Output des callable zu behandeln ist (z. B. json encode oder Buffern), wenn nichts gesetzt: die Standard Strategy
 
-2. hole von der Strategy den ``content-typ``
+2. Erstelle den Response auf Basis der im Request übergebenen Attribute mithilfe der Psr 17 ResponseFactory
 
-3. Erstelle den Response auf Basis der im Request übergebenen Attribute mithilfe der Psr 17 ResponseFactory
+3. Lasse mithilfe des ResolverCreaters aus dem Callable einen Resolver erstellen (z. B. Class, Function etc.) und übergebe den Psr 11 Container an den Resolver (Request und Response werden von der Strategy gesetzt)
 
-4. setze die gesammelten Header in den Response ein
+4. Rufe die Strategy mit dem Resolver, Route parameter, Request und Response auf 
 
-5. erstelle den Inhalt des Stream mithilfe des Resolver Creators und der Strategy
-
-	1. ``$creator->createResolver($this->callable);`` wandle das callable aus dem Request in ein richtiges um
-	
-	1. Übergebe dem Resolver Request, Response und Container Objects, damit dieser die Objects weiter an die Application geben kann
-
-	1. ``$strategy->invoke($creator->getCallable(),$this->param);`` rufe die Strategy mit dem umgewandelten Resolver und den benötigen Parametern (die Route Parameter)
-
-	1. Nehme nachdem die Application fertig ist den Response wieder entgegen. Diesen könnte die App verändert haben
-	
-	1. gebe den return der Strategy wieder zurück und setze den als Content für den Stream
-
-6. erstelle mit dem Content den Stream mithilfe der Stream Factory. Sollte der Content bereits ein ResponseInterface sein (z. B. wenn die App einen eigenen Response zurück gibt) wird dieses Object zurück gegeben
-
-7. setze den Stream als Body in den response ein
-
-8. gebe den fertigen Response zurück
+5. Die Strategy führt den Resolver aus und gibt einen Response wieder zurück
 
 ## Manipulation des ResponseCreators
 

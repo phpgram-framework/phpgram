@@ -2,7 +2,7 @@
 
 - Technische Doc: [Middleware](../technisch/Middleware/index.md)
 
-- Middleware werden nach [Psr 15](https://www.php-fig.org/psr/psr-15/) erstellt
+- Middleware werden nach [Psr 15](https://www.php-fig.org/psr/psr-15/) erstellt (mit dem Interface `Psr\Http\Server\MiddlewareInterface`), oder müssen vom Type callable sein (Functions, Classes with __invoke() Method)
 
 - kann vor oder nach der eigentlichen Application ausgeführt werden
 
@@ -28,8 +28,6 @@
 
 - siehe [Middleware](../technisch/Middleware/index.md)
 
-- Middleware müssen das Interface ``Psr\Http\Server\MiddlewareInterface`` implementiert haben
-
 ## Middleware setzen
 
 - Es können Standard Middleware (die als erste ausgeführt werden), Routegroup und Route Middleware gesetzt werden
@@ -46,7 +44,7 @@
 
 - ``App::app()->addMiddle()``
 
-- hier wird ein ``Psr\Http\Server\MiddlewareInterface`` erwartet
+- hier wird ein ``Psr\Http\Server\MiddlewareInterface`` oder callable erwartet
 
 - diese Mw werden vor dem Routing ausgeführt
 
@@ -122,8 +120,10 @@ class Auth implements MiddlewareInterface
 	}
 }
 ````
-- Soltle in dieser Mw alles in Ordnung sein kann zur nächsten Mw weiter gegangen werden mit ``return $handler->handle($request)``
+- Sollte in dieser Mw alles in Ordnung sein kann zur nächsten Mw weiter gegangen werden mit ``return $handler->handle($request)``
 
 - der Request ist meist verändert
 
 - Wenn ein Error oder Event aufgetreten ist so muss die Mw selber einen Response erstellen (dies kann auch über den ResponseCreator funktionieren (siehe [Response Manipulation](requestmanipulation.md)))
+
+- Middlewares können auch aus dem Psr 11 Container gestartet werden

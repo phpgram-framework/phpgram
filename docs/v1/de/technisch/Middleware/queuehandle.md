@@ -59,9 +59,9 @@ public function handle(ServerRequestInterface $request): ResponseInterface
 
 	- somit gibt es auch keine Warning
 
-- der ResponseCreator kann so bekommen werden: ``$handler->getPre()``
+- der ResponseCreator kann so bekommen werden: ``$handler->getLast()``
 
-	- der Return kann so ausehen: ``return $handler->getPre()->handle($request);``
+	- der Return kann so ausehen: ``return $handler->getLast()->handle($request);``
 
 	- im Request wird dann das Attribut callable verändert, sodass nicht das callable des Routers ausgeführt wird
 
