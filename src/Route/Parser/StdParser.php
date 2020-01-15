@@ -98,7 +98,7 @@ REGEX;
 		return $routeData;
 	}
 
-	public static function addDataTyp(string $typ,string $regex)
+	public static function addDataTyp($typ,$regex)
 	{
 		/**
 		 * @copyright Phil Bennett philipobenito@gmail.com (thephpleague <https://route.thephpleague.com/>)

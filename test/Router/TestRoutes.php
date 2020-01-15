@@ -4,6 +4,7 @@ namespace Gram\Test\Router;
 use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\RouteCollector;
 use Gram\Route\Interfaces\RouterInterface;
+use Gram\Route\Parser\StdParser;
 use Gram\Route\Router;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
@@ -392,5 +393,22 @@ abstract class TestRoutes extends TestCase
 		$this->evaluateExtendedGroups($groupid);
 
 		self::assertEquals('testid4',$handler['callable']);
+	}
+
+	public function testCustomPlaceHolders()
+	{
+		$this->collector->get("/test/{l:lang}/{ls:langs}","testWithPlaceholder");
+
+		StdParser::addDataTyp('lang','de|en');
+		StdParser::addDataTyp('langs','fr|sp');
+
+		$uri = $this->psr17->createUri('https://test.de/test/de/fr/');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals(200,$status);
+		self::assertEquals("testWithPlaceholder",$handler['callable']);
+		self::assertEquals("de",$param['l']);
+		self::assertEquals("fr",$param['ls']);
 	}
 }

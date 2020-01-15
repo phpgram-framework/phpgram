@@ -31,40 +31,52 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 {
 	private $std=[],$route=[],$group=[];
 
+	/**
+	 * @inheritdoc
+	 */
 	public function addStd($middleware)
 	{
 		$this->std[]=$middleware;
 		return $this;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function addRoute($routeid, $middleware)
 	{
 		$this->route[$routeid][]=$middleware;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function addGroup($groupid, $middleware)
 	{
 		$this->group[$groupid][]=$middleware;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getStdMiddleware()
 	{
 		return $this->std;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getGroup($id)
 	{
-		if(isset($this->group[$id]))
-			return $this->group[$id];
-
-		return null;
+		return $this->group[$id] ?? null;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getRoute($id)
 	{
-		if(isset($this->route[$id]))
-			return $this->route[$id];
-
-		return null;
+		return $this->route[$id] ?? null;
 	}
 }

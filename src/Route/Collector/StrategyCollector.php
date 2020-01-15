@@ -27,43 +27,37 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class StrategyCollector implements StrategyCollectorInterface
 {
-	private $std,$group=[],$route=[];
+	private $group=[],$route=[];
 
-	public function addStd($strategy)
-	{
-		$this->std=$strategy;
-	}
-
+	/**
+	 * @inheritdoc
+	 */
 	public function addRoute($routeid, $strategy)
 	{
 		$this->route[$routeid]=$strategy;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function addGroup($groupid, $strategy)
 	{
 		$this->group[$groupid]=$strategy;
 	}
 
-	public function getStd()
-	{
-		return $this->std;
-	}
-
+	/**
+	 * @inheritdoc
+	 */
 	public function getGroup($id)
 	{
-		if(isset($this->group[$id])){
-			return $this->group[$id];
-		}
-
-		return null;
+		return $this->group[$id] ?? null;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getRoute($id)
 	{
-		if(isset($this->route[$id])){
-			return $this->route[$id];
-		}
-
-		return null;
+		return $this->route[$id] ?? null;
 	}
 }
