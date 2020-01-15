@@ -13,11 +13,10 @@
 
 namespace Gram\Route\Collector;
 
+use Gram\Route\Interfaces\UtilCollectorInterface;
 use Gram\Route\Route;
 use Gram\Route\Interfaces\CollectorInterface;
 use Gram\Route\Interfaces\GeneratorInterface;
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\RouteGroup;
 
 /**
@@ -38,28 +37,31 @@ class RouteCollector implements CollectorInterface
 
 	protected $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
 	protected $routeid=0,$routegroupid=0;
-	protected $generator,$caching,$cache,$stack,$strategyCollector;
+	protected $caching,$cache;
+
+	/** @var UtilCollectorInterface */
+	protected $utilCollector;
+
+	/** @var GeneratorInterface */
+	protected $generator;
 
 	/**
 	 * RouteCollector constructor.
 	 * @param GeneratorInterface $generator
-	 * @param MiddlewareCollectorInterface $stack
-	 * @param StrategyCollectorInterface $strategyCollector
+	 * @param UtilCollectorInterface $utilCollector
 	 * @param bool $routecaching
 	 * @param null $routecache
 	 */
 	public function __construct(
 		GeneratorInterface $generator,
-		MiddlewareCollectorInterface $stack,
-		StrategyCollectorInterface $strategyCollector,
+		UtilCollectorInterface $utilCollector,
 		$routecaching=false,
 		$routecache=null
 	){
 		$this->caching=$routecaching;
 		$this->cache=$routecache;
 		$this->generator=$generator;
-		$this->stack=$stack;
-		$this->strategyCollector=$strategyCollector;
+		$this->utilCollector = $utilCollector;
 	}
 
 	/**
@@ -75,8 +77,7 @@ class RouteCollector implements CollectorInterface
 			$method,
 			$this->routegroupsids,
 			$this->routeid,
-			$this->stack,
-			$this->strategyCollector
+			$this->utilCollector
 		);
 
 		$this->routes[$this->routeid] = $route;
@@ -98,7 +99,7 @@ class RouteCollector implements CollectorInterface
 		++$this->routegroupid;
 		$this->routegroupsids[]=$this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
 
-		$group = new RouteGroup($this->routegroupid,$this->stack,$this->strategyCollector);
+		$group = new RouteGroup($this->routegroupid,$this->utilCollector);
 
 		\call_user_func($groupcollector);
 

@@ -14,7 +14,7 @@
 namespace Gram\Middleware;
 
 use Gram\App\App;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
+use Gram\Route\Interfaces\UtilCollectorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -46,25 +46,25 @@ class RouteMiddleware implements MiddlewareInterface
 	/** @var App */
 	protected $app;
 
-	/** @var StrategyCollectorInterface */
-	protected $strategyCollector;
+	/** @var UtilCollectorInterface */
+	protected $utilCollector;
 
 	/**
 	 * RouteMiddleware constructor.
 	 * @param Router $router
 	 * @param RequestHandlerInterface $notFoundHandler
 	 * @param App $app
-	 * @param StrategyCollectorInterface $strategyCollector
+	 * @param UtilCollectorInterface $utilCollector
 	 */
 	public function __construct(
 		Router $router,
 		RequestHandlerInterface $notFoundHandler,
 		App $app,
-		StrategyCollectorInterface $strategyCollector
+		UtilCollectorInterface $utilCollector
 	){
 		$this->router=$router;
 		$this->notFoundHandler=$notFoundHandler;	//der handler der im errorfall getriggert werden soll
-		$this->strategyCollector=$strategyCollector;
+		$this->utilCollector=$utilCollector;
 		$this->app=$app;
 	}
 
@@ -123,12 +123,12 @@ class RouteMiddleware implements MiddlewareInterface
 	protected function getStrategy($routeid,$groupid)
 	{
 		//Prüfe ob es eine Route Strategie gibt
-		$strategy = $this->strategyCollector->getRoute($routeid);
+		$strategy = $this->utilCollector->getRoute($routeid,'strategy');
 
 		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
 		if($strategy===null){
 			foreach ($groupid as $item) {
-				$check = $this->strategyCollector->getGroup($item);
+				$check = $this->utilCollector->getGroup($item,'strategy');
 				if($check!==null){
 					$strategy=$check;
 				}

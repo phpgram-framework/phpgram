@@ -1,7 +1,7 @@
 <?php
 namespace Gram\Test\Router;
 
-use Gram\Route\Collector\MiddlewareCollector;
+use Gram\Route\Collector\UtilCollector;
 use Gram\Route\Router;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
@@ -11,11 +11,11 @@ class GroupCountBasedTest extends TestRoutes
 	{
 		$this->psr17 = new Psr17Factory();
 
-		$this->mwCollector = new MiddlewareCollector();
+		$this->utilCollector = new UtilCollector();
 		$this->router = new Router([
 			'dispatcher'=>'Gram\\Route\\Dispatcher\\GroupCountBased',
 			'generator'=>'Gram\\Route\\Generator\\GroupCountBased'
-		],$this->mwCollector);
+		],$this->utilCollector);
 		$this->collector = $this->router->getCollector();
 		$this->collector->set404("404");
 		$this->collector->set405("405");
