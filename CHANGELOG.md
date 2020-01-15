@@ -9,7 +9,6 @@
 - Dispatcher: 
 	- bei 405 bzw. 404 werden doppelte Http Methods nur noch einmal durchsucht
 - QueueHandler unterstüzt nun auch callable Middleware
-- Es wird nur noch ein Zusatz Collector bei den Routes für Strategy und Middleware genutzt
 
 ## 1.5.2
 - since 2020/01/13
