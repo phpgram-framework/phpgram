@@ -18,4 +18,19 @@ class AppTestInit extends App
 
 		parent::build();
 	}
+
+	public function getMiddlewareCollector()
+	{
+		return $this->middlewareCollector;
+	}
+
+	public function getStrategy()
+	{
+		return $this->stdStrategy;
+	}
+
+	public function getResolveCreator()
+	{
+		return $this->resolverCreator;
+	}
 }

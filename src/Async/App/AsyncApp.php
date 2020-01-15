@@ -58,7 +58,7 @@ class AsyncApp extends App
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
-		$mw = $this->utilCollector->get('middleware');
+		$mw = $this->middlewareCollector->getStdMiddleware();
 		$mw[] = $this->routeMiddleware;
 
 		$request = $request->withAttribute('mw',$mw);
@@ -83,7 +83,7 @@ class AsyncApp extends App
 		$mw = [];
 
 		foreach ($groupid as $item) {
-			$grouMw=$this->utilCollector->getGroup($item,'middleware');
+			$grouMw=$this->middlewareCollector->getGroup($item);
 			//Füge Routegroup Mw hinzu
 			if ($grouMw!==null){
 				foreach ($grouMw as $item2) {
@@ -92,7 +92,7 @@ class AsyncApp extends App
 			}
 		}
 
-		$routeMw = $this->utilCollector->getRoute($routeid,'middleware');
+		$routeMw = $this->middlewareCollector->getRoute($routeid);
 		//Füge Route MW hinzu
 		if($routeMw!==null){
 			foreach ($routeMw as $item) {

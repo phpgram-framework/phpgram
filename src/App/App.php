@@ -20,9 +20,11 @@ use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Route\Collector\RouteCollectorTrait;
-use Gram\Route\Collector\UtilCollector;
+use Gram\Route\Collector\MiddlewareCollector;
+use Gram\Route\Collector\StrategyCollector;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Gram\Route\Interfaces\RouterInterface;
-use Gram\Route\Interfaces\UtilCollectorInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\Route;
 use Gram\Route\RouteGroup;
 use Gram\Route\Router;
@@ -71,8 +73,11 @@ class App implements RequestHandlerInterface
 	/** @var ResponseFactoryInterface */
 	protected $responseFactory;
 
-	/** @var UtilCollectorInterface */
-	protected $utilCollector;
+	/** @var MiddlewareCollectorInterface */
+	protected $middlewareCollector;
+
+	/** @var StrategyCollectorInterface */
+	protected $strategyCollector;
 
 	/** @var self */
 	private static $_instance;
@@ -91,9 +96,11 @@ class App implements RequestHandlerInterface
 	public function getRouter()
 	{
 		if(!isset($this->router)){
+
 			$this->router = new Router(
 				$this->router_options,
-				$this->getUtilCollector()
+				$this->getMWCollector(),
+				$this->getStrategyCollector()
 			);
 		}
 
@@ -103,15 +110,29 @@ class App implements RequestHandlerInterface
 	/**
 	 * Gibt einen Middlewarecollector zurück
 	 *
-	 * @return UtilCollectorInterface
+	 * @return MiddlewareCollectorInterface
 	 */
-	public function getUtilCollector()
+	public function getMWCollector()
 	{
-		if(!isset($this->utilCollector)){
-			$this->utilCollector = new UtilCollector();
+		if(!isset($this->middlewareCollector)){
+			$this->middlewareCollector = new MiddlewareCollector();
 		}
 
-		return $this->utilCollector;
+		return $this->middlewareCollector;
+	}
+
+	/**
+	 * Gibt ein Strategy Collector zurück
+	 *
+	 * @return StrategyCollectorInterface
+	 */
+	public function getStrategyCollector()
+	{
+		if(!isset($this->strategyCollector)){
+			$this->strategyCollector = new StrategyCollector();
+		}
+
+		return $this->strategyCollector;
 	}
 
 	/**
@@ -224,7 +245,7 @@ class App implements RequestHandlerInterface
 				$this->getRouter(),		//router für den request
 				new NotFoundHandler($this->getResponseCreator()),	//error handler
 				$this,
-				$this->getUtilCollector()
+				$this->getStrategyCollector()
 			);
 	}
 
@@ -239,7 +260,7 @@ class App implements RequestHandlerInterface
 	{
 		//Erstelle Middleware Stack
 
-		foreach ($this->utilCollector->get('middleware') as $item) {
+		foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
 			$this->queueHandler->add($item);
 		}
 
@@ -262,7 +283,7 @@ class App implements RequestHandlerInterface
 		}
 
 		foreach ($groupid as $item) {
-			$grouMw=$this->utilCollector->getGroup($item,'middleware');
+			$grouMw=$this->middlewareCollector->getGroup($item);
 			//Füge Routegroup Mw hinzu
 			if ($grouMw!==null){
 				foreach ($grouMw as $item2) {
@@ -271,7 +292,7 @@ class App implements RequestHandlerInterface
 			}
 		}
 
-		$routeMw = $this->utilCollector->getRoute($routeid,'middleware');
+		$routeMw = $this->middlewareCollector->getRoute($routeid);
 		//Füge Route MW hinzu
 		if($routeMw!==null){
 			foreach ($routeMw as $item) {
@@ -471,7 +492,7 @@ class App implements RequestHandlerInterface
 	 */
 	public function addMiddle($middleware)
 	{
-		$this->getUtilCollector()->collect('middleware',$middleware);
+		$this->getMWCollector()->addStd($middleware);
 		return $this;
 	}
 }

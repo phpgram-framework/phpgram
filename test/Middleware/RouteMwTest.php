@@ -20,7 +20,7 @@ use Gram\Exceptions\PageNotFoundException;
 
 class RouteMwTest extends TestCase
 {
-	private $router, $notFundHandler, $lastHandler, $utilCollector, $map;
+	private $router, $notFundHandler, $lastHandler, $mwCollector, $strategyCollector, $map;
 
 	/** @var Psr17Factory */
 	private $psr17;
@@ -37,11 +37,13 @@ class RouteMwTest extends TestCase
 	{
 		$app = new AppTestInit();
 
-		$this->utilCollector = $app->getUtilCollector();
+		$this->mwCollector = $app->getMWCollector();
+		$this->strategyCollector = $app->getStrategyCollector();
 
 		$this->router = new Router(
 			[],
-			$this->utilCollector
+			$this->mwCollector,
+			$this->strategyCollector
 		);
 		$this->routeCollector = $this->router->getCollector();
 
@@ -64,13 +66,13 @@ class RouteMwTest extends TestCase
 		})
 			->addMiddleware(new TestMw2());
 
-		$this->utilCollector->collect('middleware',new TestMw1());
+		$this->mwCollector->addStd(new TestMw1());
 
 		$this->routemw = new RouteMiddleware(
 			$this->router,
 			$this->notFundHandler,
 			$app,
-			$this->utilCollector
+			$this->strategyCollector
 		);
 
 		$app->setQueueHandler($this->queue);

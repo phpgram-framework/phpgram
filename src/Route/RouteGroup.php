@@ -13,7 +13,8 @@
 
 namespace Gram\Route;
 
-use Gram\Route\Interfaces\UtilCollectorInterface;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 
 /**
  * Class RouteGroup
@@ -23,32 +24,34 @@ use Gram\Route\Interfaces\UtilCollectorInterface;
  */
 class RouteGroup
 {
-	private $groupid;
-
-	/** @var UtilCollectorInterface */
-	private $utilCollector;
+	private $groupid,$stack,$strategyCollector;
 
 	/**
 	 * RouteGroup constructor.
 	 * @param $groupid
-	 * @param UtilCollectorInterface $utilCollector
+	 * @param MiddlewareCollectorInterface $stack
+	 * @param StrategyCollectorInterface $strategyCollector
 	 */
-	public function __construct($groupid, UtilCollectorInterface $utilCollector)
-	{
-		$this->groupid = $groupid;
-		$this->utilCollector=$utilCollector;
+	public function __construct(
+		$groupid,
+		MiddlewareCollectorInterface $stack,
+		StrategyCollectorInterface $strategyCollector
+	){
+		$this->groupid=$groupid;
+		$this->stack=$stack;
+		$this->strategyCollector=$strategyCollector;
 	}
 
 	public function addMiddleware($middleware)
 	{
-		$this->utilCollector->group($this->groupid,'middleware',$middleware);
+		$this->stack->addGroup($this->groupid,$middleware);
 
 		return $this;
 	}
 
 	public function addStrategy($strategy)
 	{
-		$this->utilCollector->groupSingle($this->groupid,'strategy',$strategy);
+		$this->strategyCollector->addGroup($this->groupid,$strategy);
 
 		return $this;
 	}

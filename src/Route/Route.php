@@ -13,7 +13,8 @@
 
 namespace Gram\Route;
 
-use Gram\Route\Interfaces\UtilCollectorInterface;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 
 /**
  * Class Route
@@ -27,10 +28,7 @@ use Gram\Route\Interfaces\UtilCollectorInterface;
  */
 class Route
 {
-	public $path,$handle,$vars = [],$groupid=[],$routeid,$method;
-
-	/** @var UtilCollectorInterface */
-	private $utilCollector;
+	public $path,$handle,$vars = [],$stack,$strategyCollector,$groupid=[],$routeid,$method;
 
 	/**
 	 * Route constructor.
@@ -39,7 +37,8 @@ class Route
 	 * @param $method
 	 * @param $routegroupid
 	 * @param $routeid
-	 * @param UtilCollectorInterface $utilCollector
+	 * @param MiddlewareCollectorInterface $stack
+	 * @param StrategyCollectorInterface $strategyCollector
 	 */
 	public function __construct(
 		string $path,
@@ -47,14 +46,16 @@ class Route
 		$method,
 		$routegroupid,
 		$routeid,
-		UtilCollectorInterface $utilCollector
+		MiddlewareCollectorInterface $stack,
+		StrategyCollectorInterface $strategyCollector
 	){
 		$this->method=$method;	//speichere Method für Dispatcher
 		$this->path=$path;
 		$this->handle = $handle;
 		$this->groupid=$routegroupid;
 		$this->routeid=$routeid;
-		$this->utilCollector=$utilCollector;
+		$this->stack=$stack;
+		$this->strategyCollector=$strategyCollector;
 	}
 
 	/**
@@ -65,14 +66,14 @@ class Route
 	 */
 	public function addMiddleware($middleware)
 	{
-		$this->utilCollector->route($this->routeid,'middleware',$middleware);
+		$this->stack->addRoute($this->routeid,$middleware);
 
 		return $this;
 	}
 
 	public function addStrategy($strategy)
 	{
-		$this->utilCollector->routeSingle($this->routeid,'strategy',$strategy);
+		$this->strategyCollector->addRoute($this->routeid,$strategy);
 
 		return $this;
 	}

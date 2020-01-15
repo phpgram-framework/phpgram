@@ -13,11 +13,13 @@
 
 namespace Gram\Route;
 
-use Gram\Route\Collector\UtilCollector;
+use Gram\Route\Collector\MiddlewareCollector;
+use Gram\Route\Collector\StrategyCollector;
 use Gram\Route\Interfaces\CollectorInterface;
 use Gram\Route\Interfaces\DispatcherInterface;
 use Gram\Route\Interfaces\RouterInterface;
-use Gram\Route\Interfaces\UtilCollectorInterface;
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 
 /**
  * Class Router
@@ -44,10 +46,14 @@ class Router implements RouterInterface
 	/**
 	 * Router constructor.
 	 * @param array $options
-	 * @param UtilCollectorInterface|null $utilCollector
+	 * @param MiddlewareCollectorInterface|null $middlewareCollector
+	 * @param StrategyCollectorInterface|null $strategyCollector
 	 */
-	public function __construct($options=[], ?UtilCollectorInterface $utilCollector = null)
-	{
+	public function __construct(
+		$options=[],
+		?MiddlewareCollectorInterface $middlewareCollector = null,
+		?StrategyCollectorInterface $strategyCollector = null
+	){
 		//setze Standard Optionen
 		$options +=[
 			'slash_trim'=>true,
@@ -61,12 +67,14 @@ class Router implements RouterInterface
 
 		$this->slash_trim = $options['slash_trim'];
 
-		$utilCollector = $utilCollector ?? new UtilCollector();
+		$middlewareCollector = $middlewareCollector ?? new MiddlewareCollector();
+		$strategyCollector = $strategyCollector ?? new StrategyCollector();
 
 		//Erstelle den Collector, der wird auch für andere Klassen verfügbar sein
 		$this->collector= new $options['collector'](
 			new $options['generator'](new $options['parser']),
-			$utilCollector,
+			$middlewareCollector,
+			$strategyCollector,
 			$options['caching'],
 			$options['cache']
 		);
