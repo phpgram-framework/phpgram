@@ -19,7 +19,7 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 
 - Response Creation (via [Psr-17](https://www.php-fig.org/psr/psr-17/) Response Factory) and Strategies
 
-- **Supports Async Requests** with `Gram\Async\App\AsyncApp`
+- **Supports Async Requests**
 
 ## Install
 
