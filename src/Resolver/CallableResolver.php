@@ -13,9 +13,14 @@
 
 namespace Gram\Resolver;
 
-
 use Gram\Exceptions\CallableNotAllowedException;
 
+/**
+ * Class CallableResolver
+ * @package Gram\Resolver
+ *
+ * Führt ein Callable aus
+ */
 class CallableResolver implements ResolverInterface
 {
 	use ResolverTrait;

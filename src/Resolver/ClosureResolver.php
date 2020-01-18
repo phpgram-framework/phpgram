@@ -19,7 +19,7 @@ use Gram\Exceptions\CallableNotAllowedException;
  * Class CallbackHandler
  * @package Gram\Resolver
  *
- * Speichert ein Callable und gibt es wieder zurück
+ * Führt eine Closure aus
  */
 class ClosureResolver implements ResolverInterface
 {
