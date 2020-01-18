@@ -26,6 +26,15 @@ class GroupCountBased extends Dispatcher
 
 	/**
 	 * @inheritdoc
+	 *
+	 * Handler steht in seinem Array an der
+	 *
+	 * gleichen Stelle wie die Route in der Regexliste
+	 *
+	 * $handle= $handlerListe[Regex_Liste_Nummer][Platz_in_der_Regex]
+	 *
+	 * Platz in der Regex wird durch die Anzahl an matches bestimmt (die stimmt dank der Placeholder,
+	 * die der Generator erstellt, überein
 	 */
 	public function dispatchDynamic($uri, array $routes, array $handler)
 	{

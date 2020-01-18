@@ -42,16 +42,6 @@ interface DispatcherInterface
 	 *
 	 * Wenn die richtige Routeregex gefunden wird der Handler
 	 *
-	 * (
-	 * dieser steht in seinem Array an der
-	 *
-	 * gleichen Stelle wie die Route in der Regexliste
-	 *
-	 * $handle= $handlerListe[Regex_Liste_Nummer][Platz_in_der_Regex]
-	 *
-	 * Platz in der Regex wird durch die Anzahl an matches bestimmt (die stimmt dank der Placeholder, die der Generator erstellt, überein
-	 * )
-	 *
 	 * und die Matches zurück gegeben
 	 *
 	 * Sonst gebe Not_Found Fehler zurück
