@@ -156,6 +156,28 @@ App::app()->options("/function",function (){
 	return "Hello World";
 });
 ````
+- any Method
+
+````php
+<?php
+use Gram\App\App;
+
+App::app()->any("/function",function (){
+	return "Hello World";
+});
+````
+
+- self defined
+
+````php
+<?php
+use Gram\App\App;
+
+App::app()->add("/function",function (){
+	return "Hello World";
+}, ['get','post','put']);
+````
+
 ## Wildcard Routes
 
 - routes with variable values
