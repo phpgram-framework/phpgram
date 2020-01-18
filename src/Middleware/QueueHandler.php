@@ -96,6 +96,10 @@ class QueueHandler implements RequestHandlerInterface
 	 *
 	 * Standard ist der @see ResponseCreator
 	 *
+	 * Laufe "rekursiv" durch alle Middlewares durch
+	 *
+	 * Alle Middlewares rufen die Method @see handle() dieses Objekts (this) wieder auf.
+	 *
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface
 	 * @throws \Exception
@@ -108,22 +112,6 @@ class QueueHandler implements RequestHandlerInterface
 			return $this->last->handle($request);
 		}
 
-		return $this->executeMiddleware($request, $middleware);
-	}
-
-	/**
-	 * Laufe "rekursiv" durch alle Middlewares durch
-	 *
-	 * Alle Middlewares rufen die Method @see handle() dieses Objekts (this) wieder auf.
-	 *
-	 * @param ServerRequestInterface $request
-	 * @param $middleware
-	 * @return ResponseInterface
-	 * @throws MiddlewareNotAllowedException
-	 * @throws \Psr\Container\NotFoundExceptionInterface
-	 */
-	protected function executeMiddleware(ServerRequestInterface $request, $middleware):ResponseInterface
-	{
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
 		if ($this->container !== null && \is_string($middleware)) {
 			$middleware = $this->container->get($middleware);
