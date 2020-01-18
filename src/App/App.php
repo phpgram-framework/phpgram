@@ -11,11 +11,13 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.5.3 */
+/** @version 1.6.0 */
 
 namespace Gram\App;
 
+use Gram\Middleware\Queue\Queue;
 use Gram\Middleware\QueueHandler;
+use Gram\Middleware\Queue\QueueInterface;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
@@ -183,8 +185,6 @@ class App implements RequestHandlerInterface
 	{
 		$this->build();
 
-		$this->init();
-
 		$response = $this->handle($request);
 
 		$emitter = new Emitter();
@@ -201,6 +201,8 @@ class App implements RequestHandlerInterface
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
+		$request = $this->init($request);	//füge Std Middleware hinzu
+
 		try {
 			$response = $this->queueHandler->handle($request); //Starte den Stack und erstelle Response
 		} catch (\Exception $e) {
@@ -255,17 +257,24 @@ class App implements RequestHandlerInterface
 	 *
 	 * Füge dann die Routing Middleware dem Stack hinzu
 	 *
+	 * Packe dann die Queue in den Request
+	 *
+	 * @param ServerRequestInterface $request
+	 * @return ServerRequestInterface
 	 */
-	public function init()
+	public function init(ServerRequestInterface $request)
 	{
-		//Erstelle Middleware Stack
+		$queue = new Queue();
 
+		//Erstelle Middleware Stack
 		foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
-			$this->queueHandler->add($item);
+			$queue->add($item);
 		}
 
 		//füge Route in der mitte hinzu
-		$this->queueHandler->add($this->routeMiddleware);
+		$queue->add($this->routeMiddleware);
+
+		return $request->withAttribute(QueueInterface::class,$queue);
 	}
 
 	/**
@@ -273,21 +282,26 @@ class App implements RequestHandlerInterface
 	 *
 	 * wenn eine routeid und groupid gegeben sind für diese die Mw hinzufügen
 	 *
+	 * @param ServerRequestInterface $request
 	 * @param int|null $routeid
 	 * @param array|null $groupid
+	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
 	 */
-	public function buildStack(int $routeid=null, array $groupid = null)
+	public function buildStack(ServerRequestInterface $request, int $routeid=null, array $groupid = null)
 	{
 		if($routeid===null || $groupid===null){
 			return;
 		}
+
+		/** @var QueueInterface $queue */
+		$queue = $this->queueHandler->getQueue($request);
 
 		foreach ($groupid as $item) {
 			$grouMw=$this->middlewareCollector->getGroup($item);
 			//Füge Routegroup Mw hinzu
 			if ($grouMw!==null){
 				foreach ($grouMw as $item2) {
-					$this->queueHandler->add($item2);
+					$queue->add($item2);
 				}
 			}
 		}
@@ -296,7 +310,7 @@ class App implements RequestHandlerInterface
 		//Füge Route MW hinzu
 		if($routeMw!==null){
 			foreach ($routeMw as $item) {
-				$this->queueHandler->add($item);
+				$queue->add($item);
 			}
 		}
 	}

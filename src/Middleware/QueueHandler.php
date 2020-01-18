@@ -14,6 +14,7 @@
 namespace Gram\Middleware;
 
 use Gram\Exceptions\MiddlewareNotAllowedException;
+use Gram\Middleware\Queue\QueueInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,9 +33,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class QueueHandler implements RequestHandlerInterface
 {
-	/** @var array */
-	protected $stack = [];
-
 	/** @var RequestHandlerInterface */
 	protected $last;
 
@@ -50,11 +48,16 @@ class QueueHandler implements RequestHandlerInterface
 	/**
 	 * Füge eine Middleware hinzu
 	 *
+	 * @param ServerRequestInterface $request
 	 * @param $middleware
+	 * @throws MiddlewareNotAllowedException
 	 */
-	public function add($middleware)
+	public function add(ServerRequestInterface $request, $middleware)
 	{
-		$this->stack[] = $middleware;	//nach jedem durchlauf wird ein element vom stack genommen
+		/** @var QueueInterface $queue */
+		$queue = $this->getQueue($request);
+
+		$queue->add($middleware);
 	}
 
 	/**
@@ -65,6 +68,25 @@ class QueueHandler implements RequestHandlerInterface
 	public function getLast():RequestHandlerInterface
 	{
 		return $this->last;
+	}
+
+	/**
+	 * Gibt das Queue Object zurück
+	 *
+	 * @param ServerRequestInterface $request
+	 * @return QueueInterface
+	 * @throws MiddlewareNotAllowedException
+	 */
+	public function getQueue(ServerRequestInterface $request):QueueInterface
+	{
+		/** @var QueueInterface $queue */
+		$queue = $request->getAttribute(QueueInterface::class);
+
+		if($queue === null){
+			throw new MiddlewareNotAllowedException("No Queue Object found");
+		}
+
+		return $queue;
 	}
 
 	/**
@@ -80,13 +102,11 @@ class QueueHandler implements RequestHandlerInterface
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
-		//wenn es keine Middleware gibt gebe das Ergebnis des handlers aus der zuletzt getriggert werden soll
+		$middleware = $this->getQueue($request)->next();	//hole die nächste Middleware für den Request
 
-		if (\count($this->stack) === 0) {
+		if ($middleware === false) {
 			return $this->last->handle($request);
 		}
-
-		$middleware = \array_shift($this->stack);	//hole das oberste element und lösche es aus dem array
 
 		return $this->executeMiddleware($request, $middleware);
 	}

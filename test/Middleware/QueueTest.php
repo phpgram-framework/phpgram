@@ -1,7 +1,9 @@
 <?php
 namespace Gram\Test\Middleware;
 
+use Gram\Middleware\Queue\Queue;
 use Gram\Middleware\QueueHandler;
+use Gram\Middleware\Queue\QueueInterface;
 use Gram\Test\Middleware\DummyMw\CallableMw4;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
@@ -40,12 +42,19 @@ class QueueTest extends TestCase
 		$creator = new ServerRequestCreator($psr17,$psr17,$psr17,$psr17);
 
 		$this->request = $creator->fromGlobals();
+
+		$queue = new Queue();
+
+		$this->request = $this->request->withAttribute(QueueInterface::class,$queue);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
+	 */
 	private function addMwNormal()
 	{
 		foreach ($this->mws as $mw) {
-			$this->queueHandler->add($mw);
+			$this->queueHandler->add($this->request,$mw);
 		}
 	}
 
@@ -72,11 +81,10 @@ class QueueTest extends TestCase
 	{
 		$this->addMwNormal();
 
-		$this->queueHandler->add(new TestMw4Fail());
+		$this->queueHandler->add($this->request,new TestMw4Fail());
 
 		$this->expectException(\Exception::class);
-		$response = $this->queueHandler->handle($this->request);
-
+		$this->queueHandler->handle($this->request);
 	}
 
 	private function initContainer()
@@ -103,9 +111,9 @@ class QueueTest extends TestCase
 
 		$queue = new QueueHandler(new DummyLastHandler(),$psr11);
 
-		$queue->add('mw1');
-		$queue->add(TestMw2::class);
-		$queue->add(new TestMw3());
+		$queue->add($this->request,'mw1');
+		$queue->add($this->request,TestMw2::class);
+		$queue->add($this->request,new TestMw3());
 
 		$response = $queue->handle($this->request);
 
@@ -116,6 +124,9 @@ class QueueTest extends TestCase
 		self::assertEquals($expect,$string);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
+	 */
 	public function testQueueFailContainer()
 	{
 		$container = $this->initContainer();
@@ -128,11 +139,10 @@ class QueueTest extends TestCase
 
 		$queue = new QueueHandler(new DummyLastHandler(),$psr11);
 
-		$queue->add('mw1');
-		$queue->add(TestMw2::class);
-		$queue->add(new TestMw3());
-		$queue->add('Fail');
-
+		$queue->add($this->request,'mw1');
+		$queue->add($this->request,TestMw2::class);
+		$queue->add($this->request,new TestMw3());
+		$queue->add($this->request,'Fail');
 
 		try {
 			$response = $queue->handle($this->request);
@@ -173,9 +183,9 @@ class QueueTest extends TestCase
 			return $next->handle($request);
 		};
 
-		$queue->add($callableMw1);
-		$queue->add($callableMw2);
-		$queue->add(new CallableMw4());
+		$queue->add($this->request,$callableMw1);
+		$queue->add($this->request,$callableMw2);
+		$queue->add($this->request,new CallableMw4());
 
 		$response = $queue->handle($this->request);
 		$string = $response->getBody()->__toString();

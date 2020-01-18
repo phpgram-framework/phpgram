@@ -40,6 +40,9 @@ class RouteCollector implements CollectorInterface
 	protected $routeid=0,$routegroupid=0;
 	protected $caching,$cache;
 
+	/** @var array */
+	protected $data;
+
 	/** @var GeneratorInterface */
 	protected $generator;
 
@@ -119,23 +122,28 @@ class RouteCollector implements CollectorInterface
 
 	/**
 	 * @inheritdoc
+	 *
+	 * Speichert die Route Daten in Klassen Variable ab,
+	 * um für Async Requests die Werte nicht nochmal zu generieren
 	 */
 	public function getData():array
 	{
-		if($this->caching && file_exists($this->cache)){
-			return require $this->cache;
+		if(!isset($this->data)){
+			if($this->caching && file_exists($this->cache)){
+				return require $this->cache;
+			}
+
+			$this->data = $this->generator->generate($this->routes);
+
+			if($this->caching){
+				\file_put_contents(
+					$this->cache,
+					'<?php return ' . \var_export($this->data, true) . ';'
+				);
+			}
 		}
 
-		$data = $this->generator->generate($this->routes);
-
-		if($this->caching){
-			\file_put_contents(
-				$this->cache,
-				'<?php return ' . \var_export($data, true) . ';'
-			);
-		}
-
-		return $data;
+		return $this->data;
 	}
 
 	/**

@@ -14,7 +14,7 @@ class AsyncAppTest extends AbstractAppTest
 {
 	protected function getApp():App
 	{
-		return new AsyncAppTestInit();
+		return new AppTestInit();
 	}
 
 	protected function setUp(): void

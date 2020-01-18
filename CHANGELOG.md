@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# 1.6.x
+
+## 1.6.0
+
+- since 2020/01/20
+- Middleware werden nun in einem Queue Object gespeichert	
+	- dieses wird bei jedem Request erstellt
+- Async App entfernt, da die normale App somit auch Async Ready ist
+
 # 1.5.x
 
 ## 1.5.3

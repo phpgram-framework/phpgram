@@ -81,13 +81,13 @@ class RouteMwTest extends TestCase
 
 		$app->build();
 
-		$app->init();
-
 		$this->psr17 = new Psr17Factory();
 
 		$creator = new ServerRequestCreator($this->psr17,$this->psr17,$this->psr17,$this->psr17);
 
 		$this->request = $creator->fromGlobals();
+
+		$this->request = $app->init($this->request);
 	}
 
 	/**

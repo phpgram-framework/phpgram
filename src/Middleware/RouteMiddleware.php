@@ -68,36 +68,11 @@ class RouteMiddleware implements MiddlewareInterface
 		$this->app=$app;
 	}
 
-	/// macht den request (normales routing)
-
-	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-	{
-		[$request,$status,$handle] = $this->route($request);
-
-		//Bei Fehler, 404 oder 405
-		if($status!==200){
-			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
-		}
-
-		$routeid = $handle['routeid'];
-		$groupid = $handle['groupid'];
-
-		$this->app->buildStack($routeid,$groupid);
-
-		$strategy = $this->getStrategy($routeid,$groupid);
-
-		$request=$request->withAttribute('strategy',$strategy);
-
-		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
-	}
-
 	/**
-	 * Führt den Router aus
-	 *
-	 * @param ServerRequestInterface $request
-	 * @return array
+	 * @inheritdoc
+	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
 	 */
-	protected function route(ServerRequestInterface $request)
+	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
 		$uri = $request->getUri()->getPath();
 		$method = $request->getMethod();
@@ -110,7 +85,21 @@ class RouteMiddleware implements MiddlewareInterface
 			->withAttribute('status',$status)
 			->withAttribute('param',$param);
 
-		return [$request,$status,$handle];
+		//Bei Fehler, 404 oder 405
+		if($status!==200){
+			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
+		}
+
+		$routeid = $handle['routeid'];
+		$groupid = $handle['groupid'];
+
+		$this->app->buildStack($request,$routeid,$groupid);
+
+		$strategy = $this->getStrategy($routeid,$groupid);
+
+		$request = $request->withAttribute('strategy',$strategy);
+
+		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
 	}
 
 	/**
