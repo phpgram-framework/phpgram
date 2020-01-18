@@ -47,8 +47,8 @@ App::app()->set405("Er405@405"); //405 Handler
 
 //Middleware will be executed before the Router
 App::app()
-	->addMiddle(new Session())
-	->addMiddle(new Authenticate());
+	->addMiddleware(new Session())
+	->addMiddleware(new Authenticate());
 
 
 //Routes and Groups
