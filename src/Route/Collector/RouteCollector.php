@@ -38,7 +38,16 @@ class RouteCollector implements CollectorInterface
 
 	protected $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
 	protected $routeid=0,$routegroupid=0;
-	protected $generator,$caching,$cache,$stack,$strategyCollector;
+	protected $caching,$cache;
+
+	/** @var GeneratorInterface */
+	protected $generator;
+
+	/** @var MiddlewareCollectorInterface */
+	protected $stack;
+
+	/** @var StrategyCollectorInterface */
+	protected $strategyCollector;
 
 	/**
 	 * RouteCollector constructor.
@@ -137,31 +146,49 @@ class RouteCollector implements CollectorInterface
 		return $this->routes[$routeId] ?? null;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function get404()
 	{
 		return $this->er404;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function get405()
 	{
 		return $this->er405;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function setBase(string $base)
 	{
 		$this->basepath=$base;
 	}
 
-	public function getBase()
+	/**
+	 * @inheritdoc
+	 */
+	public function getBase():string
 	{
 		return $this->basepath;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function set404($handle)
 	{
 		$this->er404=$handle;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function set405($handle)
 	{
 		$this->er405=$handle;

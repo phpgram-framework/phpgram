@@ -28,47 +28,47 @@ trait RouteCollectorTrait
 
 	abstract public function group($prefix,callable $groupcollector):RouteGroup;
 
-	public function get(string $route,$handler)
+	public function get(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['GET']);
 	}
 
-	public function post(string $route,$handler)
+	public function post(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['POST']);
 	}
 
-	public function getpost(string $route,$handler)
+	public function getpost(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['GET','POST']);
 	}
 
-	public function delete(string $route,$handler)
+	public function delete(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['DELETE']);
 	}
 
-	public function put(string $route,$handler)
+	public function put(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['PUT']);
 	}
 
-	public function patch(string $route,$handler)
+	public function patch(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['PATCH']);
 	}
 
-	public function head(string $route,$handler)
+	public function head(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['HEAD']);
 	}
 
-	public function options(string $route,$handler)
+	public function options(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['OPTIONS']);
 	}
 
-	public function any(string $route,$handler)
+	public function any(string $route,$handler):Route
 	{
 		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','HEAD','OPTIONS']);
 	}

@@ -24,7 +24,14 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class RouteGroup
 {
-	private $groupid,$stack,$strategyCollector;
+	/** @var array */
+	private $groupid;
+
+	/** @var MiddlewareCollectorInterface */
+	private $stack;
+
+	/** @var StrategyCollectorInterface */
+	private $strategyCollector;
 
 	/**
 	 * RouteGroup constructor.

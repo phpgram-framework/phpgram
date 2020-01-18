@@ -67,14 +67,11 @@ class Router implements RouterInterface
 
 		$this->slash_trim = $options['slash_trim'];
 
-		$middlewareCollector = $middlewareCollector ?? new MiddlewareCollector();
-		$strategyCollector = $strategyCollector ?? new StrategyCollector();
-
 		//Erstelle den Collector, der wird auch für andere Klassen verfügbar sein
 		$this->collector= new $options['collector'](
 			new $options['generator'](new $options['parser']),
-			$middlewareCollector,
-			$strategyCollector,
+			$middlewareCollector ?? new MiddlewareCollector(),
+			$strategyCollector ?? new StrategyCollector(),
 			$options['caching'],
 			$options['cache']
 		);

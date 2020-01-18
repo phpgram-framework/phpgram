@@ -74,16 +74,100 @@ interface CollectorInterface
 	 */
 	public function getRoute(int $routeId):Route;
 
+	/**
+	 * Gebe den 404 Handler zurück
+	 *
+	 * @return mixed
+	 */
 	public function get404();
+
+	/**
+	 * Gebe den 405 Handler zurück
+	 *
+	 * @return mixed
+	 */
 	public function get405();
+
+	/**
+	 * Setze den 404 Handler
+	 *
+	 * @param $handle
+	 */
 	public function set404($handle);
+
+	/**
+	 * Setze den 405 Handler
+	 *
+	 * @param $handle
+	 */
 	public function set405($handle);
-	public function get(string $route,$handler);
-	public function post(string $route,$handler);
-	public function getpost(string $route,$handler);
-	public function delete(string $route,$handler);
-	public function put(string $route,$handler);
-	public function patch(string $route,$handler);
+
+	/**
+	 * Füge eine GET Route hinzu
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function get(string $route,$handler):Route;
+
+	/**
+	 * Füge eine POST Route hinzu
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function post(string $route,$handler):Route;
+
+	/**
+	 * Füge eine Route hinzu die GET und POST sein kann
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function getpost(string $route,$handler):Route;
+
+	/**
+	 * Füge eine DELETE Route hinzu
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function delete(string $route,$handler):Route;
+
+	/**
+	 * Füge eine PUT Route hinzu
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function put(string $route,$handler):Route;
+
+	/**
+	 * Füge eine PATCH Route hinzu
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function patch(string $route,$handler):Route;
+
+	/**
+	 * Setze den Base Path der vor jeder Route hinzugefügt wird
+	 *
+	 * @param string $base
+	 * @return mixed
+	 */
 	public function setBase(string $base);
-	public function getBase();
+
+	/**
+	 * Gebe den basepath wieder zurück
+	 *
+	 * @return string
+	 */
+	public function getBase():string;
 }

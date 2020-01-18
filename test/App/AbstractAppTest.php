@@ -42,7 +42,7 @@ abstract class AbstractAppTest extends TestCase
 		$this->routes = $this->map->map();
 		$this->routehandler = $this->map->realHandler();
 
-		$this->app->addMiddle(new TestMw1());
+		$this->app->addMiddleware(new TestMw1());
 
 		$this->initRoutes();
 

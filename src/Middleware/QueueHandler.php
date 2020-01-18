@@ -47,12 +47,22 @@ class QueueHandler implements RequestHandlerInterface
 		$this->container = $container;
 	}
 
+	/**
+	 * Füge eine Middleware hinzu
+	 *
+	 * @param $middleware
+	 */
 	public function add($middleware)
 	{
 		$this->stack[] = $middleware;	//nach jedem durchlauf wird ein element vom stack genommen
 	}
 
-	public function getLast()
+	/**
+	 * Gebe den Last Handler zurück
+	 *
+	 * @return RequestHandlerInterface
+	 */
+	public function getLast():RequestHandlerInterface
 	{
 		return $this->last;
 	}
@@ -90,15 +100,12 @@ class QueueHandler implements RequestHandlerInterface
 	 * @param $middleware
 	 * @return ResponseInterface
 	 * @throws MiddlewareNotAllowedException
+	 * @throws \Psr\Container\NotFoundExceptionInterface
 	 */
 	protected function executeMiddleware(ServerRequestInterface $request, $middleware):ResponseInterface
 	{
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
 		if ($this->container !== null && \is_string($middleware)) {
-			if ($this->container->has($middleware) === false) {
-				throw new MiddlewareNotAllowedException("Middleware: [$middleware] not found");
-			}
-
 			$middleware = $this->container->get($middleware);
 		}
 

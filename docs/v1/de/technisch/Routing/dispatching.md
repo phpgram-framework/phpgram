@@ -6,7 +6,7 @@
 
 - Für die dynamic Routes können unterschiedliche Dispatcher genutzt werden
 
-- hier wird der Group Count Based Dispatcher von [FastRoute](http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html) verwendet
+- hier wird der Mark Based Dispatcher von [FastRoute](http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html) verwendet
 
 ````php
 <?php

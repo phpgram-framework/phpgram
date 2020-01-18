@@ -39,16 +39,16 @@ class ResolverCreator implements ResolverCreatorInterface
 	 */
 	public function createResolver($possibleCallable)
 	{
-		if(\is_object($possibleCallable) && $possibleCallable instanceof HandlerInterface){
+		if(\is_string($possibleCallable)) {
+			return $this->createCallbackForClass($possibleCallable);
+		}
+
+		if($possibleCallable instanceof HandlerInterface){
 			return $this->createHandlerCallback($possibleCallable);
 		}
 
 		if($possibleCallable instanceof \Closure){
 			return $this->createCallbackFromClosure($possibleCallable);
-		}
-
-		if(\is_string($possibleCallable)) {
-			return $this->createCallbackForClass($possibleCallable);
 		}
 
 		if(\is_callable($possibleCallable)) {

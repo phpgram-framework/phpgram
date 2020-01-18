@@ -450,11 +450,17 @@ class App implements RequestHandlerInterface
 
 	//Routes
 
+	/**
+	 * @inheritdoc
+	 */
 	public function add(string $path,$handler,array $method):Route
 	{
 		return $this->getRouter()->getCollector()->add($path,$handler,$method);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function group($prefix,callable $groupcollector):RouteGroup
 	{
 		return $this->getRouter()->getCollector()->group($prefix,$groupcollector);
@@ -490,7 +496,7 @@ class App implements RequestHandlerInterface
 	 * @param $middleware
 	 * @return $this
 	 */
-	public function addMiddle($middleware)
+	public function addMiddleware($middleware)
 	{
 		$this->getMWCollector()->addStd($middleware);
 		return $this;

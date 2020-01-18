@@ -58,6 +58,13 @@ Als Standard gibt es:
 
 	- wird für spezielle Middleware Handler verwendet (siehe [ResolverCreator](../ResolverCreator/index.md))
 	
+- Callable Resolver
+
+	- führt ein Callable (Klassen mit der Method __invoke() functions) aus
+	
+	- das Callable muss Request, Response, und die Routeparameter annehmen
+	
+	- Wenn Response verändert werden soll muss der Response zurück gegeben werden
 
 ## Anpassung
 

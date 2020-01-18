@@ -3,6 +3,7 @@
 # 1.5.x
 
 ## 1.5.3
+
 - since 
 - Routing Middleware:
 	- Bereiche mit Methods aufgeteilt, damit die Async Mw nicht alles doppelt machen muss
@@ -10,6 +11,8 @@
 	- bei 405 bzw. 404 werden doppelte Http Methods nur noch einmal durchsucht
 - QueueHandler unterstüzt nun auch callable Middleware
 - Strategy Trait: createBody() Method nimmt jetzt eine Referenz des content entgegen
+- Interfaces angepasst
+- adMiddle() zu addMiddleware() umbenannt
 
 ## 1.5.2
 - since 2020/01/13
