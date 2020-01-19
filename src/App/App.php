@@ -383,6 +383,19 @@ class App implements RequestHandlerInterface
 	}
 
 	/**
+	 * Bestimmt welches Queue object bei jedem Request erzeugt werden soll
+	 *
+	 * Class name muss angegeben werden, da die Klasse, bei jedem Request,
+	 * immer ein neues Object erzeugen muss
+	 *
+	 * @param string $queueClass
+	 */
+	public function setQueueClass(string $queueClass)
+	{
+		$this->queueClass = $queueClass;
+	}
+
+	/**
 	 * Setzt die RouteMiddleware
 	 *
 	 * Standard: @see RouteMiddleware
@@ -430,19 +443,6 @@ class App implements RequestHandlerInterface
 	public function setRouterOptions(array $options=[])
 	{
 		$this->router_options=$options;
-	}
-
-	/**
-	 * Bestimmt welches Queue object bei jedem Request erzeugt werden soll
-	 *
-	 * Class name muss angegeben werden, da die Klasse, bei jedem Request,
-	 * immer ein neues Object erzeugen muss
-	 *
-	 * @param string $queueClass
-	 */
-	public function setQueueClass(string $queueClass)
-	{
-		$this->queueClass = $queueClass;
 	}
 
 	/**
