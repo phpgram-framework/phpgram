@@ -97,6 +97,7 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
+		//speichern in class var, für async requests, damit die routes nur einmal generiert werden
 		if(!isset($this->data)) {
 			$this->data = $this->collector->getData();
 		}
