@@ -18,6 +18,8 @@ namespace Gram\App;
 use Gram\Middleware\Queue\Queue;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Queue\QueueInterface;
+use Gram\Middleware\ResponseCreator;
+use Gram\Middleware\RouteMiddleware;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
@@ -49,7 +51,7 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $router_options=[], $raw_options = [], $debug_mode = 0;
+	protected $router_options=[], $debug_mode = 0;
 
 	/** @var StrategyInterface */
 	protected $stdStrategy;
@@ -80,6 +82,13 @@ class App implements RequestHandlerInterface
 
 	/** @var StrategyCollectorInterface */
 	protected $strategyCollector;
+
+	/**
+	 * @var string
+	 *
+	 * Welche Queue erstellt werden soll bei jedem Request
+	 */
+	protected $queueClass = Queue::class;
 
 	/** @var self */
 	private static $_instance;
@@ -148,26 +157,16 @@ class App implements RequestHandlerInterface
 	 */
 	public function getResponseCreator()
 	{
-		if (isset($this->responseCreator)) {
-			return $this->responseCreator;
+		if (!isset($this->responseCreator)) {
+			//Wird am Ende ausgeführt um den Response zu erstellen
+			//erhält Factory um Response zu erstellen
+			$this->responseCreator = $this->responseCreator ?? new ResponseCreator (
+					$this->responseFactory,
+					$this->resolverCreator ?? new ResolverCreator(),
+					$this->stdStrategy ?? new StdAppStrategy(),
+					$this->container
+				);
 		}
-
-		$this->raw_options +=[
-			'response_creator'=>'Gram\\Middleware\\ResponseCreator'
-		];
-
-		//setze Standard Objekte
-		$resolverCreator = $this->resolverCreator ?? new ResolverCreator();
-		$stdStrategy= $this->stdStrategy ?? new StdAppStrategy();
-
-		//Wird am Ende ausgeführt um den Response zu erstellen
-		//erhält Factory um Response zu erstellen
-		$this->responseCreator = $this->responseCreator ?? new $this->raw_options['response_creator'] (
-				$this->responseFactory,
-				$resolverCreator,
-				$stdStrategy,
-				$this->container
-			);
 
 		return $this->responseCreator;
 	}
@@ -232,18 +231,12 @@ class App implements RequestHandlerInterface
 	 */
 	public function build()
 	{
-		//setze Default Raw Options
-		$this->raw_options +=[
-			'queue_handler'=>'Gram\\Middleware\\QueueHandler',
-			'routeMw'=>'Gram\\Middleware\\RouteMiddleware'
-		];
-
-		$this->queueHandler = $this->queueHandler ?? new $this->raw_options['queue_handler'](
+		$this->queueHandler = $this->queueHandler ?? new QueueHandler(
 			$this->getResponseCreator(), //default Fallback
 			$this->container
 			);
 
-		$this->routeMiddleware = $this->routeMiddleware ?? new $this->raw_options['routeMw'](
+		$this->routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
 				$this->getRouter(),		//router für den request
 				new NotFoundHandler($this->getResponseCreator()),	//error handler
 				$this,
@@ -259,12 +252,15 @@ class App implements RequestHandlerInterface
 	 *
 	 * Packe dann die Queue in den Request
 	 *
+	 * @see build() muss vorher ausgeführt sein!
+	 *
 	 * @param ServerRequestInterface $request
 	 * @return ServerRequestInterface
 	 */
 	public function init(ServerRequestInterface $request)
 	{
-		$queue = new Queue();
+		/** @var QueueInterface $queue */
+		$queue = new $this->queueClass;
 
 		//Erstelle Middleware Stack
 		foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
@@ -437,6 +433,19 @@ class App implements RequestHandlerInterface
 	}
 
 	/**
+	 * Bestimmt welches Queue object bei jedem Request erzeugt werden soll
+	 *
+	 * Class name muss angegeben werden, da die Klasse, bei jedem Request,
+	 * immer ein neues Object erzeugen muss
+	 *
+	 * @param string $queueClass
+	 */
+	public function setQueueClass(string $queueClass)
+	{
+		$this->queueClass = $queueClass;
+	}
+
+	/**
 	 * Entscheidet wie mit Exceptions verfahren werden soll:
 	 *
 	 * 0 = Exception vollständig ausgeben (für dev)
@@ -448,18 +457,6 @@ class App implements RequestHandlerInterface
 	public function debugMode($type = 0)
 	{
 		$this->debug_mode = $type;
-	}
-
-	/**
-	 * Setze die Klassen die in @see build() erstellt werden sollen
-	 *
-	 * Kann auch durch bereits bestehende Objects überschrieben werden
-	 *
-	 * @param array $options
-	 */
-	public function setRawOptions(array $options=[])
-	{
-		$this->raw_options = $options;
 	}
 
 	//Routes

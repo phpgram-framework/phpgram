@@ -44,13 +44,20 @@ class Router implements RouterInterface
 	private $dispatcher;
 
 	/**
+	 * @var array
+	 *
+	 * generated route data
+	 */
+	private $data;
+
+	/**
 	 * Router constructor.
 	 * @param array $options
 	 * @param MiddlewareCollectorInterface|null $middlewareCollector
 	 * @param StrategyCollectorInterface|null $strategyCollector
 	 */
 	public function __construct(
-		$options=[],
+		$options = [],
 		?MiddlewareCollectorInterface $middlewareCollector = null,
 		?StrategyCollectorInterface $strategyCollector = null
 	){
@@ -90,11 +97,23 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		$response = $this->dispatcher->dispatch($httpMethod,$uri,$this->collector->getData());
+		if(!isset($this->data)) {
+			$this->data = $this->collector->getData();
+		}
+
+		$response = $this->dispatcher->dispatch($httpMethod,$uri,$this->data);
 
 		return $this->getHandle($response);
 	}
 
+	/**
+	 * Gibt den Handle der Route zurück
+	 *
+	 * bei 404 oder 405 den jeweiligen Handle
+	 *
+	 * @param array $response
+	 * @return array
+	 */
 	protected function getHandle(array $response)
 	{
 		if($response[0]===DispatcherInterface::FOUND) {

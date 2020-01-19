@@ -40,9 +40,6 @@ class RouteCollector implements CollectorInterface
 	protected $routeid=0,$routegroupid=0;
 	protected $caching,$cache;
 
-	/** @var array */
-	protected $data;
-
 	/** @var GeneratorInterface */
 	protected $generator;
 
@@ -101,49 +98,44 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function group($prefix,callable $groupcollector):RouteGroup
+	public function group($prefix,callable $groupCollector):RouteGroup
 	{
 		$pre = $this->prefix;
-		$oldgroupids=$this->routegroupsids;	//Alle Gruppen in der die Route drin ist
+		$oldGroupIds = $this->routegroupsids;	//Alle Gruppen in der die Route drin ist
 
 		$this->prefix.=$prefix;
 		++$this->routegroupid;
-		$this->routegroupsids[]=$this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
+		$this->routegroupsids[] = $this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
 
 		$group = new RouteGroup($this->routegroupid,$this->stack,$this->strategyCollector);
 
-		\call_user_func($groupcollector);
+		\call_user_func($groupCollector);
 
 		$this->prefix=$pre;
-		$this->routegroupsids=$oldgroupids;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
+		$this->routegroupsids=$oldGroupIds;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
 
 		return $group;
 	}
 
 	/**
 	 * @inheritdoc
-	 *
-	 * Speichert die Route Daten in Klassen Variable ab,
-	 * um für Async Requests die Werte nicht nochmal zu generieren
 	 */
 	public function getData():array
 	{
-		if(!isset($this->data)){
-			if($this->caching && file_exists($this->cache)){
-				return require $this->cache;
-			}
-
-			$this->data = $this->generator->generate($this->routes);
-
-			if($this->caching){
-				\file_put_contents(
-					$this->cache,
-					'<?php return ' . \var_export($this->data, true) . ';'
-				);
-			}
+		if($this->caching && file_exists($this->cache)){
+			return require $this->cache;
 		}
 
-		return $this->data;
+		$data = $this->generator->generate($this->routes);
+
+		if($this->caching) {
+			\file_put_contents(
+				$this->cache,
+				'<?php return ' . \var_export($data, true) . ';'
+			);
+		}
+
+		return $data;
 	}
 
 	/**

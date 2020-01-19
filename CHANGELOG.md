@@ -4,10 +4,11 @@
 
 ## 1.6.0
 
-- since 2020/01/20
+- since 
 - Middleware werden nun in einem Queue Object gespeichert	
 	- dieses wird bei jedem Request erstellt
 - Async App entfernt, da die normale App somit auch Async Ready ist
+- rawOptions in der App Class entfernt
 
 # 1.5.x
 
