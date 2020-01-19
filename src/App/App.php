@@ -311,15 +311,6 @@ class App implements RequestHandlerInterface
 		}
 	}
 
-	public static function app()
-	{
-		if(!isset(self::$_instance)) {
-			self::$_instance = new self();
-		}
-
-		return self::$_instance;
-	}
-
 	//Optionen
 
 	/**
@@ -339,9 +330,9 @@ class App implements RequestHandlerInterface
 	 *
 	 * Wenn keine gesetzt: @see StdAppStrategy
 	 *
-	 * @param StrategyInterface|null $stdStrategy
+	 * @param StrategyInterface $stdStrategy
 	 */
-	public function setStrategy(StrategyInterface $stdStrategy=null)
+	public function setStrategy(StrategyInterface $stdStrategy)
 	{
 		$this->stdStrategy=$stdStrategy;
 	}
@@ -351,9 +342,9 @@ class App implements RequestHandlerInterface
 	 *
 	 * Wenn keiner gesetzt: @see ResolverCreator
 	 *
-	 * @param ResolverCreatorInterface|null $creator
+	 * @param ResolverCreatorInterface $creator
 	 */
-	public function setResolverCreator(ResolverCreatorInterface $creator=null)
+	public function setResolverCreator(ResolverCreatorInterface $creator)
 	{
 		$this->resolverCreator=$creator;
 	}
@@ -363,9 +354,9 @@ class App implements RequestHandlerInterface
 	 *
 	 * Standard: @see ResponseCreator
 	 *
-	 * @param RequestHandlerInterface|null $responseCreator
+	 * @param RequestHandlerInterface $responseCreator
 	 */
-	public function setLastHandler(RequestHandlerInterface $responseCreator=null)
+	public function setLastHandler(RequestHandlerInterface $responseCreator)
 	{
 		$this->responseCreator = $responseCreator;
 	}
@@ -375,9 +366,9 @@ class App implements RequestHandlerInterface
 	 *
 	 * Standard: @see QueueHandler
 	 *
-	 * @param RequestHandlerInterface|null $queueHandler
+	 * @param RequestHandlerInterface $queueHandler
 	 */
-	public function setQueueHandler(RequestHandlerInterface $queueHandler=null)
+	public function setQueueHandler(RequestHandlerInterface $queueHandler)
 	{
 		$this->queueHandler = $queueHandler;
 	}
@@ -410,9 +401,9 @@ class App implements RequestHandlerInterface
 	/**
 	 * Setzt den Psr 11 Container
 	 *
-	 * @param ContainerInterface|null $container
+	 * @param ContainerInterface $container
 	 */
-	public function setContainer(ContainerInterface $container=null)
+	public function setContainer(ContainerInterface $container)
 	{
 		$this->container = $container;
 	}
@@ -511,5 +502,19 @@ class App implements RequestHandlerInterface
 	{
 		$this->getMWCollector()->addStd($middleware);
 		return $this;
+	}
+
+	/**
+	 * App wird als Singleton aufgerufen
+	 *
+	 * @return App
+	 */
+	public static function app()
+	{
+		if(!isset(self::$_instance)) {
+			self::$_instance = new self();
+		}
+
+		return self::$_instance;
 	}
 }
