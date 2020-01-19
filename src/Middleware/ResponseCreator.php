@@ -87,10 +87,6 @@ final class ResponseCreator implements RequestHandlerInterface
 
 		if ($strategy !== null) {
 			if ($this->container !== null && \is_string($strategy)) {
-				if ($this->container->has($strategy) === false) {
-					throw new StrategyNotAllowedException("Strategy: [$strategy] not found");
-				}
-
 				$strategy = $this->container->get($strategy);
 			}
 
