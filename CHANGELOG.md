@@ -9,6 +9,10 @@
 	- dieses wird bei jedem Request erstellt
 - Async App entfernt, da die normale App somit auch Async Ready ist
 - rawOptions in der App Class entfernt
+- Debug Mode nur noch auf true oder false setzen:
+	- bei true -> render exception
+	- bei false -> nur Response mit 500 zurück geben
+- Bei 404 bzw. 405 wird nun der richtige Statuscode bei Exceptions ausgegeben, sollte kein Handler gesetzt sein
 
 # 1.5.x
 

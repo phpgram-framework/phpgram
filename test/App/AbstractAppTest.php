@@ -130,24 +130,9 @@ abstract class AbstractAppTest extends TestCase
 		self::assertEquals(500,$status);
 	}
 
-	public function testWithoutException()
-	{
-		$this->app->debugMode(1);
-
-		$this->initWithException();
-
-		$response = $this->app->handle($this->request);
-
-		$body = $response->getBody()->__toString();
-		$status = $response->getStatusCode();
-
-		self::assertEquals("<h1>Application Error</h1>",$body);
-		self::assertEquals(500,$status);
-	}
-
 	public function testNoException()
 	{
-		$this->app->debugMode(2);
+		$this->app->debugMode(false);
 
 		$this->initWithException();
 
@@ -159,5 +144,29 @@ abstract class AbstractAppTest extends TestCase
 
 		self::assertEquals("",$body);
 		self::assertEquals(500,$status);
+	}
+
+	public function testNotFoundException()
+	{
+		$uri = $this->psr17->createUri('https://jo.com/notFound');
+
+		$this->request = $this->request->withUri($uri);
+
+		$response = $this->app->handle($this->request);
+
+		$status = $response->getStatusCode();
+		self::assertEquals(404,$status);
+	}
+
+	public function testNotAllowedException()
+	{
+		$uri = $this->psr17->createUri('https://jo.com/exception');
+
+		$this->request = $this->request->withUri($uri)->withMethod('POST');
+
+		$response = $this->app->handle($this->request);
+
+		$status = $response->getStatusCode();
+		self::assertEquals(405,$status);
 	}
 }

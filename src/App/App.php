@@ -51,7 +51,7 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $router_options=[], $debug_mode = 0;
+	protected $router_options=[], $debug_mode = true;
 
 	/** @var StrategyInterface */
 	protected $stdStrategy;
@@ -205,15 +205,21 @@ class App implements RequestHandlerInterface
 		try {
 			$response = $this->queueHandler->handle($request); //Starte den Stack und erstelle Response
 		} catch (\Exception $e) {
-			if($this->debug_mode === 0) {
+			if($this->debug_mode === true) {
 				$content = "<h1>Application Error</h1> <pre>".$e."</pre>";
-			}elseif ($this->debug_mode === 1){
-				$content = "<h1>Application Error</h1>";
 			}else{
 				$content = "";
 			}
 
-			$response = $this->responseFactory->createResponse(500);
+			if($e instanceof \Gram\Exceptions\PageNotFoundException) {
+				$status = 404;
+			} elseif ($e instanceof \Gram\Exceptions\PageNotAllowedException) {
+				$status = 405;
+			} else {
+				$status = 500;
+			}
+
+			$response = $this->responseFactory->createResponse($status);
 
 			$response->getBody()->write($content);
 		}
@@ -433,19 +439,18 @@ class App implements RequestHandlerInterface
 	 */
 	public function setRouterOptions(array $options=[])
 	{
-		$this->router_options=$options;
+		$this->router_options = $options;
 	}
 
 	/**
 	 * Entscheidet wie mit Exceptions verfahren werden soll:
 	 *
-	 * 0 = Exception vollständig ausgeben (für dev)
-	 * 1 = Nur Anzeigen, dass es einen Error gab, keine Exception ausgeben
-	 * 2 = Nur Status 500 ausgeben
+	 * true = Exception wird angezeigt
+	 * false = ein leerer Response mit 500 wird ausgegeben
 	 *
-	 * @param int $type
+	 * @param bool $type
 	 */
-	public function debugMode($type = 0)
+	public function debugMode(bool $type = true)
 	{
 		$this->debug_mode = $type;
 	}
@@ -470,11 +475,23 @@ class App implements RequestHandlerInterface
 
 	//Spezielle Routes
 
+	/**
+	 * Setze den Handler für 404
+	 *
+	 * Wenn kein handler angegeben wird eine Exception geworfen
+	 *
+	 * @param $handle
+	 */
 	public function set404($handle)
 	{
 		$this->getRouter()->getCollector()->set404($handle);
 	}
 
+	/**
+	 *
+	 *
+	 * @param $handle
+	 */
 	public function set405($handle)
 	{
 		$this->getRouter()->getCollector()->set405($handle);
