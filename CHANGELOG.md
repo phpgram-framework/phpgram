@@ -13,6 +13,7 @@
 	- bei true -> render exception
 	- bei false -> nur Response mit 500 zurück geben
 - Bei 404 bzw. 405 wird nun der richtige Statuscode bei Exceptions ausgegeben, sollte kein Handler gesetzt sein
+- Dispatcher und Generatoren arbeiten nun mit array reference
 
 # 1.5.x
 

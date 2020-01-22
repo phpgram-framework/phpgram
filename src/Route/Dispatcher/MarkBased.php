@@ -26,7 +26,7 @@ class MarkBased extends Dispatcher
 	/**
 	 * @inheritdoc
 	 */
-	public function dispatchDynamic($uri, array $routes, array $handler)
+	public function dispatchDynamic($uri, array &$routes, array &$handler)
 	{
 		//durchlaufe die Regexlisten
 		//$i = welche Regexliste

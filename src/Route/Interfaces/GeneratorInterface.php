@@ -28,7 +28,7 @@ interface GeneratorInterface
 	 * @param array $routes
 	 * @return array
 	 */
-	public function generate(array $routes):array;
+	public function generate(array &$routes):array;
 
 	/**
 	 * Generiert die Route map für die Dynamic Routes
@@ -36,5 +36,5 @@ interface GeneratorInterface
 	 * @param array $routes
 	 * @return array
 	 */
-	public function generateDynamic(array $routes):array;
+	public function generateDynamic(array &$routes):array;
 }

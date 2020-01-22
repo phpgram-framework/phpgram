@@ -36,7 +36,7 @@ class GroupCountBased extends Dispatcher
 	 * Platz in der Regex wird durch die Anzahl an matches bestimmt (die stimmt dank der Placeholder,
 	 * die der Generator erstellt, überein
 	 */
-	public function dispatchDynamic($uri, array $routes, array $handler)
+	public function dispatchDynamic($uri, array &$routes, array &$handler)
 	{
 		//durchlaufe die Regexlisten
 		//$i = welche Regexliste
