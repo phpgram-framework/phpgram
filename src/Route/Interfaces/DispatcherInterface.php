@@ -35,7 +35,7 @@ interface DispatcherInterface
 	 * @param array $routes
 	 * @return array
 	 */
-	public function dispatch($method,$uri, array &$routes);
+	public function dispatch($method,$uri, array $routes=[]);
 
 	/**
 	 * Suche jede Gruppenregex ab
@@ -52,5 +52,5 @@ interface DispatcherInterface
 	 * @param array $handler
 	 * @return array
 	 */
-	public function dispatchDynamic($uri, array &$routes,array &$handler);
+	public function dispatchDynamic($uri, array $routes,array $handler);
 }

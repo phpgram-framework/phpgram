@@ -28,7 +28,7 @@ abstract class Dispatcher implements DispatcherInterface
 	 *
 	 * Sucht auch noch die Http Method für 405
 	 */
-	public function dispatch($method,$uri, array &$routes)
+	public function dispatch($method,$uri, array $routes=[])
 	{
 		$response = $this->doDispatch($method,$uri,$routes);
 
@@ -67,7 +67,7 @@ abstract class Dispatcher implements DispatcherInterface
 	 * @param array $routes
 	 * @return array
 	 */
-	protected function doDispatch($method,$uri, array &$routes)
+	protected function doDispatch($method,$uri, array $routes=[])
 	{
 		if(isset($routes['static'][$method][$uri])){
 			return [self::FOUND,$routes['static'][$method][$uri],[]];

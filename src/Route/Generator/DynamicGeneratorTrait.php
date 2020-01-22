@@ -37,7 +37,7 @@ trait DynamicGeneratorTrait
 	 * @param $method
 	 * @return mixed
 	 */
-	abstract protected function chunkRoutes(array &$chunk,$method);
+	abstract protected function chunkRoutes(array $chunk,$method);
 
 	/**
 	 * @inheritdoc
@@ -56,7 +56,7 @@ trait DynamicGeneratorTrait
 	 * @return array
 	 * Gebe Route und Handlerliste zurück
 	 */
-	public function generateDynamic(array &$routes):array
+	public function generateDynamic(array $routes):array
 	{
 		foreach ($routes as $method=>$route) {
 			$chunkSize=$this->generateChunkSize(\count($route),$this->getChunkSize());	//passe die chunk größe an

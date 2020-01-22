@@ -40,7 +40,7 @@ class MarkBased extends Generator
 	 *
 	 * Sortiert die Routes nach Marks
 	 */
-	protected function chunkRoutes(array &$chunk,$method)
+	protected function chunkRoutes(array $chunk,$method)
 	{
 		$markName = 'a';
 		$routeCollector = [];
