@@ -20,6 +20,8 @@ use Gram\Exceptions\CallableNotAllowedException;
  * @package Gram\Resolver
  *
  * Führt ein Callable aus
+ *
+ * Wenn Response verändert werden soll muss dieser zurück gegeben werden
  */
 class CallableResolver implements ResolverInterface
 {
@@ -31,7 +33,7 @@ class CallableResolver implements ResolverInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function resolve($param = [])
+	public function resolve(array $param)
 	{
 		$return = \call_user_func_array($this->callable,[$this->request,$this->response,$param]);
 
@@ -39,10 +41,8 @@ class CallableResolver implements ResolverInterface
 	}
 
 	/**
-	 * Erstellt das Callback
+	 * @inheritdoc
 	 *
-	 * @param callable|null $callable
-	 * @return void
 	 * @throws CallableNotAllowedException
 	 */
 	public function set(callable $callable=null): void

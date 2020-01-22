@@ -33,7 +33,7 @@ interface ResolverInterface
 	 * @param array $param
 	 * @return mixed
 	 */
-	public function resolve($param=[]);
+	public function resolve(array $param);
 
 	/**
 	 * Erstellt das Callback

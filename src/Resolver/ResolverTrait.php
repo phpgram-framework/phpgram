@@ -22,6 +22,8 @@ use Psr\Http\Message\ServerRequestInterface;
  * @package Gram\Resolver
  *
  * Ein Trait, das die Getter und Setter für alle Resolver implementiert
+ *
+ * Variables sind public, da Closure sonst nicht darauf zugreifen kann
  */
 trait ResolverTrait
 {

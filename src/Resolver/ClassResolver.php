@@ -21,7 +21,7 @@ use Gram\Middleware\Classes\ClassInterface;
  * Class ControllerHandler
  * @package Gram\Resolver
  *
- * Konvertiert folgendes Muster: Controller@function zu class= Controller Function = function
+ * Konvertiert folgendes Muster: Class@function zu class = Class Function = function
  *
  * Erstellt dann den Handler mit dem ClassHandler
  */
@@ -42,7 +42,7 @@ class ClassResolver implements ResolverInterface
 	 * @return mixed|string
 	 * @throws \Exception
 	 */
-	public function resolve($param=[])
+	public function resolve(array $param)
 	{
 		$reflector = new \ReflectionClass($this->classname);
 
@@ -167,11 +167,12 @@ class ClassResolver implements ResolverInterface
 	}
 
 	/**
+	 * @inheritdoc
+	 *
 	 * Nimmt eine Class entgegen
 	 *
 	 * trennt den Class String in Klasse und Funktion
 	 *
-	 * @param string $class
 	 * @throws \Exception
 	 */
 	public function set($class=""):void

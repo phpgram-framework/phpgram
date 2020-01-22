@@ -31,10 +31,12 @@ class ClosureResolver implements ResolverInterface
 	/**
 	 * Führe das Callback aus
 	 *
+	 * Binde es vorher an dieses Object
+	 *
 	 * @param array $param
 	 * @return mixed|string
 	 */
-	public function resolve($param=[])
+	public function resolve(array $param)
 	{
 		$callback = $this->callback->bindTo($this);	//Bindet die Funktion an diese Klasse, somit hat sie Zugriff auf den Request
 
@@ -44,7 +46,8 @@ class ClosureResolver implements ResolverInterface
 	}
 
 	/**
-	 * @param \Closure|null $callback
+	 * @inheritdoc
+	 *
 	 * @throws \Exception
 	 */
 	public function set(\Closure $callback=null):void

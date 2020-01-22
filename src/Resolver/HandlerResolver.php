@@ -20,9 +20,10 @@ use Gram\Middleware\Handler\HandlerInterface;
  * Class HandlerCallback
  * @package Gram\Resolver
  *
- * Erstellt einen Handler für Middleware Klassen
+ * Eine Möglichkeit ein Object aus zuführen
  *
- * Dieser kann aufgerufen werden wenn die Middleware einen Fehler festgestellt hat und die Seite beenden will
+ * Vorteil gegenüber callable Objects:
+ * Kann Response verändern ohne diesen zurück gegeben zumüssen
  */
 class HandlerResolver implements ResolverInterface
 {
@@ -31,7 +32,10 @@ class HandlerResolver implements ResolverInterface
 	/** @var HandlerInterface */
 	private $handler;
 
-	public function resolve($param = [])
+	/**
+	 * @inheritdoc
+	 */
+	public function resolve(array $param)
 	{
 		$this->handler->setPsr($this->request,$this->response);
 		$this->handler->setContainer($this->container);
@@ -44,7 +48,8 @@ class HandlerResolver implements ResolverInterface
 	}
 
 	/**
-	 * @param HandlerInterface|null $handler
+	 * @inheritdoc
+	 *
 	 * @throws \Exception
 	 */
 	public function set(HandlerInterface $handler=null):void
