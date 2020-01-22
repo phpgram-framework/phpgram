@@ -24,7 +24,6 @@
 - Dispatcher: 
 	- bei 405 bzw. 404 werden doppelte Http Methods nur noch einmal durchsucht
 - QueueHandler unterstüzt nun auch callable Middleware
-- Strategy Trait: createBody() Method nimmt jetzt eine Referenz des content entgegen
 - Interfaces angepasst
 - adMiddle() zu addMiddleware() umbenannt
 

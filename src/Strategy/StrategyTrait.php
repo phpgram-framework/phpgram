@@ -68,7 +68,7 @@ trait StrategyTrait
 	 * @param $content
 	 * @return ResponseInterface
 	 */
-	protected function createBody(ResolverInterface $resolver, &$content):ResponseInterface
+	protected function createBody(ResolverInterface $resolver, $content):ResponseInterface
 	{
 		if($content instanceof ResponseInterface) {
 			return $content;
