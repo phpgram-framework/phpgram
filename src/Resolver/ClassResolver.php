@@ -15,7 +15,6 @@ namespace Gram\Resolver;
 
 use Gram\Exceptions\ClassNotAllowedException;
 use Gram\Exceptions\DependencyNotFoundException;
-use Gram\Middleware\Classes\ClassInterface;
 
 /**
  * Class ControllerHandler
@@ -36,7 +35,7 @@ class ClassResolver implements ResolverInterface
 	 *
 	 * Führt die Class aus und gibt dessen Return zurück
 	 *
-	 * Gibt eine Exception aus sollte die auszuführende Klasse kein @see ClassInterface implementiert haben
+	 * Gibt eine Exception aus sollte die auszuführende Klasse kein @see \Gram\Middleware\Classes\ClassInterface implementiert haben
 	 *
 	 * @param array $param
 	 * @return mixed|string
@@ -56,7 +55,7 @@ class ClassResolver implements ResolverInterface
 			throw new ClassNotAllowedException("[$this->classname] needs to implement Gram\Middleware\Classes\ClassInterface");
 		}
 
-
+		/** @var \Gram\Middleware\Classes\ClassInterface $class */
 		$class = $this->getClass($reflector);
 
 		//gebe den Klassen die Psr Objekte
@@ -78,7 +77,7 @@ class ClassResolver implements ResolverInterface
 	 * Entweder direkt, aus dem Container oder mit den Dependencies des Class Constructor
 	 *
 	 * @param \ReflectionClass $reflector
-	 * @return object|ClassInterface
+	 * @return object
 	 * @throws \Exception
 	 */
 	protected function getClass(\ReflectionClass $reflector)
