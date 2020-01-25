@@ -411,4 +411,29 @@ abstract class TestRoutes extends TestCase
 		self::assertEquals("de",$param['l']);
 		self::assertEquals("fr",$param['ls']);
 	}
+
+	public function testWithoutDynamicRoutes()
+	{
+		$router = new Router();
+		$collector = $router->getCollector();
+
+		$collector->get("/","no Dynamic");
+
+		$uri = $this->psr17->createUri('https://test.de/test/de/fr/');
+
+		[$status,$handler,$param] = $router->run($uri->getPath(),'GET');
+
+		self::assertEquals(404,$status);
+	}
+
+	public function testWithoutAnyRoutes()
+	{
+		$router = new Router();
+
+		$uri = $this->psr17->createUri('https://test.de/test/de/fr/');
+
+		[$status,$handler,$param] = $router->run($uri->getPath(),'GET');
+
+		self::assertEquals(404,$status);
+	}
 }

@@ -2,6 +2,10 @@
 
 # 1.6.x
 
+## 1.6.1
+- since 2020/01/26
+- Dispatcher Warning wenn keine Routes gesetzt sind entfernt
+
 ## 1.6.0
 
 - since 2020/01/23
