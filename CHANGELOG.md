@@ -2,6 +2,10 @@
 
 # 1.6.x
 
+## 1.6.2
+- since 2020/01/27
+- Memory Leaks beim QueueHandler fix
+
 ## 1.6.1
 - since 2020/01/26
 - Dispatcher Warning wenn keine Routes gesetzt sind entfernt

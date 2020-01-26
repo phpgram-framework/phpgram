@@ -112,6 +112,20 @@ class QueueHandler implements RequestHandlerInterface
 			return $this->last->handle($request);
 		}
 
+		return $this->executeMiddleware($request,$middleware);
+	}
+
+	/**
+	 * Führe die Middleware aus
+	 *
+	 * @param ServerRequestInterface $request
+	 * @param $middleware
+	 * @return ResponseInterface
+	 * @throws MiddlewareNotAllowedException
+	 * @throws \Psr\Container\NotFoundExceptionInterface
+	 */
+	protected function executeMiddleware(ServerRequestInterface $request, $middleware):ResponseInterface
+	{
 		//wenn ein Index für die Mw angegenen wurde, siehe im Container nach
 		if ($this->container !== null && \is_string($middleware)) {
 			$middleware = $this->container->get($middleware);
