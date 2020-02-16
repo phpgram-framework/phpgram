@@ -59,7 +59,7 @@ class JsonStrategy implements StrategyInterface
 	/**
 	 * @inheritdoc
 	 */
-	protected function getContentTypHeader(): array
+	protected function getContentTypeHeader(): array
 	{
 		return ['Content-Type','application/json'];
 	}

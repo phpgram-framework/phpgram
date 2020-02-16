@@ -31,7 +31,7 @@ trait StrategyTrait
 	 *
 	 * @return array
 	 */
-	abstract protected function getContentTypHeader():array;
+	abstract protected function getContentTypeHeader():array;
 
 	/**
 	 * Übergibt request und response dem Resolver
@@ -48,7 +48,7 @@ trait StrategyTrait
 		ResponseInterface $response,
 		ResolverInterface $resolver
 	) {
-		[$name,$value] = $this->getContentTypHeader();
+		[$name,$value] = $this->getContentTypeHeader();
 
 		$response = $response->withHeader($name,$value);
 
