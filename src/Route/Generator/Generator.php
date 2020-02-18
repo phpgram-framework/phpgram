@@ -64,6 +64,8 @@ abstract class Generator implements GeneratorInterface
 	{
 		$data = $this->parser->parse($route->path);	//die geparsten Routedata
 
+		$dynamicCounter = 0;	//muss Route clone werden
+
 		//durchlaufe die geparste Route, sollte diese mehere Routes beinhalten (/route[/{id}] -> zweites Array) wird diese extra hinzugefügt
 		foreach ($data as $datum) {
 			if(\count($datum) === 1 && \is_string($datum[0])) {
@@ -72,10 +74,17 @@ abstract class Generator implements GeneratorInterface
 				//soltle die Route eine dynamic Route sein, clone diese mit den neuen path
 				[$path,$vars] = $this->createRoute($datum);
 
-				$route = $route->cloneRoute($path);
+				if($dynamicCounter > 0) {
+					//clone die Route nur wenn sie mehrere optionale Parameter hat
+					$route = $route->cloneRoute($path);
+				} else {
+					$route->path = $path;
+				}
+
 				$route->vars = $vars;
 
 				$type= 1;	//dynamic
+				++$dynamicCounter;
 			}
 
 			foreach ($route->method as $item) {
