@@ -23,7 +23,6 @@ namespace Gram\Route\Dispatcher;
  */
 class GroupCountBased extends Dispatcher
 {
-
 	/**
 	 * @inheritdoc
 	 *
@@ -36,18 +35,18 @@ class GroupCountBased extends Dispatcher
 	 * Platz in der Regex wird durch die Anzahl an matches bestimmt (die stimmt dank der Placeholder,
 	 * die der Generator erstellt, überein
 	 */
-	public function dispatchDynamic($uri, array $routes, array $handler)
+	public function dispatchDynamic($method, $uri)
 	{
 		//durchlaufe die Regexlisten
 		//$i = welche Regexliste
 		//count($matches) = nummer des handlers
-		foreach($routes as $i=>$regex) {
+		foreach($this->dynamicRoutesRegex[$method] as $i=>$regex) {
 			if(! \preg_match($regex,$uri,$matches)){
 				continue;	//wenn Route nicht Dabei ist nächsten Chunk prüfen
 			}
 
 			//wenn Regex im Chunk war
-			$route = $handler[$i][count($matches)];
+			$route = $this->dynamicRoutesHandler[$method][$i][count($matches)];
 
 			$var=[];
 			foreach ($route[1] as $j=>$item) {

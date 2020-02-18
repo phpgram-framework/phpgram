@@ -35,6 +35,7 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class Router implements RouterInterface
 {
+	/** @var bool */
 	private $slash_trim;
 
 	/** @var CollectorInterface */
@@ -42,13 +43,6 @@ class Router implements RouterInterface
 
 	/** @var DispatcherInterface */
 	private $dispatcher;
-
-	/**
-	 * @var array
-	 *
-	 * generated route data
-	 */
-	private $data;
 
 	/**
 	 * Router constructor.
@@ -83,7 +77,7 @@ class Router implements RouterInterface
 			$options['cache']
 		);
 
-		$this->dispatcher = new $options['dispatcher'];	//erstelle Dispatcher
+		$this->dispatcher = $options['dispatcher'];	//Dispatcher
 	}
 
 	/**
@@ -97,12 +91,12 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		//speichern in class var, für async requests, damit die routes nur einmal generiert werden
-		if(!isset($this->data)) {
-			$this->data = $this->collector->getData();
+		//sollte der Dispatcher noch nicht erstellt sein
+		if(\is_string($this->dispatcher)) {
+			$this->dispatcher = new $this->dispatcher($this->collector->getData());
 		}
 
-		$response = $this->dispatcher->dispatch($httpMethod,$uri,$this->data);
+		$response = $this->dispatcher->dispatch($httpMethod,$uri);
 
 		return $this->getHandle($response);
 	}

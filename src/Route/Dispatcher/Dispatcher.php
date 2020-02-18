@@ -24,13 +24,48 @@ use Gram\Route\Interfaces\DispatcherInterface;
 abstract class Dispatcher implements DispatcherInterface
 {
 	/**
+	 * Die Static Routes und ihre Handler
+	 * (ohne Parameter)
+	 *
+	 * @var array
+	 */
+	protected $staticRoutes;
+
+	/**
+	 * Regex der dynamischen Routes
+	 * (mit Parametern)
+	 *
+	 * @var array
+	 */
+	protected $dynamicRoutesRegex;
+
+	/**
+	 * Handler der dynamischen Routes
+	 *
+	 * @var array
+	 */
+	protected $dynamicRoutesHandler;
+
+	/**
+	 * Dispatcher constructor.
+	 *
+	 * @param array $routes		Array mit allen geparsten Routes
+	 */
+	public function __construct(array $routes)
+	{
+		$this->staticRoutes = $routes['static'] ?? [];
+		$this->dynamicRoutesRegex = $routes['dynamic']['regexes'] ?? [];
+		$this->dynamicRoutesHandler = $routes['dynamic']['dynamichandler'] ?? [];
+	}
+
+	/**
 	 * @inheritdoc
 	 *
 	 * Sucht auch noch die Http Method für 405
 	 */
-	public function dispatch($method,$uri, array $routes=[])
+	public function dispatch($method,$uri)
 	{
-		$response = $this->doDispatch($method,$uri,$routes);
+		$response = $this->doDispatch($method,$uri);
 
 		if($response[0]===self::FOUND){
 			return $response;
@@ -38,17 +73,17 @@ abstract class Dispatcher implements DispatcherInterface
 
 		//wenn keine Route gefunden bei HEAD versuch GET
 		if($method=='HEAD'){
-			return $this->dispatch('GET',$uri,$routes);
+			return $this->dispatch('GET',$uri);
 		}
 
 		//alle Http Methods aus Static und Dynamic
-		$methods = \array_unique(\array_merge(\array_keys($routes['static'] ?? []),\array_keys($routes['dynamic']['regexes'] ?? [])));
+		$methods = \array_unique(\array_merge(\array_keys($this->staticRoutes),\array_keys($this->dynamicRoutesRegex)));
 
 		//durchlaufe alle Http Methods
 		foreach ($methods as $item) {
 			//wenn Method nicht die Anfangsmethod: suche die Route da, wenn gefunden gebe 405 aus
 			if($item!=$method){
-				$response = $this->doDispatch($item,$uri,$routes);
+				$response = $this->doDispatch($item,$uri);
 
 				if($response[0]===self::FOUND){
 					return [self::NOT_ALLOWED];
@@ -64,24 +99,19 @@ abstract class Dispatcher implements DispatcherInterface
 	 *
 	 * @param $method
 	 * @param $uri
-	 * @param array $routes
 	 * @return array
 	 */
-	protected function doDispatch($method,$uri, array $routes=[])
+	protected function doDispatch($method,$uri)
 	{
-		if(isset($routes['static'][$method][$uri])){
-			return [self::FOUND,$routes['static'][$method][$uri],[]];
+		if(isset($this->staticRoutes[$method][$uri])){
+			return [self::FOUND,$this->staticRoutes[$method][$uri],[]];
 		}
 
 		//wenn es keine Dynamic Routes gibt
-		if(!isset($routes['dynamic']['regexes'][$method])){
+		if(!isset($this->dynamicRoutesRegex[$method])){
 			return [self::NOT_FOUND];
 		}
 
-		return $this->dispatchDynamic(
-			$uri,
-			$routes['dynamic']['regexes'][$method],
-			$routes['dynamic']['dynamichandler'][$method]
-		);
+		return $this->dispatchDynamic($method,$uri);
 	}
 }

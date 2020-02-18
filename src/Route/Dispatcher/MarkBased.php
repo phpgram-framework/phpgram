@@ -26,18 +26,18 @@ class MarkBased extends Dispatcher
 	/**
 	 * @inheritdoc
 	 */
-	public function dispatchDynamic($uri, array $routes, array $handler)
+	public function dispatchDynamic($method, $uri)
 	{
 		//durchlaufe die Regexlisten
 		//$i = welche Regexliste
 		//$matches['MARK'] = nummer des handlers
-		foreach($routes as $i=>$regex) {
+		foreach($this->dynamicRoutesRegex[$method] as $i=>$regex) {
 			if(! \preg_match($regex,$uri,$matches)){
 				continue;	//wenn Route nicht Dabei ist nächsten Chunk prüfen
 			}
 
 			//wenn Regex im Chunk war
-			$route = $handler[$i][$matches['MARK']];
+			$route = $this->dynamicRoutesHandler[$method][$i][$matches['MARK']];
 
 			$var=[];
 			foreach ($route[1] as $j=>$item) {
