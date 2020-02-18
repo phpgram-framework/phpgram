@@ -62,29 +62,33 @@ abstract class Generator implements GeneratorInterface
 	 */
 	public function mapRoute(Route $route)
 	{
-		$data = $this->parser->parse($route->path);	//die geparsten Routedata
+		$data = $this->parser->parse($route->path);		//die geparsten Routedata
 
-		$dynamicCounter = 0;	//muss Route clone werden
+		$cloneRoute = false;	//muss Route clone werden
 
-		//durchlaufe die geparste Route, sollte diese mehere Routes beinhalten (/route[/{id}] -> zweites Array) wird diese extra hinzugefügt
+		/*
+		 * durchlaufe die geparste Route
+		 * sollte diese mehere Routes beinhalten (/route[/{id}])
+		 *
+		 * befinden sich meherere Routes im Array: /routes und /routes/id
+		 */
 		foreach ($data as $datum) {
 			if(\count($datum) === 1 && \is_string($datum[0])) {
 				$type = 0;	//static Route
 			} else {
-				//soltle die Route eine dynamic Route sein, clone diese mit den neuen path
 				[$path,$vars] = $this->createRoute($datum);
 
-				if($dynamicCounter > 0) {
-					//clone die Route nur wenn sie mehrere optionale Parameter hat
+				if($cloneRoute === true) {
+					//clone (mit neuem Pfad) die Route nur wenn sie mehrere optionale Parameter hat
 					$route = $route->cloneRoute($path);
 				} else {
 					$route->path = $path;
+					$cloneRoute = true;
 				}
 
 				$route->vars = $vars;
 
 				$type= 1;	//dynamic
-				++$dynamicCounter;
 			}
 
 			foreach ($route->method as $item) {
