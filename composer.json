@@ -1,7 +1,7 @@
 {
 	"name":"phpgram/phpgram",
 	"license": "MIT",
-	"description": "A very fast and lightweight Php Framework for small to enterprise applications. Also supports Asynchronous Requests",
+	"description": "A very fast and lightweight Php Framework for small to enterprise applications",
 	"authors": [
 		{
 			"name": "Jörn Heinemann",
@@ -20,7 +20,7 @@
 		"routing",
 		"router",
 		"middleware",
-		"di container",
+		"di",
 		"psr 7",
 		"psr 15",
 		"psr 17",

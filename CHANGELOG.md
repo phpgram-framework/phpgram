@@ -7,6 +7,7 @@
 - Router Bug fix:
 	- Unterstüzt jetzt auch optinale Parameter
 	- nun kann bei den Static Routes (ohne Parameter) auch Urls mit einem . gematcht werden
+	- Route Data wird jetzt in Klassenvariablen im Dispatcher gepseichert (weniger umspeichern)
 
 ## 1.6.2
 - since 2020/01/27
