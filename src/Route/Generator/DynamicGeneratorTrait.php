@@ -58,14 +58,12 @@ trait DynamicGeneratorTrait
 	 */
 	public function generateDynamic(array $routes):array
 	{
-		$chunkSizeGenerator = $this->getChunkSize();
-
 		foreach ($routes as $method=>$route) {
-			if($chunkSizeGenerator <= 0) {
+			if($this->getChunkSize() <= 0) {
 				//mit 0 wird angezeigt, dass die Routes nicht gechunkt werden sollen, sondern als ganzes generated werden
 				$this->chunkRoutes($route,$method);
 			} else {
-				$chunkSize=$this->generateChunkSize(\count($route),$chunkSizeGenerator);	//passe die chunk größe an
+				$chunkSize=$this->generateChunkSize(\count($route),$this->getChunkSize());	//passe die chunk größe an
 
 				$chunks = \array_chunk($route,$chunkSize,true);
 
