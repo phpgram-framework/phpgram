@@ -62,16 +62,28 @@ abstract class Generator implements GeneratorInterface
 	 */
 	public function mapRoute(Route $route)
 	{
-		[$route->path,$route->vars] = $this->createRoute($route->path);	//parse die Route
+		$data = $this->parser->parse($route->path);	//die geparsten Routedata
 
-		//Ordne die Route in Static und Dynamic
-		$typ = \count($route->vars) === 0 ? 0 : 1;
+		//durchlaufe die geparste Route, sollte diese mehere Routes beinhalten (/route[/{id}] -> zweites Array) wird diese extra hinzugefügt
+		foreach ($data as $datum) {
+			if(\count($datum) === 1 && \is_string($datum[0])) {
+				$type = 0;	//static Route
+			} else {
+				//soltle die Route eine dynamic Route sein, clone diese mit den neuen path
+				[$path,$vars] = $this->createRoute($datum);
 
-		foreach ($route->method as $item) {
-			if($typ===0){
-				$this->static[$item][$route->path]=$route->routeid;
-			}elseif ($typ===1){
-				$this->dynamic[$item][]=$route;
+				$route = $route->cloneRoute($path);
+				$route->vars = $vars;
+
+				$type= 1;	//dynamic
+			}
+
+			foreach ($route->method as $item) {
+				if($type===0){
+					$this->static[$item][$datum[0]]=$route->routeid;
+				}elseif ($type===1){
+					$this->dynamic[$item][]=$route;
+				}
 			}
 		}
 	}
@@ -79,15 +91,14 @@ abstract class Generator implements GeneratorInterface
 	/**
 	 * Verarbeite die geparste Route
 	 *
-	 * @param string $path
+	 * @param array $data
 	 * @return array
 	 */
-	protected function createRoute(string $path)
+	protected function createRoute(array $data)
 	{
-		$data=$this->parser->parse($path);	//die geparste Route
 		$url="";
 		$var=[];
-		foreach ($data[0] as $datum) {
+		foreach ($data as $datum) {
 			if(is_string($datum)){
 				//füge es einfach der url wieder zu
 				$url.= \preg_quote($datum, '~');

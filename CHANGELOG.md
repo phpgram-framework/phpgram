@@ -2,6 +2,12 @@
 
 # 1.6.x
 
+## 1.6.3
+- since 2020/02/18
+- Router Bug fix:
+	- Unterstüzt jetzt auch optinale Parameter
+	- nun kann bei den Static Routes (ohne Parameter) auch Urls mit einem . gematcht werden
+
 ## 1.6.2
 - since 2020/01/27
 - Memory Leaks beim QueueHandler fix

@@ -52,8 +52,8 @@ class Route
 		$method,
 		$routegroupid,
 		$routeid,
-		MiddlewareCollectorInterface $stack,
-		StrategyCollectorInterface $strategyCollector
+		?MiddlewareCollectorInterface $stack = null,
+		?StrategyCollectorInterface $strategyCollector = null
 	){
 		$this->method=$method;	//speichere Method für Dispatcher
 		$this->path=$path;
@@ -62,6 +62,25 @@ class Route
 		$this->routeid=$routeid;
 		$this->stack=$stack;
 		$this->strategyCollector=$strategyCollector;
+	}
+
+	/**
+	 * Erstellt eine neue Route mit neuem Path aber den alten Werten
+	 *
+	 * ohne Collectoren!
+	 *
+	 * @param string $newPath		der neue Path
+	 * @return Route
+	 */
+	public function cloneRoute(string $newPath)
+	{
+		return new Route(
+			$newPath,
+			$this->handle,
+			$this->method,
+			$this->groupid,
+			$this->routeid
+		);
 	}
 
 	/**

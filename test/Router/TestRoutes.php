@@ -228,6 +228,17 @@ abstract class TestRoutes extends TestCase
 		self::assertEquals($this->routehandler[4],$handler['callable']);
 	}
 
+	public function testBasePathWithFileEnding()
+	{
+		$this->initRoutes('GET','/base_path.php');
+
+		$uri = $this->psr17->createUri('https://jo.com/base_path.php/abc');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[4],$handler['callable']);
+	}
+
 	public function testBasePathWithStartPage()
 	{
 		$this->initRoutes('GET','/base_path');
@@ -435,5 +446,34 @@ abstract class TestRoutes extends TestCase
 		[$status,$handler,$param] = $router->run($uri->getPath(),'GET');
 
 		self::assertEquals(404,$status);
+	}
+
+	public function testWithOptionalParam()
+	{
+		$this->initRoutes('GET');
+
+		//optinal ohne Param
+		$uri = $this->psr17->createUri('https://jo.com/test/optional');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[7],$handler['callable']);
+
+		//optional mit einem param
+		$uri = $this->psr17->createUri('https://jo.com/test/optional/123');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[7],$handler['callable']);
+		self::assertEquals(123,$param["id"]);
+
+		//optional mit zwei param
+		$uri = $this->psr17->createUri('https://jo.com/test/optional/123/321');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[7],$handler['callable']);
+		self::assertEquals(123,$param["id"]);
+		self::assertEquals(321,$param["id1"]);
 	}
 }

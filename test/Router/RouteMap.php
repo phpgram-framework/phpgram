@@ -16,6 +16,7 @@ class RouteMap
 			'/abc',
 			'/exception',
 			'/test/vars/{var}/async',
+			'/test/optional[/{id}[/{id1}]]'
 		];
 	}
 
@@ -28,7 +29,8 @@ class RouteMap
 			"Start",
 			"abc",
 			"exception",
-			"async"
+			"async",
+			"optional"
 		];
 	}
 
@@ -41,7 +43,8 @@ class RouteMap
 			ControllerTestClass::class."@index",
 			"abc",
 			ControllerTestClass::class."@exception",
-			ControllerTestClass::class."@testAsync"
+			ControllerTestClass::class."@testAsync",
+			"optional"
 		];
 	}
 }
