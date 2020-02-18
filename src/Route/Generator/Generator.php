@@ -60,7 +60,7 @@ abstract class Generator implements GeneratorInterface
 	 * @param Route $route
 	 * @return void
 	 */
-	public function mapRoute(Route $route)
+	protected function mapRoute(Route $route)
 	{
 		$data = $this->parser->parse($route->path);		//die geparsten Routedata
 
