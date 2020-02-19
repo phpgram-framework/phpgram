@@ -6,9 +6,9 @@
 
 - since 2020/02/20
 - Router Bug fix:
-	- Unterstüzt jetzt auch optinale Parameter
+	- Unterstüzt jetzt auch optionale Parameter
 	- nun kann bei den Static Routes (ohne Parameter) auch Urls mit einem . gematcht werden
-	- Route Data wird jetzt in Klassenvariablen im Dispatcher gepseichert (weniger umspeichern)
+	- Route Data wird dem Dispatcher im Constructor übergeben
 - App Constructor ist nun nicht mehr private
 - QueueHandler ist nun auch ein Interface
 
