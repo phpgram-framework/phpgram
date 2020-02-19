@@ -70,7 +70,13 @@ class RouteMiddleware implements MiddlewareInterface
 
 	/**
 	 * @inheritdoc
-	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
+	 *
+	 * Führe den Router aus
+	 *
+	 * Setze mithilfe der @see App
+	 * die Mw der Route in die Queue ein
+	 *
+	 * Setze die Strategy der Route in den Request ein
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{

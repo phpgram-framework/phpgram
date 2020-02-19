@@ -62,6 +62,8 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->request = $creator->fromGlobals();
 
+		$this->app->setFactory($this->psr17);
+
 		$this->app->build();
 	}
 

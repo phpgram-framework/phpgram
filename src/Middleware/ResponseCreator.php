@@ -68,8 +68,6 @@ final class ResponseCreator implements RequestHandlerInterface
 	 *
 	 * Wird zuletzt im @see \Gram\App\QueueHandler ausgeführt
 	 *
-	 * @param ServerRequestInterface $request
-	 * @return ResponseInterface
 	 * @throws CallableNotFoundException
 	 * @throws StrategyNotAllowedException
 	 */

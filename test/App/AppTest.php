@@ -14,7 +14,7 @@ class AppTest extends AbstractAppTest
 {
 	protected function getApp():App
 	{
-		return new AppTestInit();
+		return new App();
 	}
 
 	protected function setUp(): void

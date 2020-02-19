@@ -1,13 +1,18 @@
 # CHANGELOG
 
-# 1.6.x
+# 1.7.x
 
-## 1.6.3
-- since 2020/02/18
+## 1.7.0
+
+- since 2020/02/20
 - Router Bug fix:
 	- Unterstüzt jetzt auch optinale Parameter
 	- nun kann bei den Static Routes (ohne Parameter) auch Urls mit einem . gematcht werden
 	- Route Data wird jetzt in Klassenvariablen im Dispatcher gepseichert (weniger umspeichern)
+- App Constructor ist nun nicht mehr private
+- QueueHandler ist nun auch ein Interface
+
+# 1.6.x
 
 ## 1.6.2
 - since 2020/01/27

@@ -1,12 +1,12 @@
 <?php
 namespace Gram\Test\Middleware;
 
+use Gram\App\App;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
 use Gram\Route\Collector\RouteCollector;
 use Gram\Route\Router;
-use Gram\Test\App\AppTestInit;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
@@ -35,7 +35,7 @@ class RouteMwTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$app = new AppTestInit();
+		$app = new App();
 
 		$this->mwCollector = $app->getMWCollector();
 		$this->strategyCollector = $app->getStrategyCollector();
@@ -79,9 +79,11 @@ class RouteMwTest extends TestCase
 
 		$app->setRouteMiddleware($this->routemw);
 
-		$app->build();
-
 		$this->psr17 = new Psr17Factory();
+
+		$app->setFactory($this->psr17);
+
+		$app->build();
 
 		$creator = new ServerRequestCreator($this->psr17,$this->psr17,$this->psr17,$this->psr17);
 

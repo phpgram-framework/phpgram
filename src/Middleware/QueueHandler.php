@@ -31,7 +31,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * Führt Psr 15 und callable Middleware aus
  */
-class QueueHandler implements RequestHandlerInterface
+class QueueHandler implements QueueHandlerInterface
 {
 	/** @var RequestHandlerInterface */
 	protected $last;
@@ -46,10 +46,7 @@ class QueueHandler implements RequestHandlerInterface
 	}
 
 	/**
-	 * Füge eine Middleware hinzu
-	 *
-	 * @param ServerRequestInterface $request
-	 * @param $middleware
+	 * @inheritdoc
 	 * @throws MiddlewareNotAllowedException
 	 */
 	public function add(ServerRequestInterface $request, $middleware)
@@ -61,9 +58,7 @@ class QueueHandler implements RequestHandlerInterface
 	}
 
 	/**
-	 * Gebe den Last Handler zurück
-	 *
-	 * @return RequestHandlerInterface
+	 * @inheritdoc
 	 */
 	public function getLast():RequestHandlerInterface
 	{
@@ -71,10 +66,7 @@ class QueueHandler implements RequestHandlerInterface
 	}
 
 	/**
-	 * Gibt das Queue Object zurück
-	 *
-	 * @param ServerRequestInterface $request
-	 * @return QueueInterface
+	 * @inheritdoc
 	 * @throws MiddlewareNotAllowedException
 	 */
 	public function getQueue(ServerRequestInterface $request):QueueInterface
@@ -90,6 +82,8 @@ class QueueHandler implements RequestHandlerInterface
 	}
 
 	/**
+	 * @inheritdoc
+	 *
 	 * Wenn ein Event eingetreten ist wird ein anderer Handler aufgerufen und dieses Response zürck gegeben.
 	 *
 	 * Sonst laufe durch den ganzen Middleware stack und führe den letzten Handler aus
@@ -100,8 +94,6 @@ class QueueHandler implements RequestHandlerInterface
 	 *
 	 * Alle Middlewares rufen die Method @see handle() dieses Objekts (this) wieder auf.
 	 *
-	 * @param ServerRequestInterface $request
-	 * @return ResponseInterface
 	 * @throws \Exception
 	 */
 	public function handle(ServerRequestInterface $request): ResponseInterface
@@ -117,6 +109,8 @@ class QueueHandler implements RequestHandlerInterface
 
 	/**
 	 * Führe die Middleware aus
+	 *
+	 * Entweder als Psr 15 Middleware oder als Callable
 	 *
 	 * @param ServerRequestInterface $request
 	 * @param $middleware

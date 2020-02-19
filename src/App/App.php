@@ -11,13 +11,13 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.6.3 */
+/** @version 1.7.0 */
 
 namespace Gram\App;
 
-use Gram\Middleware\Queue\Queue;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Queue\QueueInterface;
+use Gram\Middleware\QueueHandlerInterface;
 use Gram\Middleware\ResponseCreator;
 use Gram\Middleware\RouteMiddleware;
 use Gram\ResolverCreator\ResolverCreator;
@@ -65,7 +65,7 @@ class App implements RequestHandlerInterface
 	/** @var RouterInterface */
 	protected $router;
 
-	/** @var QueueHandler */
+	/** @var QueueHandlerInterface */
 	protected $queueHandler;
 
 	/** @var MiddlewareInterface */
@@ -84,20 +84,14 @@ class App implements RequestHandlerInterface
 	protected $strategyCollector;
 
 	/**
-	 * @var string
-	 *
 	 * Welche Queue erstellt werden soll bei jedem Request
+	 *
+	 * @var string
 	 */
-	protected $queueClass = Queue::class;
+	protected $queueClass = \Gram\Middleware\Queue\Queue::class;
 
 	/** @var self */
 	private static $_instance;
-
-	/**
-	 * App constructor.
-	 * Private da die App nur mit init gestartet werden darf
-	 */
-	private function __construct(){}
 
 	/**
 	 * Erstellt ein Routerobjekt zurück wenn es noch nicht erstellt wurde
@@ -107,7 +101,6 @@ class App implements RequestHandlerInterface
 	public function getRouter()
 	{
 		if(!isset($this->router)){
-
 			$this->router = new Router(
 				$this->router_options,
 				$this->getMWCollector(),
@@ -287,7 +280,6 @@ class App implements RequestHandlerInterface
 	 * @param ServerRequestInterface $request
 	 * @param int|null $routeid
 	 * @param array|null $groupid
-	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
 	 */
 	public function buildStack(ServerRequestInterface $request, int $routeid=null, array $groupid = null)
 	{
@@ -372,9 +364,9 @@ class App implements RequestHandlerInterface
 	 *
 	 * Standard: @see QueueHandler
 	 *
-	 * @param RequestHandlerInterface $queueHandler
+	 * @param QueueHandlerInterface $queueHandler
 	 */
-	public function setQueueHandler(RequestHandlerInterface $queueHandler)
+	public function setQueueHandler(QueueHandlerInterface $queueHandler)
 	{
 		$this->queueHandler = $queueHandler;
 	}
@@ -422,6 +414,16 @@ class App implements RequestHandlerInterface
 	public function getContainer():ContainerInterface
 	{
 		return $this->container;
+	}
+
+	/**
+	 * Bestimmte welcher Router genutzt werden soll
+	 *
+	 * @param RouterInterface $router
+	 */
+	public function setRouter(RouterInterface $router)
+	{
+		$this->router = $router;
 	}
 
 	/**
@@ -497,11 +499,21 @@ class App implements RequestHandlerInterface
 		$this->getRouter()->getCollector()->set405($handle);
 	}
 
+	/**
+	 * Setze den base path der vor jede Route gesetzt wird
+	 *
+	 * @param string $base
+	 */
 	public function setBase(string $base)
 	{
 		$this->getRouter()->getCollector()->setBase($base);
 	}
 
+	/**
+	 * Gebe den base path wieder zurück
+	 *
+	 * @return string
+	 */
 	public function getBase()
 	{
 		return $this->getRouter()->getCollector()->getBase();
