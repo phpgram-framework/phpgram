@@ -29,27 +29,25 @@ REGEX;
 		'/{(.+?):all}/'=>'{$1:.+?}'	//matche alles sowie den backslash
 	];
 
-	private $uri;
-
+	/**
+	 * @inheritdoc
+	 */
 	public function parse(string $route)
-	{
-		$this->uri=$route;
-
-		return $this->parsePlaceholders();
-	}
-
-	private function parsePlaceholders()
 	{
 		/**
 		 * @copyright Phil Bennett philipobenito@gmail.com (thephpleague <https://route.thephpleague.com/>)
 		 */
-		$data = \preg_replace(\array_keys(self::$placeholders), \array_values(self::$placeholders), $this->uri);	//Costume Placeholder
+		$data = \preg_replace(\array_keys(self::$placeholders), \array_values(self::$placeholders), $route);	//Costume Placeholder
 
+		return $this->parsePlaceholders($data);
+	}
 
+	private function parsePlaceholders($uri)
+	{
 		/**
 		 * @copyright Nikita Popov (FastRoute <https://github.com/nikic/FastRoute>)
 		 */
-		$routeWithoutClosingOptionals = \rtrim($data, ']');
+		$routeWithoutClosingOptionals = \rtrim($uri, ']');
 		$segments = \preg_split('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \[~x', $routeWithoutClosingOptionals);
 
 		$currentRoute = '';
@@ -98,6 +96,12 @@ REGEX;
 		return $routeData;
 	}
 
+	/**
+	 * Füge neue Placeholder Types hinzu
+	 *
+	 * @param $typ
+	 * @param $regex
+	 */
 	public static function addDataTyp($typ,$regex)
 	{
 		/**

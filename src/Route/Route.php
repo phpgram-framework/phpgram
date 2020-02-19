@@ -67,7 +67,7 @@ class Route
 	/**
 	 * Erstellt eine neue Route mit neuem Path aber den alten Werten
 	 *
-	 * ohne Collectoren!
+	 * ohne Collectoren und Handler!
 	 *
 	 * @param string $newPath		der neue Path
 	 * @return Route
@@ -76,7 +76,7 @@ class Route
 	{
 		return new Route(
 			$newPath,
-			$this->handle,
+			$this->routeid,
 			$this->method,
 			$this->groupid,
 			$this->routeid
