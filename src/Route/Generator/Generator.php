@@ -88,7 +88,7 @@ abstract class Generator implements GeneratorInterface
 
 				$route->vars = $vars;
 
-				$type= 1;	//dynamic
+				$type = 1;	//dynamic
 			}
 
 			foreach ($route->method as $item) {

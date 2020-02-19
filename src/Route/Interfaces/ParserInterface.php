@@ -23,5 +23,15 @@ interface ParserInterface
 {
 	const DEFAULT_REGEX = '[^/]+';
 
+	/**
+	 * Parse die Route
+	 *
+	 * Wandle die Placeholder um
+	 *
+	 * Gebe die Route mit ihren Bestandteilen zurück
+	 *
+	 * @param string $route
+	 * @return mixed
+	 */
 	public function parse(string $route);
 }
