@@ -22,6 +22,3 @@ before_script:
 test:
   script:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
-  only:
-      - triggers
-      - schedules
