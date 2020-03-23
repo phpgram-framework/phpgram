@@ -1,0 +1,4 @@
+site_name: Phpgram Docs
+site_url: https://grammm.gitlab.io/phpgram
+theme:
+  name: gitbook
