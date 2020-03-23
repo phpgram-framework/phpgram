@@ -1,24 +1,41 @@
-# Select image from https://hub.docker.com/_/php/
-image: php:latest
-
-# cache between builds
-cache:
-  paths:
-    - vendor/
-
-before_script:
-  - apt-get update -yqq
-  - apt-get install -yqq git libcurl4-gnutls-dev
-  # Install PHP extensions
-  - docker-php-ext-install curl
-  # Install & enable Xdebug for code coverage reports
-  - pecl install xdebug
-  - docker-php-ext-enable xdebug
-  # Install and run Composer
-  - curl -sS https://getcomposer.org/installer | php
-  - php composer.phar install
-
-# Run our tests
 test:
+  image: php:latest
+  
+  # cache between builds
+  cache:
+    paths:
+      - vendor/
+  
+  before_script:
+    - apt-get update -yqq
+    - apt-get install -yqq git libcurl4-gnutls-dev
+    # Install PHP extensions
+    - docker-php-ext-install curl
+    # Install & enable Xdebug for code coverage reports
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+    # Install and run Composer
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install
+
   script:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
+    
+pages:
+  image: python:alpine
+
+  before_script:
+    - pip install mkdocs
+    - pip install mkdocs-gitbook
+    # Add your custom theme if not inside a theme_dir
+    # (https://github.com/mkdocs/mkdocs/wiki/MkDocs-Themes)
+    # - pip install mkdocs-material
+
+  script:
+  - mkdocs build
+  - mv site public
+  artifacts:
+    paths:
+    - public
+  only:
+  - trigger
