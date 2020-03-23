@@ -20,8 +20,6 @@ test:
 
   script:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
-  only:
-    - trigger
 
 pages:
   image: python:alpine
