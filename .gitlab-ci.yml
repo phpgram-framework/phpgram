@@ -20,13 +20,15 @@ test:
 
   script:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
-    
+  only:
+    - trigger
+
 pages:
   image: python:alpine
 
   before_script:
     - pip install mkdocs
-    - pip install mkdocs-rtd-dropdown
+    - pip install mkdocs-windmill
     # Add your custom theme if not inside a theme_dir
     # (https://github.com/mkdocs/mkdocs/wiki/MkDocs-Themes)
     # - pip install mkdocs-material
