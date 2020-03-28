@@ -26,10 +26,10 @@ A very fast and lightweight Php Framework for small to enterprise applications.
 Via Composer
 
 ``` bash
-$ composer require phpgram/phpgram
+composer require phpgram/phpgram
 ```
 
-## [Documentation](https://gitlab.com/grammm/php-gram/phpgram/blob/master/docs/index.md)
+## [Documentation](https://grammm.gitlab.io/php-gram/phpgram/)
 
 ````php
 <?php
