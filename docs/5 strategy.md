@@ -1,1 +1,3 @@
 # Strategy
+
+## Standard Strategy

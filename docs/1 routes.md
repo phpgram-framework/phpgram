@@ -20,7 +20,7 @@ A handle is called when the url pattern matched.
 
 ### Route Handle Types
 
-In addition to the standard types, more can be defined see [Response creation]()
+In addition to the standard types, more can be defined see [Response creation](3%20responsecreation.md)
 
 - Closure (anonymous Function)
 
@@ -136,7 +136,7 @@ App::app()->get("/function/{id:lang}",function ($id){
 
 ## Route groups
 
-Groups are a very pleasant way define routes with same the prefix
+Groups are a very pleasant way define routes with the same prefix
 
 - define a prefix which will be added to all route path inside the group
 - and a callable, this will be executed to collect the routes inside the group
@@ -269,7 +269,7 @@ App::app()->add("/function",function (){
 }, ['get','post','put']);
 ````
 
-## [Middleware](3 mw.md) and [Strategies](5 strategy.md)
+## [Middleware](2%20mw.md) and [Strategies](5%20strategy.md)
 
 Routes and route groups can have its own Middleware and Strategies
 
