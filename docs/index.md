@@ -2,6 +2,9 @@
 
 [![](https://gitlab.com/grammm/php-gram/phpgram/raw/master/docs/img/Feather_writing.svg.png)](https://gitlab.com/grammm/php-gram/phpgram)
 
+<br>
+
+Phpgram is just a http request router with a middleware dispatcher.
 
 ## Getting Started
 
@@ -39,3 +42,48 @@ App::app()->start($request);
 
 ## Workflow
 
+### App Start
+
+The App class mange all configurations
+
+It got this namespace:
+
+````php
+<?php
+
+use Gram\App\App;
+````
+
+The App class uses a Singleton like mechanism: `App::app` <br>
+This static function always returns the same App class. 
+
+Before the start:
+
+- define [middleware](2%20mw.md) if need
+
+- define [routes](1%20routes.md)
+
+- set a [Psr 17](https://www.php-fig.org/psr/psr-17/) response factory
+
+- create a [Psr 7](https://www.php-fig.org/psr/psr-7/) ServerRequest
+
+
+After calling the function `start()` a Psr 7 Response will be emitted
+
+To configure the App see more information [here](0%20app.md)
+
+### How the framework works
+
+The App class is a [Psr 15](https://www.php-fig.org/psr/psr-15/) RequestHandlerInterface. 
+It can easy be used as this Handler.
+
+#### App lifecycle
+
+1. configure the app (incl. routing and middleware)
+2. start with a Psr 7 ServerRequest
+3. build the [QueueHandler](2%20mw.md#queuehandler), [response creator](3%20responsecreation.md) and [route middleware](2%20mw.md#route-middleware)
+4. start the queue handler with `handle()` 
+5. call the standard middleware and after the route middleware (incl the [routing](1%20routes.md))
+6. call the new mw from the route
+7. call the [route handle](1%20routes.md#route-handle) (e.g. a class) with the [strategy](5%20strategy.md) in the response creator
+8. emit the response

@@ -38,9 +38,9 @@ use Gram\App\App;
 
 use Gram\Strategy\StdAppStrategy;
 
-App::app()->debugMode(0);	//0 = Render Exceptions, 1 = only show headline, 2 = show nothing
+App::app()->debugMode(true);	//true (default) -> show Exceptions, false -> show empty page
 
-App::app()->setStrategy(new StdAppStrategy()); //define how the Output will be created
+App::app()->setStrategy(new StdAppStrategy()); //define how the Output will be created (StdAppStrategy is default)
 
 App::app()->set404("Er404@404"); //404 Handler
 App::app()->set405("Er405@405"); //405 Handler
