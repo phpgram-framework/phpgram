@@ -25,11 +25,9 @@ test:
   - master
 
 pages:
-  image: python:alpine
+  image: python:3.8-slim-buster
 
   before_script:
-    - apt-get update
-    - apt-get install -y gcc g++
     - pip install mkdocs
     - pip install mkdocs-material
     # Add your custom theme if not inside a theme_dir
