@@ -22,7 +22,6 @@ test:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
   except:
   - trigger
-  - master
 
 pages:
   image: python:3.8-slim-buster
