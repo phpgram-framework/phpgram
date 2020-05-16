@@ -30,7 +30,8 @@
 	],
 	"support": {
 		"issues": "https://gitlab.com/grammm/php-gram/phpgram/issues",
-		"source": "https://gitlab.com/grammm/php-gram/phpgram"
+		"source": "https://gitlab.com/grammm/php-gram/phpgram",
+		"docs": "https://grammm.gitlab.io/php-gram/phpgram/"
 	},
 	"require": {
 		"php": "^7.1",
