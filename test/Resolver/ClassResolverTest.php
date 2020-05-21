@@ -11,11 +11,6 @@ use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * @covers \Gram\Resolver\ClassResolver
- * @covers \Gram\Middleware\Classes\ClassTrait
- * @uses \Gram\Middleware\Classes\ClassInterface
- */
 class ClassResolverTest extends TestCase
 {
 	/** @var ClassResolver */

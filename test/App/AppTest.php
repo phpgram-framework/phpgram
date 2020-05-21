@@ -4,14 +4,6 @@ namespace Gram\Test\App;
 use Gram\App\App;
 use Gram\Test\TestClasses\ControllerTestClass;
 
-/**
- * Class AppTest
- * @package Gram\Test\App
- *
- * Test für die normale App Klasse
- *
- * @covers \Gram\App\App
- */
 class AppTest extends AbstractAppTest
 {
 	protected function getApp():App

@@ -10,10 +10,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * @covers \Gram\Resolver\HandlerResolver
- * @uses HandlerInterface
- */
 class HandlerResolverTest extends TestCase
 {
 	/** @var HandlerResolver */

@@ -5,16 +5,6 @@ use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Router;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
-/**
- * @covers \Gram\Route\Router
- * @covers \Gram\Route\Route
- * @covers \Gram\Route\Collector\RouteCollector
- * @covers \Gram\Route\Dispatcher\Dispatcher
- * @covers \Gram\Route\Collector\MiddlewareCollector
- * @covers \Gram\Route\Collector\StrategyCollector
- * @covers \Gram\Route\Generator\MarkBased
- * @covers \Gram\Route\Dispatcher\MarkBased
- */
 class MarkBasedTest extends TestRoutes
 {
 	protected function setUp(): void

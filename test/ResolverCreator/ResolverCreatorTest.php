@@ -9,9 +9,6 @@ use Gram\Test\TestClasses\CallableClass;
 use Gram\Test\TestClasses\TestClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Gram\ResolverCreator\ResolverCreator
- */
 class ResolverCreatorTest extends TestCase
 {
 	/** @var ResolverCreator */

@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Gram\Exceptions\PageNotFoundException;
 
-/**
- * @covers \Gram\Middleware\RouteMiddleware
- */
 class RouteMwTest extends TestCase
 {
 	private $router, $notFundHandler, $lastHandler, $mwCollector, $strategyCollector, $map;

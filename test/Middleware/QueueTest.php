@@ -4,6 +4,7 @@ namespace Gram\Test\Middleware;
 use Gram\Middleware\Queue\Queue;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Queue\QueueInterface;
+use Gram\Middleware\QueueHandlerInterface;
 use Gram\Test\Middleware\DummyMw\CallableMw4;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
@@ -17,10 +18,7 @@ use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-/**
- * @covers \Gram\Middleware\QueueHandler
- * @covers \Gram\Middleware\Queue\Queue
- */
+
 class QueueTest extends TestCase
 {
 	/** @var QueueHandler */
@@ -85,7 +83,8 @@ class QueueTest extends TestCase
 	{
 		$this->addMwNormal();
 
-		$this->queueHandler->add($this->request,new TestMw4Fail());
+		$queue = $this->queueHandler->getQueue($this->request);
+		$queue->add(new TestMw4Fail());
 
 		$this->expectException(\Exception::class);
 		$this->queueHandler->handle($this->request);

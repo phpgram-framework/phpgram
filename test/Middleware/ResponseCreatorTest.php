@@ -17,12 +17,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-/**
- * @covers \Gram\Middleware\ResponseCreator
- * @covers \Gram\Strategy\StdAppStrategy
- * @covers \Gram\Strategy\BufferAppStrategy
- * @covers \Gram\Strategy\JsonStrategy
- */
 class ResponseCreatorTest extends TestCase
 {
 
@@ -71,6 +65,33 @@ class ResponseCreatorTest extends TestCase
 			$strategy,
 			$this->container
 		);
+	}
+
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
+	public function testCreateResponseCreator()
+	{
+		$responseCreator = new ResponseCreator(
+			$this->psr17,
+			new ResolverCreator(),
+			new StdAppStrategy(),
+			$this->container
+		);
+
+		$this->request = $this->request->withAttribute('callable',TestClassDi::class."@testDi")
+			->withAttribute('status',200);
+
+		$response = $responseCreator->handle($this->request);
+
+		self::assertEquals(true, $responseCreator instanceof ResponseCreator);
+
+		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
+
+		self::assertEquals('text/html',$head[0]);
+		self::assertEquals('Gram\Test\TestClasses\TestClass right Testresult',$body);
 	}
 
 	public function testSimple()

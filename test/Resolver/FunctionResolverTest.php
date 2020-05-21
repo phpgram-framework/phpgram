@@ -10,9 +10,6 @@ use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * @covers \Gram\Resolver\ClosureResolver
- */
 class FunctionResolverTest extends TestCase
 {
 	/** @var ClosureResolver */
