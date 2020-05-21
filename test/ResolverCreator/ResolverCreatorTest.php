@@ -10,7 +10,7 @@ use Gram\Test\TestClasses\TestClass;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Gram\ResolverCreator\ResolverCreator:
+ * @covers \Gram\ResolverCreator\ResolverCreator
  */
 class ResolverCreatorTest extends TestCase
 {
