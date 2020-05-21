@@ -9,6 +9,14 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @covers \Gram\Resolver\CallableResolver::set()
+ * @covers \Gram\Resolver\CallableResolver::setRequest()
+ * @covers \Gram\Resolver\CallableResolver::setResponse()
+ * @covers \Gram\Resolver\CallableResolver::getResponse()
+ * @covers \Gram\Resolver\CallableResolver::setContainer()
+ * @uses CallableResolver
+ */
 class CallableResolverTest extends TestCase
 {
 	/** @var CallableResolver */

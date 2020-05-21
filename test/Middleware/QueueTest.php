@@ -17,6 +17,17 @@ use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * @covers \Gram\Middleware\QueueHandler::handle()
+ * @covers \Gram\Middleware\QueueHandler::add()
+ * @covers \Gram\Middleware\QueueHandler::executeMiddleware()
+ * @covers \Gram\Middleware\QueueHandler::getLast()
+ * @covers \Gram\Middleware\QueueHandler::getQueue()
+ * @covers \Gram\Middleware\Queue\Queue::add()
+ * @covers \Gram\Middleware\Queue\Queue::next()
+ * @uses QueueHandler
+ * @uses Queue
+ */
 class QueueTest extends TestCase
 {
 	/** @var QueueHandler */

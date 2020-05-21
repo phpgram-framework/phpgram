@@ -17,6 +17,11 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * @covers \Gram\Middleware\ResponseCreator::__construct
+ * @covers \Gram\Middleware\ResponseCreator::handle()
+ * @uses ResponseCreator
+ */
 class ResponseCreatorTest extends TestCase
 {
 

@@ -10,6 +10,16 @@ use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @covers \Gram\Resolver\ClosureResolver::setRequest()
+ * @covers \Gram\Resolver\ClosureResolver::set()
+ * @covers \Gram\Resolver\ClosureResolver::setResponse()
+ * @covers \Gram\Resolver\ClosureResolver::getResponse()
+ * @covers \Gram\Resolver\ClosureResolver::setContainer()
+ * @covers \Gram\Resolver\ClosureResolver::resolve()
+ * @covers \Gram\Resolver\ClosureResolver::__get()
+ * @uses ClosureResolver
+ */
 class FunctionResolverTest extends TestCase
 {
 	/** @var ClosureResolver */
@@ -123,7 +133,7 @@ class FunctionResolverTest extends TestCase
 		$this->resolver->setContainer($psr11);
 
 		$function = function (){
-			return $this->TestClass->doSmth();
+			return $this->{"TestClass"}->doSmth();
 		};
 
 		$this->initResolve($function);
