@@ -34,7 +34,7 @@ interface CollectorInterface
 	 * @param array $method
 	 * @return Route
 	 */
-	public function add(string $path,$handler,array $method):Route;
+	public function add(string $path,$handler,array $method): Route;
 
 	/**
 	 * Startet eine Gruppe
@@ -53,7 +53,7 @@ interface CollectorInterface
 	 * @param callable $groupcollector
 	 * @return RouteGroup
 	 */
-	public function group($prefix,callable $groupcollector):RouteGroup;
+	public function group($prefix,callable $groupcollector): RouteGroup;
 
 	/**
 	 * Gibt dem Dispatcher die benötigten Daten
@@ -72,7 +72,7 @@ interface CollectorInterface
 	 * @param int $routeId
 	 * @return Route|null
 	 */
-	public function getRoute(int $routeId):Route;
+	public function getRoute(int $routeId): Route;
 
 	/**
 	 * Gebe den 404 Handler zurück
@@ -109,7 +109,7 @@ interface CollectorInterface
 	 * @param $handler
 	 * @return Route
 	 */
-	public function get(string $route,$handler):Route;
+	public function get(string $route,$handler): Route;
 
 	/**
 	 * Füge eine POST Route hinzu
@@ -118,7 +118,7 @@ interface CollectorInterface
 	 * @param $handler
 	 * @return Route
 	 */
-	public function post(string $route,$handler):Route;
+	public function post(string $route,$handler): Route;
 
 	/**
 	 * Füge eine Route hinzu die GET und POST sein kann
@@ -127,7 +127,7 @@ interface CollectorInterface
 	 * @param $handler
 	 * @return Route
 	 */
-	public function getpost(string $route,$handler):Route;
+	public function getpost(string $route,$handler): Route;
 
 	/**
 	 * Füge eine DELETE Route hinzu
@@ -136,7 +136,7 @@ interface CollectorInterface
 	 * @param $handler
 	 * @return Route
 	 */
-	public function delete(string $route,$handler):Route;
+	public function delete(string $route,$handler): Route;
 
 	/**
 	 * Füge eine PUT Route hinzu
@@ -145,7 +145,7 @@ interface CollectorInterface
 	 * @param $handler
 	 * @return Route
 	 */
-	public function put(string $route,$handler):Route;
+	public function put(string $route,$handler): Route;
 
 	/**
 	 * Füge eine PATCH Route hinzu
@@ -154,7 +154,7 @@ interface CollectorInterface
 	 * @param $handler
 	 * @return Route
 	 */
-	public function patch(string $route,$handler):Route;
+	public function patch(string $route,$handler): Route;
 
 	/**
 	 * Setze den Base Path der vor jeder Route hinzugefügt wird

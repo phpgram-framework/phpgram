@@ -153,7 +153,7 @@ class App implements RequestHandlerInterface
 		if (!isset($this->responseCreator)) {
 			//Wird am Ende ausgeführt um den Response zu erstellen
 			//erhält Factory um Response zu erstellen
-			$this->responseCreator = $this->responseCreator ?? new ResponseCreator (
+			$this->responseCreator = new ResponseCreator (
 					$this->responseFactory,
 					$this->resolverCreator ?? new ResolverCreator(),
 					$this->stdStrategy ?? new StdAppStrategy(),
@@ -281,9 +281,9 @@ class App implements RequestHandlerInterface
 	 * @param int|null $routeid
 	 * @param array|null $groupid
 	 */
-	public function buildStack(ServerRequestInterface $request, int $routeid=null, array $groupid = null)
+	public function buildStack(ServerRequestInterface $request, int $routeid = null, array $groupid = null)
 	{
-		if($routeid===null || $groupid===null){
+		if($routeid === null || $groupid === null){
 			return;
 		}
 
@@ -293,7 +293,7 @@ class App implements RequestHandlerInterface
 		foreach ($groupid as $item) {
 			$grouMw=$this->middlewareCollector->getGroup($item);
 			//Füge Routegroup Mw hinzu
-			if ($grouMw!==null){
+			if ($grouMw !== null){
 				foreach ($grouMw as $item2) {
 					$queue->add($item2);
 				}
@@ -302,7 +302,7 @@ class App implements RequestHandlerInterface
 
 		$routeMw = $this->middlewareCollector->getRoute($routeid);
 		//Füge Route MW hinzu
-		if($routeMw!==null){
+		if($routeMw !== null){
 			foreach ($routeMw as $item) {
 				$queue->add($item);
 			}
@@ -320,7 +320,7 @@ class App implements RequestHandlerInterface
 	 */
 	public function setFactory(ResponseFactoryInterface $responseFactory)
 	{
-		$this->responseFactory=$responseFactory;
+		$this->responseFactory = $responseFactory;
 	}
 
 	/**
@@ -332,7 +332,7 @@ class App implements RequestHandlerInterface
 	 */
 	public function setStrategy(StrategyInterface $stdStrategy)
 	{
-		$this->stdStrategy=$stdStrategy;
+		$this->stdStrategy = $stdStrategy;
 	}
 
 	/**
@@ -344,7 +344,7 @@ class App implements RequestHandlerInterface
 	 */
 	public function setResolverCreator(ResolverCreatorInterface $creator)
 	{
-		$this->resolverCreator=$creator;
+		$this->resolverCreator = $creator;
 	}
 
 	/**
@@ -411,7 +411,7 @@ class App implements RequestHandlerInterface
 	 *
 	 * @return ContainerInterface
 	 */
-	public function getContainer():ContainerInterface
+	public function getContainer(): ContainerInterface
 	{
 		return $this->container;
 	}
@@ -462,7 +462,7 @@ class App implements RequestHandlerInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function add(string $path,$handler,array $method):Route
+	public function add(string $path,$handler,array $method): Route
 	{
 		return $this->getRouter()->getCollector()->add($path,$handler,$method);
 	}
@@ -470,7 +470,7 @@ class App implements RequestHandlerInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function group($prefix,callable $groupcollector):RouteGroup
+	public function group($prefix,callable $groupcollector): RouteGroup
 	{
 		return $this->getRouter()->getCollector()->group($prefix,$groupcollector);
 	}

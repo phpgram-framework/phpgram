@@ -32,7 +32,7 @@ trait RouteCollectorTrait
 	 * @param array $method
 	 * @return Route
 	 */
-	abstract function add(string $path,$handler,array $method):Route;
+	abstract function add(string $path,$handler,array $method): Route;
 
 	/**
 	 * Füge eine Gruppe hinzu
@@ -41,7 +41,7 @@ trait RouteCollectorTrait
 	 * @param callable $groupcollector
 	 * @return RouteGroup
 	 */
-	abstract public function group($prefix,callable $groupcollector):RouteGroup;
+	abstract public function group($prefix,callable $groupcollector): RouteGroup;
 
 	/**
 	 * GET Route
@@ -50,7 +50,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function get(string $route,$handler):Route
+	public function get(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['GET']);
 	}
@@ -62,7 +62,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function post(string $route,$handler):Route
+	public function post(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['POST']);
 	}
@@ -74,7 +74,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function getpost(string $route,$handler):Route
+	public function getpost(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['GET','POST']);
 	}
@@ -86,7 +86,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function delete(string $route,$handler):Route
+	public function delete(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['DELETE']);
 	}
@@ -98,7 +98,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function put(string $route,$handler):Route
+	public function put(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['PUT']);
 	}
@@ -110,7 +110,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function patch(string $route,$handler):Route
+	public function patch(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['PATCH']);
 	}
@@ -122,7 +122,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function head(string $route,$handler):Route
+	public function head(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['HEAD']);
 	}
@@ -134,7 +134,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function options(string $route,$handler):Route
+	public function options(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['OPTIONS']);
 	}
@@ -146,7 +146,7 @@ trait RouteCollectorTrait
 	 * @param $handler
 	 * @return Route
 	 */
-	public function any(string $route,$handler):Route
+	public function any(string $route,$handler): Route
 	{
 		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','HEAD','OPTIONS']);
 	}

@@ -29,7 +29,14 @@ use Gram\Route\Interfaces\MiddlewareCollectorInterface;
  */
 class MiddlewareCollector implements MiddlewareCollectorInterface
 {
-	private $std=[],$route=[],$group=[];
+	/** @var array */
+	private $std = [];
+
+	/** @var array */
+	private $route = [];
+
+	/** @var array */
+	private $group = [];
 
 	/**
 	 * @inheritdoc

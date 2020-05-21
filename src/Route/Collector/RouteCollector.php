@@ -74,7 +74,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function add(string $path,$handler,array $method):Route
+	public function add(string $path,$handler,array $method): Route
 	{
 		$path=$this->basepath.$this->prefix.$path;
 
@@ -98,7 +98,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function group($prefix,callable $groupCollector):RouteGroup
+	public function group($prefix,callable $groupCollector): RouteGroup
 	{
 		$pre = $this->prefix;
 		$oldGroupIds = $this->routegroupsids;	//Alle Gruppen in der die Route drin ist
@@ -141,7 +141,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getRoute(int $routeId):Route
+	public function getRoute(int $routeId): Route
 	{
 		return $this->routes[$routeId] ?? null;
 	}

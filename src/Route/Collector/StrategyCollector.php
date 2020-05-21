@@ -27,7 +27,11 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class StrategyCollector implements StrategyCollectorInterface
 {
-	private $group=[],$route=[];
+	/** @var array */
+	private $group = [];
+
+	/** @var array */
+	private $route = [];
 
 	/**
 	 * @inheritdoc
