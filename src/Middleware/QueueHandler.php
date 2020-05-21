@@ -108,6 +108,18 @@ class QueueHandler implements QueueHandlerInterface
 	}
 
 	/**
+	 * @inheritdoc
+	 * 
+	 * Ruft einfach die handle function auf
+	 * 
+	 * @throws \Exception
+	 */
+	public function __invoke(ServerRequestInterface $request): ResponseInterface
+	{
+		return $this->handle($request);
+	}
+
+	/**
 	 * Führe die Middleware aus
 	 *
 	 * Entweder als Psr 15 Middleware oder als Callable

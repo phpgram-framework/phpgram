@@ -14,6 +14,7 @@
 namespace Gram\Middleware;
 
 use Gram\Middleware\Queue\QueueInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -50,4 +51,14 @@ interface QueueHandlerInterface extends RequestHandlerInterface
 	 * @return QueueInterface
 	 */
 	public function getQueue(ServerRequestInterface $request):QueueInterface;
+
+	/**
+	 * Funktioniert wie @see handle() 
+	 * 
+	 * QueueHandler lässt sich somit als callable aufrufen
+	 * 
+	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
+	 */
+	public function __invoke(ServerRequestInterface $request): ResponseInterface;
 }

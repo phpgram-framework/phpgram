@@ -1,16 +1,17 @@
 <?php
 namespace Gram\Test\Middleware\DummyMw;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 class CallableMw4
 {
-	public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $next)
+	public function __invoke(ServerRequestInterface $request, callable $next)
 	{
 		$request = $request->withAttribute('callable',"callableMws");
 
-		$response = $next->handle($request);
+		/** @var ResponseInterface $response */
+		$response = $next($request);
 
 		$response->getBody()->write(" at the end: mw3");
 

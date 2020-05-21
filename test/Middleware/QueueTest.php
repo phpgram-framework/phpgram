@@ -163,14 +163,14 @@ class QueueTest extends TestCase
 	{
 		$queue = new QueueHandler(new DummyLastHandler());
 
-		$callableMw1 = function (ServerRequestInterface $request, RequestHandlerInterface $next) {
+		$callableMw1 = function (ServerRequestInterface $request, callable $next) {
 			$words = $request->getAttribute('words',[]);
 
 			$words[]="mw1";
 
 			$request = $request->withAttribute('words',$words);
 
-			return $next->handle($request);
+			return $next($request);
 		};
 
 		$callableMw2 = function (ServerRequestInterface $request, RequestHandlerInterface $next) {
