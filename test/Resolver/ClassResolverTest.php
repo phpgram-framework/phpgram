@@ -12,21 +12,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @covers \Gram\Resolver\ClassResolver::setContainer()
- * @covers \Gram\Resolver\ClassResolver::set()
- * @covers \Gram\Resolver\ClassResolver::getResponse()
- * @covers \Gram\Resolver\ClassResolver::setResponse()
- * @covers \Gram\Resolver\ClassResolver::setRequest()
- * @covers \Gram\Resolver\ClassResolver::getClass()
- * @covers \Gram\Resolver\ClassResolver::resolveParam()
- * @covers \Gram\Resolver\ClassResolver::getDependencies()
- * @covers \Gram\Resolver\ClassResolver::resolve()
- * @covers \Gram\Middleware\Classes\ClassTrait::setContainer()
- * @covers \Gram\Middleware\Classes\ClassTrait::getResponse()
- * @covers \Gram\Middleware\Classes\ClassTrait::setPsr()
- * @uses ClassResolver
+ * @covers \Gram\Resolver\ClassResolver
+ * @covers \Gram\Middleware\Classes\ClassTrait
  * @uses \Gram\Middleware\Classes\ClassInterface
- * @uses \Gram\Middleware\Classes\ClassTrait
  */
 class ClassResolverTest extends TestCase
 {

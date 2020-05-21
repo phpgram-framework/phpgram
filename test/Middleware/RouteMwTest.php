@@ -19,10 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Gram\Exceptions\PageNotFoundException;
 
 /**
- * @covers \Gram\Middleware\RouteMiddleware::__construct
- * @covers \Gram\Middleware\RouteMiddleware::process()
- * @covers \Gram\Middleware\RouteMiddleware::getStrategy()
- * @uses RouteMiddleware
+ * @covers \Gram\Middleware\RouteMiddleware
  */
 class RouteMwTest extends TestCase
 {

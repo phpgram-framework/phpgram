@@ -11,14 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @covers \Gram\Resolver\ClosureResolver::setRequest()
- * @covers \Gram\Resolver\ClosureResolver::set()
- * @covers \Gram\Resolver\ClosureResolver::setResponse()
- * @covers \Gram\Resolver\ClosureResolver::getResponse()
- * @covers \Gram\Resolver\ClosureResolver::setContainer()
- * @covers \Gram\Resolver\ClosureResolver::resolve()
- * @covers \Gram\Resolver\ClosureResolver::__get()
- * @uses ClosureResolver
+ * @covers \Gram\Resolver\ClosureResolver:
  */
 class FunctionResolverTest extends TestCase
 {

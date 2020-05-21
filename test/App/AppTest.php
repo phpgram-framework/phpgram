@@ -9,6 +9,8 @@ use Gram\Test\TestClasses\ControllerTestClass;
  * @package Gram\Test\App
  *
  * Test für die normale App Klasse
+ *
+ * @covers \Gram\App\App
  */
 class AppTest extends AbstractAppTest
 {

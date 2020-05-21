@@ -11,13 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @covers \Gram\Resolver\HandlerResolver::getResponse()
- * @covers \Gram\Resolver\HandlerResolver::setContainer()
- * @covers \Gram\Resolver\HandlerResolver::set()
- * @covers \Gram\Resolver\HandlerResolver::resolve()
- * @covers \Gram\Resolver\HandlerResolver::setResponse()
- * @covers \Gram\Resolver\HandlerResolver::setRequest()
- * @uses HandlerResolver
+ * @covers \Gram\Resolver\HandlerResolver
  * @uses HandlerInterface
  */
 class HandlerResolverTest extends TestCase

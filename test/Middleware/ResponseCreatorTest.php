@@ -18,9 +18,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @covers \Gram\Middleware\ResponseCreator::__construct
- * @covers \Gram\Middleware\ResponseCreator::handle()
- * @uses ResponseCreator
+ * @covers \Gram\Middleware\ResponseCreator
+ * @covers \Gram\Strategy\StdAppStrategy
+ * @covers \Gram\Strategy\BufferAppStrategy
+ * @covers \Gram\Strategy\JsonStrategy
  */
 class ResponseCreatorTest extends TestCase
 {

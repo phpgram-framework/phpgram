@@ -10,12 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @covers \Gram\Resolver\CallableResolver::set()
- * @covers \Gram\Resolver\CallableResolver::setRequest()
- * @covers \Gram\Resolver\CallableResolver::setResponse()
- * @covers \Gram\Resolver\CallableResolver::getResponse()
- * @covers \Gram\Resolver\CallableResolver::setContainer()
- * @uses CallableResolver
+ * @covers \Gram\Resolver\CallableResolver
  */
 class CallableResolverTest extends TestCase
 {

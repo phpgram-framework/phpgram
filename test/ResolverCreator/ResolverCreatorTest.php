@@ -10,12 +10,7 @@ use Gram\Test\TestClasses\TestClass;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Gram\ResolverCreator\ResolverCreator::createCallbackForClass()
- * @covers \Gram\ResolverCreator\ResolverCreator::createCallbackFromCallable()
- * @covers \Gram\ResolverCreator\ResolverCreator::createCallbackFromClosure()
- * @covers \Gram\ResolverCreator\ResolverCreator::createHandlerCallback()
- * @covers \Gram\ResolverCreator\ResolverCreator::createHandlerCallback()
- * @uses ResolverCreator
+ * @covers \Gram\ResolverCreator\ResolverCreator:
  */
 class ResolverCreatorTest extends TestCase
 {
