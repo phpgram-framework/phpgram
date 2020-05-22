@@ -83,6 +83,8 @@ class RouteMwTest extends TestCase
 
 		$app->setFactory($this->psr17);
 
+		$app->setRouter($this->router);
+
 		$app->build();
 
 		$creator = new ServerRequestCreator($this->psr17,$this->psr17,$this->psr17,$this->psr17);

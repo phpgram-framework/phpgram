@@ -15,13 +15,9 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 class ResponseCreatorTest extends TestCase
 {
-
-	/** @var RequestHandlerInterface */
-	protected $responseCreator;
 
 	/** @var Psr17Factory */
 	protected $psr17;
@@ -39,10 +35,6 @@ class ResponseCreatorTest extends TestCase
 
 		$this->request = $creator->fromGlobals();
 
-		$resolveCreator = new ResolverCreator();
-
-		$strategy = new StdAppStrategy();
-
 		$container = new Container();
 
 		$container[TestClass::class]=function (){
@@ -58,11 +50,14 @@ class ResponseCreatorTest extends TestCase
 		};
 
 		$this->container = new \Pimple\Psr11\Container($container);
+	}
 
-		$this->responseCreator = new ResponseCreator(
+	private function getResponseCreator()
+	{
+		return new ResponseCreator(
 			$this->psr17,
-			$resolveCreator,
-			$strategy,
+			new ResolverCreator(),
+			new StdAppStrategy(),
 			$this->container
 		);
 	}
@@ -73,17 +68,12 @@ class ResponseCreatorTest extends TestCase
 	 */
 	public function testCreateResponseCreator()
 	{
-		$responseCreator = new ResponseCreator(
-			$this->psr17,
-			new ResolverCreator(),
-			new StdAppStrategy(),
-			$this->container
-		);
+		$responseCreator = $this->getResponseCreator();
 
-		$this->request = $this->request->withAttribute('callable',TestClassDi::class."@testDi")
+		$request = $this->request->withAttribute('callable',TestClassDi::class."@testDi")
 			->withAttribute('status',200);
 
-		$response = $responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		self::assertEquals(true, $responseCreator instanceof ResponseCreator);
 
@@ -94,12 +84,18 @@ class ResponseCreatorTest extends TestCase
 		self::assertEquals('Gram\Test\TestClasses\TestClass right Testresult',$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testSimple()
 	{
-		$this->request = $this->request->withAttribute('callable',TestClassDi::class."@testDi")
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',TestClassDi::class."@testDi")
 			->withAttribute('status',200);
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 		$head = $response->getHeader('Content-Type');
@@ -108,13 +104,19 @@ class ResponseCreatorTest extends TestCase
 		self::assertEquals('Gram\Test\TestClasses\TestClass right Testresult',$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testWithBufferStrategy()
 	{
-		$this->request = $this->request->withAttribute('callable',ControllerTestClass::class."@buffered")
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',ControllerTestClass::class."@buffered")
 			->withAttribute('status',200)
 			->withAttribute('strategy',new BufferAppStrategy());
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 		$head = $response->getHeader('Content-Type');
@@ -123,13 +125,19 @@ class ResponseCreatorTest extends TestCase
 		self::assertEquals("buffer Test",$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testWithBufferStrategyAsString()
 	{
-		$this->request = $this->request->withAttribute('callable',ControllerTestClass::class."@buffered")
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',ControllerTestClass::class."@buffered")
 			->withAttribute('status',200)
 			->withAttribute('strategy',BufferAppStrategy::class);
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 		$head = $response->getHeader('Content-Type');
@@ -138,13 +146,19 @@ class ResponseCreatorTest extends TestCase
 		self::assertEquals("buffer Test",$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testWithJsonStrategy()
 	{
-		$this->request = $this->request->withAttribute('callable',ControllerTestClass::class."@json")
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',ControllerTestClass::class."@json")
 			->withAttribute('status',200)
 			->withAttribute('strategy',new JsonStrategy());
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 		$head = $response->getHeader('Content-Type');
@@ -153,13 +167,19 @@ class ResponseCreatorTest extends TestCase
 		self::assertEquals('["value1","value2","value3"]',$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testWithJsonStrategyAsString()
 	{
-		$this->request = $this->request->withAttribute('callable',ControllerTestClass::class."@json")
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',ControllerTestClass::class."@json")
 			->withAttribute('status',200)
 			->withAttribute('strategy',JsonStrategy::class);
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 		$head = $response->getHeader('Content-Type');
@@ -168,29 +188,41 @@ class ResponseCreatorTest extends TestCase
 		self::assertEquals('["value1","value2","value3"]',$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testWithFunction()
 	{
+		$responseCreator = $this->getResponseCreator();
+
 		$func = function () {
 			return "test_func";
 		};
 
-		$this->request = $this->request->withAttribute('callable',$func)
+		$request = $this->request->withAttribute('callable',$func)
 			->withAttribute('status',200);
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 
 		self::assertEquals("test_func",$body);
 	}
 
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testIfCallableReturnsResponseBuffered()
 	{
-		$this->request = $this->request->withAttribute('callable',ControllerTestClass::class."@returnResponse")
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',ControllerTestClass::class."@returnResponse")
 			->withAttribute('status',200)
 			->withAttribute('strategy',BufferAppStrategy::class);
 
-		$response = $this->responseCreator->handle($this->request);
+		$response = $responseCreator->handle($request);
 
 		$body = $response->getBody()->__toString();
 		$head = $response->getHeader('Content-Type');

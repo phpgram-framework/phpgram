@@ -21,8 +21,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class QueueTest extends TestCase
 {
-	/** @var QueueHandler */
-	private $queueHandler;
 
 	/** @var ServerRequestInterface */
 	private $request;
@@ -31,8 +29,6 @@ class QueueTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->queueHandler = new QueueHandler(new DummyLastHandler());
-
 		$this->mws = [
 			new TestMw1(),
 			new TestMw2(),
@@ -51,13 +47,29 @@ class QueueTest extends TestCase
 	}
 
 	/**
-	 * @throws \Gram\Exceptions\MiddlewareNotAllowedException
+	 * @param QueueHandlerInterface $queueHandler
 	 */
-	private function addMwNormal()
+	private function addMwNormal(QueueHandlerInterface $queueHandler)
 	{
 		foreach ($this->mws as $mw) {
-			$this->queueHandler->add($this->request,$mw);
+			$queueHandler->add($this->request,$mw);
 		}
+	}
+
+	private function getQueueHandler()
+	{
+		return new QueueHandler(new DummyLastHandler());
+	}
+
+	public function testGetLast()
+	{
+		$queueHandler = $this->getQueueHandler();
+
+		$this->addMwNormal($queueHandler);
+
+		$last = $queueHandler->getLast();
+
+		self::assertEquals(true,$last instanceof RequestHandlerInterface);
 	}
 
 	/**
@@ -65,9 +77,11 @@ class QueueTest extends TestCase
 	 */
 	public function testTheQueue()
 	{
-		$this->addMwNormal();
+		$queueHandler = $this->getQueueHandler();
 
-		$response = $this->queueHandler->handle($this->request);
+		$this->addMwNormal($queueHandler);
+
+		$response = $queueHandler->handle($this->request);
 
 		$string = $response->getBody()->__toString();
 
@@ -81,13 +95,15 @@ class QueueTest extends TestCase
 	 */
 	public function testQueueWithFail()
 	{
-		$this->addMwNormal();
+		$queueHandler = $this->getQueueHandler();
 
-		$queue = $this->queueHandler->getQueue($this->request);
+		$this->addMwNormal($queueHandler);
+
+		$queue = $queueHandler->getQueue($this->request);
 		$queue->add(new TestMw4Fail());
 
 		$this->expectException(\Exception::class);
-		$this->queueHandler->handle($this->request);
+		$queueHandler->handle($this->request);
 	}
 
 	private function initContainer()
