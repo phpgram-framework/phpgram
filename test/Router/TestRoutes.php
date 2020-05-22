@@ -48,25 +48,25 @@ abstract class TestRoutes extends TestCase
 	{
 		$this->collector->setBase($basepath);
 
-		$this->collector->group("/group1",function () use($method){
-			$this->collector->{$method}("","test");
-			$this->collector->{$method}("/two","test2");
-			$this->collector->{$method}("/{id}","testid1");
+		$this->collector->group("/group1",function (RouteCollector $r) use($method){
+			$r->{$method}("","test");
+			$r->{$method}("/two","test2");
+			$r->{$method}("/{id}","testid1");
 
-			$this->collector->group("/group2",function () use($method){
-				$this->collector->{$method}("","test3");
-				$this->collector->{$method}("/two","test4");
-				$this->collector->{$method}("/{id}","testid2");
+			$r->group("/group2",function (RouteCollector $r) use($method){
+				$r->{$method}("","test3");
+				$r->{$method}("/two","test4");
+				$r->{$method}("/{id}","testid2");
 
-				$this->collector->group("/group3",function () use($method){
-					$this->collector->{$method}("","test5");
-					$this->collector->{$method}("/two","test6");
-					$this->collector->{$method}("/{id}","testid3");
+				$this->collector->group("/group3",function (RouteCollector $r) use($method){
+					$r->{$method}("","test5");
+					$r->{$method}("/two","test6");
+					$r->{$method}("/{id}","testid3");
 
-					$this->collector->group("/group4",function () use($method){
-						$this->collector->{$method}("","test7");
-						$this->collector->{$method}("/two","test8");
-						$this->collector->{$method}("/{id}","testid4");
+					$r->group("/group4",function (RouteCollector $r) use($method){
+						$r->{$method}("","test7");
+						$r->{$method}("/two","test8");
+						$r->{$method}("/{id}","testid4");
 					})
 						->addMiddleware('mwGroup41')
 						->addMiddleware('mwGroup42')

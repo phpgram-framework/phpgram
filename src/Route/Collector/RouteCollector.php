@@ -109,7 +109,7 @@ class RouteCollector implements CollectorInterface
 
 		$group = new RouteGroup($this->routegroupid,$this->stack,$this->strategyCollector);
 
-		\call_user_func($groupCollector);
+		\call_user_func($groupCollector,$this);
 
 		$this->prefix=$pre;
 		$this->routegroupsids=$oldGroupIds;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
