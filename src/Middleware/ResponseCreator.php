@@ -74,17 +74,19 @@ final class ResponseCreator implements RequestHandlerInterface
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		//Die Attribute die für das Ausführen des callable benötigt werden
-		$callable = $request->getAttribute('callable');
+		$callable = $request->getAttribute(RouteMiddleware::CALLABLE);
 
-		if($callable===null){
+		if($callable === null){
 			throw new CallableNotFoundException("No callable to Resolve");
 		}
 
-		$param = $request->getAttribute('param',[]);
-		$strategy = $request->getAttribute('strategy',null);
+		$param = $request->getAttribute(RouteMiddleware::ROUTE_PARAMETER,[]);
+		$strategy = $request->getAttribute(RouteMiddleware::ROUTE_STRATEGY,null);
 
 		if ($strategy !== null) {
+			//Für diese Route wurde eine andere Strategy definiert
 			if ($this->container !== null && \is_string($strategy)) {
+				//Suche im Controller wenn der Key angegeben wurde
 				$strategy = $this->container->get($strategy);
 			}
 
@@ -92,10 +94,11 @@ final class ResponseCreator implements RequestHandlerInterface
 				throw new StrategyNotAllowedException("Strategy needs to implement StrategyInterface");
 			}
 		} else {
+			//sonst benutze die Standard Strategy die immer verwendet werden soll (@see App)
 			$strategy = $this->stdstrategy;
 		}
 
-		$status = $request->getAttribute('status',200);
+		$status = $request->getAttribute(RouteMiddleware::STATUS,200);
 
 		//erstelle Response mit den Werten von den Middleware
 		$response = $this->responseFactory->createResponse($status);
