@@ -64,7 +64,7 @@ interface CollectorInterface
 	 *
 	 * @return array
 	 */
-	public function getData():array;
+	public function getData(): array;
 
 	/**
 	 * Gibt zu einer geg. Route Id die passende Route zurück
@@ -169,5 +169,5 @@ interface CollectorInterface
 	 *
 	 * @return string
 	 */
-	public function getBase():string;
+	public function getBase(): string;
 }

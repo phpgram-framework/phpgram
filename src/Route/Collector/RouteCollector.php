@@ -120,7 +120,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getData():array
+	public function getData(): array
 	{
 		if($this->caching && file_exists($this->cache)){
 			return require $this->cache;
@@ -173,7 +173,7 @@ class RouteCollector implements CollectorInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getBase():string
+	public function getBase(): string
 	{
 		return $this->basepath;
 	}
