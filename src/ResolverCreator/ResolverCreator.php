@@ -19,6 +19,7 @@ use Gram\Resolver\ClassResolver;
 use Gram\Resolver\ClosureResolver;
 use Gram\Resolver\HandlerResolver;
 use Gram\Middleware\Handler\HandlerInterface;
+use Gram\Resolver\ResolverInterface;
 
 /**
  * Class CallableCreator
@@ -37,7 +38,7 @@ class ResolverCreator implements ResolverCreatorInterface
 	 *
 	 * @throws \Exception
 	 */
-	public function createResolver($possibleCallable)
+	public function createResolver($possibleCallable): ResolverInterface
 	{
 		if(\is_string($possibleCallable)) {
 			return $this->createCallbackForClass($possibleCallable);

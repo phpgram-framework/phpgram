@@ -31,8 +31,8 @@ class JsonStrategy implements StrategyInterface
 
 	public function __construct($options = 0, $depth = 512)
 	{
-		$this->options=$options;
-		$this->depth=$depth;
+		$this->options = $options;
+		$this->depth = $depth;
 	}
 
 	/**

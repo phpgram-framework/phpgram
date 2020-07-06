@@ -100,7 +100,7 @@ class RouteMiddleware implements MiddlewareInterface
 			->withAttribute(self::ROUTE_PARAMETER,$param);
 
 		//Bei Fehler, 404 oder 405
-		if($status!==200){
+		if($status !== 200){
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
 		}
 
@@ -129,10 +129,10 @@ class RouteMiddleware implements MiddlewareInterface
 		$strategy = $this->strategyCollector->getRoute($routeid);
 
 		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
-		if($strategy===null){
+		if($strategy === null){
 			foreach ($groupid as $item) {
 				$check = $this->strategyCollector->getGroup($item);
-				if($check!==null){
+				if($check !== null){
 					$strategy=$check;
 				}
 			}

@@ -50,7 +50,7 @@ class ClosureResolver implements ResolverInterface
 	 *
 	 * @throws \Exception
 	 */
-	public function set(\Closure $callback=null):void
+	public function set(\Closure $callback = null): void
 	{
 		if(! $callback instanceof \Closure){
 			throw new CallableNotAllowedException("No Closure given");

@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.7.0 */
+/** @version 1.8.0 */
 
 namespace Gram\App;
 
@@ -51,7 +51,7 @@ class App implements RequestHandlerInterface
 {
 	use RouteCollectorTrait;
 
-	protected $router_options=[], $debug_mode = true;
+	protected $router_options = [], $debug_mode = true;
 
 	/** @var StrategyInterface */
 	protected $stdStrategy;
@@ -291,7 +291,7 @@ class App implements RequestHandlerInterface
 		$queue = $this->queueHandler->getQueue($request);
 
 		foreach ($groupid as $item) {
-			$grouMw=$this->middlewareCollector->getGroup($item);
+			$grouMw = $this->middlewareCollector->getGroup($item);
 			//Füge Routegroup Mw hinzu
 			if ($grouMw !== null){
 				foreach ($grouMw as $item2) {
@@ -439,7 +439,7 @@ class App implements RequestHandlerInterface
 	 *
 	 * @param array $options
 	 */
-	public function setRouterOptions(array $options=[])
+	public function setRouterOptions(array $options = [])
 	{
 		$this->router_options = $options;
 	}

@@ -33,5 +33,5 @@ interface ResolverCreatorInterface
 	 * @param $possibleCallable
 	 * @return ResolverInterface
 	 */
-	public function createResolver($possibleCallable);
+	public function createResolver($possibleCallable): ResolverInterface;
 }

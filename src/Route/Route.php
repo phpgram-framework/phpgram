@@ -28,7 +28,7 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class Route
 {
-	public $path,$handle,$vars = [],$groupid=[],$routeid,$method;
+	public $path, $handle, $vars = [], $groupid = [], $routeid, $method;
 
 	/** @var MiddlewareCollectorInterface */
 	private $stack;
@@ -55,13 +55,13 @@ class Route
 		?MiddlewareCollectorInterface $stack = null,
 		?StrategyCollectorInterface $strategyCollector = null
 	){
-		$this->method=$method;	//speichere Method für Dispatcher
-		$this->path=$path;
+		$this->method = $method;	//speichere Method für Dispatcher
+		$this->path = $path;
 		$this->handle = $handle;
-		$this->groupid=$routegroupid;
-		$this->routeid=$routeid;
-		$this->stack=$stack;
-		$this->strategyCollector=$strategyCollector;
+		$this->groupid = $routegroupid;
+		$this->routeid = $routeid;
+		$this->stack = $stack;
+		$this->strategyCollector = $strategyCollector;
 	}
 
 	/**

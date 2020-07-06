@@ -39,9 +39,9 @@ class MarkBased extends Dispatcher
 			//wenn Regex im Chunk war
 			$route = $this->dynamicRoutesHandler[$method][$i][$matches['MARK']];
 
-			$var=[];
+			$var = [];
 			foreach ($route[1] as $j=>$item) {
-				$var[$item]=$matches[$j+1];
+				$var[$item] = $matches[$j+1];
 			}
 
 			return [self::FOUND,$route[0],$var];	//[status,handler,vars}

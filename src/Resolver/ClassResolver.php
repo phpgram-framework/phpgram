@@ -174,19 +174,19 @@ class ClassResolver implements ResolverInterface
 	 *
 	 * @throws \Exception
 	 */
-	public function set($class=""):void
+	public function set($class= ""): void
 	{
-		if($class===""){
+		if($class === ""){
 			throw new ClassNotAllowedException("No Class given in [$class]");
 		}
 
 		[$class_name,$method] = \explode('@',$class);
 
-		if($class_name==="" || $method===""){
+		if($class_name === "" || $method === ""){
 			throw new ClassNotAllowedException("Cannot split Class and Method from [$class]");
 		}
 
-		$this->classname=$class_name;
-		$this->function=$method;
+		$this->classname = $class_name;
+		$this->function = $method;
 	}
 }

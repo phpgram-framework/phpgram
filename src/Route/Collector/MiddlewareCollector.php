@@ -43,7 +43,7 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 	 */
 	public function addStd($middleware)
 	{
-		$this->std[]=$middleware;
+		$this->std[] = $middleware;
 		return $this;
 	}
 
@@ -52,7 +52,7 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 	 */
 	public function addRoute($routeid, $middleware)
 	{
-		$this->route[$routeid][]=$middleware;
+		$this->route[$routeid][] = $middleware;
 	}
 
 	/**
@@ -60,7 +60,7 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 	 */
 	public function addGroup($groupid, $middleware)
 	{
-		$this->group[$groupid][]=$middleware;
+		$this->group[$groupid][] = $middleware;
 	}
 
 	/**

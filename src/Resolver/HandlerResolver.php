@@ -52,9 +52,9 @@ class HandlerResolver implements ResolverInterface
 	 *
 	 * @throws \Exception
 	 */
-	public function set(HandlerInterface $handler=null):void
+	public function set(HandlerInterface $handler = null): void
 	{
-		if($handler===null){
+		if($handler === null){
 			throw new ClassNotAllowedException("No Handler set");
 		}
 

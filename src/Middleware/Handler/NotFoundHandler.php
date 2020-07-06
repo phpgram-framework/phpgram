@@ -31,7 +31,7 @@ class NotFoundHandler implements RequestHandlerInterface
 
 	public function __construct(RequestHandlerInterface $callbackHandler)
 	{
-		$this->callbackHandler=$callbackHandler;
+		$this->callbackHandler = $callbackHandler;
 	}
 
 	/**
@@ -42,13 +42,13 @@ class NotFoundHandler implements RequestHandlerInterface
 	{
 		$callable = $request->getAttribute('callable',null);
 
-		if ($callable!==null){
+		if ($callable !== null){
 			return $this->callbackHandler->handle($request);
 		}
 
 		$status = $request->getAttribute('status',404);
 
-		if($status==405){
+		if($status == 405){
 			throw new PageNotAllowedException('405 Method not allowed');
 		}
 

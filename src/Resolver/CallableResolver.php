@@ -45,7 +45,7 @@ class CallableResolver implements ResolverInterface
 	 *
 	 * @throws CallableNotAllowedException
 	 */
-	public function set(callable $callable=null): void
+	public function set(callable $callable = null): void
 	{
 		if(!\is_callable($callable)) {
 			throw new CallableNotAllowedException("No callable given");

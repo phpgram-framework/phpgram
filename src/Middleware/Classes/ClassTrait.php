@@ -46,7 +46,7 @@ trait ClassTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function getResponse():ResponseInterface
+	public function getResponse(): ResponseInterface
 	{
 		return $this->response;
 	}
@@ -54,7 +54,7 @@ trait ClassTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function setContainer(ContainerInterface $container=null)
+	public function setContainer(ContainerInterface $container = null)
 	{
 		$this->psr11Container = $container;
 	}

@@ -39,7 +39,7 @@ interface ClassInterface
 	 *
 	 * @return ResponseInterface
 	 */
-	public function getResponse():ResponseInterface;
+	public function getResponse(): ResponseInterface;
 
 	/**
 	 * Setzt den DI Container sodass auch Klassen darauf zugriff haben
@@ -47,7 +47,7 @@ interface ClassInterface
 	 * @param ContainerInterface $container
 	 * @return mixed
 	 */
-	public function setContainer(ContainerInterface $container=null);
+	public function setContainer(ContainerInterface $container = null);
 
 	/**
 	 * Gibt einen Wert aus dem DI Container zurück

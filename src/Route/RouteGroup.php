@@ -44,9 +44,9 @@ class RouteGroup
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector
 	){
-		$this->groupid=$groupid;
-		$this->stack=$stack;
-		$this->strategyCollector=$strategyCollector;
+		$this->groupid = $groupid;
+		$this->stack = $stack;
+		$this->strategyCollector = $strategyCollector;
 	}
 
 	public function addMiddleware($middleware)

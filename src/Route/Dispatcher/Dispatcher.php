@@ -67,12 +67,12 @@ abstract class Dispatcher implements DispatcherInterface
 	{
 		$response = $this->doDispatch($method,$uri);
 
-		if($response[0]===self::FOUND){
+		if($response[0] === self::FOUND){
 			return $response;
 		}
 
 		//wenn keine Route gefunden bei HEAD versuch GET
-		if($method=='HEAD'){
+		if($method == 'HEAD'){
 			return $this->dispatch('GET',$uri);
 		}
 
@@ -85,7 +85,7 @@ abstract class Dispatcher implements DispatcherInterface
 			if($item!=$method){
 				$response = $this->doDispatch($item,$uri);
 
-				if($response[0]===self::FOUND){
+				if($response[0] === self::FOUND){
 					return [self::NOT_ALLOWED];
 				}
 			}

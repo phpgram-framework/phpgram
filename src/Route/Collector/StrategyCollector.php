@@ -38,7 +38,7 @@ class StrategyCollector implements StrategyCollectorInterface
 	 */
 	public function addRoute($routeid, $strategy)
 	{
-		$this->route[$routeid]=$strategy;
+		$this->route[$routeid] = $strategy;
 	}
 
 	/**
@@ -46,7 +46,7 @@ class StrategyCollector implements StrategyCollectorInterface
 	 */
 	public function addGroup($groupid, $strategy)
 	{
-		$this->group[$groupid]=$strategy;
+		$this->group[$groupid] = $strategy;
 	}
 
 	/**

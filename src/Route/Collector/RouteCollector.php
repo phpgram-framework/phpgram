@@ -36,9 +36,35 @@ class RouteCollector implements CollectorInterface
 {
 	use RouteCollectorTrait;
 
-	protected $routes=[],$routegroupsids=[0],$basepath='',$prefix='',$er404,$er405;
-	protected $routeid=0,$routegroupid=0;
-	protected $caching,$cache;
+	/** @var array */
+	protected $routes = [];
+
+	/** @var array */
+	protected $routegroupsids = [0];
+
+	/** @var string */
+	protected $basepath = '';
+
+	/** @var string */
+	protected $prefix = '';
+
+	/** @var mixed */
+	protected $er404;
+
+	/** @var mixed */
+	protected $er405;
+
+	/** @var int */
+	protected $routeid = 0;
+
+	/** @var int */
+	protected $routegroupid = 0;
+
+	/** @var bool */
+	protected $caching;
+
+	/** @var null|string */
+	protected $cache;
 
 	/** @var GeneratorInterface */
 	protected $generator;
@@ -61,14 +87,14 @@ class RouteCollector implements CollectorInterface
 		GeneratorInterface $generator,
 		MiddlewareCollectorInterface $stack,
 		StrategyCollectorInterface $strategyCollector,
-		$routecaching=false,
-		$routecache=null
+		$routecaching = false,
+		$routecache = null
 	){
-		$this->caching=$routecaching;
-		$this->cache=$routecache;
-		$this->generator=$generator;
-		$this->stack=$stack;
-		$this->strategyCollector=$strategyCollector;
+		$this->caching = $routecaching;
+		$this->cache = $routecache;
+		$this->generator = $generator;
+		$this->stack = $stack;
+		$this->strategyCollector = $strategyCollector;
 	}
 
 	/**
@@ -76,7 +102,7 @@ class RouteCollector implements CollectorInterface
 	 */
 	public function add(string $path,$handler,array $method): Route
 	{
-		$path=$this->basepath.$this->prefix.$path;
+		$path = $this->basepath.$this->prefix.$path;
 
 		$route = new Route(
 			$path,
@@ -103,7 +129,7 @@ class RouteCollector implements CollectorInterface
 		$pre = $this->prefix;
 		$oldGroupIds = $this->routegroupsids;	//Alle Gruppen in der die Route drin ist
 
-		$this->prefix.=$prefix;
+		$this->prefix.= $prefix;
 		++$this->routegroupid;
 		$this->routegroupsids[] = $this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
 
@@ -111,8 +137,8 @@ class RouteCollector implements CollectorInterface
 
 		\call_user_func($groupCollector,$this);
 
-		$this->prefix=$pre;
-		$this->routegroupsids=$oldGroupIds;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
+		$this->prefix = $pre;
+		$this->routegroupsids = $oldGroupIds;	//stelle die alten ids wieder her da alle nachkommenden Routes nicht mehr in dieser gruppe drin sind
 
 		return $group;
 	}
@@ -122,7 +148,7 @@ class RouteCollector implements CollectorInterface
 	 */
 	public function getData(): array
 	{
-		if($this->caching && file_exists($this->cache)){
+		if($this->caching && \file_exists($this->cache)){
 			return require $this->cache;
 		}
 
@@ -167,7 +193,7 @@ class RouteCollector implements CollectorInterface
 	 */
 	public function setBase(string $base)
 	{
-		$this->basepath=$base;
+		$this->basepath = $base;
 	}
 
 	/**
@@ -183,7 +209,7 @@ class RouteCollector implements CollectorInterface
 	 */
 	public function set404($handle)
 	{
-		$this->er404=$handle;
+		$this->er404 = $handle;
 	}
 
 	/**
@@ -191,6 +217,6 @@ class RouteCollector implements CollectorInterface
 	 */
 	public function set405($handle)
 	{
-		$this->er405=$handle;
+		$this->er405 = $handle;
 	}
 }

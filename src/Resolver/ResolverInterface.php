@@ -40,7 +40,7 @@ interface ResolverInterface
 	 *
 	 * @return void
 	 */
-	public function set():void;
+	public function set(): void;
 
 	/**
 	 * Gibt das Request Object
@@ -48,7 +48,7 @@ interface ResolverInterface
 	 * @param ServerRequestInterface $request
 	 * @return void
 	 */
-	public function setRequest(ServerRequestInterface $request):void;
+	public function setRequest(ServerRequestInterface $request): void;
 
 	/**
 	 * Gibt das Response Object
@@ -56,7 +56,7 @@ interface ResolverInterface
 	 * @param ResponseInterface $response
 	 * @return void
 	 */
-	public function setResponse(ResponseInterface $response):void;
+	public function setResponse(ResponseInterface $response): void;
 
 	/**
 	 * Nimmt das Response Object wieder zurück
@@ -71,5 +71,5 @@ interface ResolverInterface
 	 * @param ContainerInterface|null $container
 	 * @return void
 	 */
-	public function setContainer(ContainerInterface $container=null):void;
+	public function setContainer(ContainerInterface $container=null): void;
 }

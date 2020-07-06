@@ -31,7 +31,10 @@ use Gram\Route\Route;
  */
 abstract class Generator implements GeneratorInterface
 {
+	/** @var array */
 	protected $dynamic = [];
+
+	/** @var array */
 	protected $static = [];
 
 	/** @var ParserInterface */
@@ -92,10 +95,10 @@ abstract class Generator implements GeneratorInterface
 			}
 
 			foreach ($route->method as $item) {
-				if($type===0){
-					$this->static[$item][$datum[0]]=$route->routeid;
-				}elseif ($type===1){
-					$this->dynamic[$item][]=$route;
+				if($type === 0){
+					$this->static[$item][$datum[0]] = $route->routeid;
+				}elseif ($type === 1){
+					$this->dynamic[$item][] = $route;
 				}
 			}
 		}
@@ -109,8 +112,8 @@ abstract class Generator implements GeneratorInterface
 	 */
 	protected function createRoute(array $data)
 	{
-		$url="";
-		$var=[];
+		$url = "";
+		$var = [];
 		foreach ($data as $datum) {
 			if(is_string($datum)){
 				//füge es einfach der url wieder zu
@@ -120,8 +123,8 @@ abstract class Generator implements GeneratorInterface
 
 			//füge var hinzu
 			if(\is_array($datum)){
-				$var[]=$datum[0];	//varaiblen name
-				$url.='('.$datum[1].')';
+				$var[] = $datum[0];	//varaiblen name
+				$url.= '('.$datum[1].')';
 			}
 		}
 
