@@ -21,6 +21,12 @@ namespace Gram\Route\Interfaces;
  */
 interface RouterInterface
 {
+	const CALLABLE = "callable";
+
+	const ROUTE_ID = "routeid";
+
+	const ROUTE_GROUP_ID = "groupid";
+
 	/**
 	 * Starte die Dispatcher
 	 *

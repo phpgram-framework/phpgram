@@ -37,6 +37,14 @@ use Gram\Route\Interfaces\RouterInterface as Router;
  */
 class RouteMiddleware implements MiddlewareInterface
 {
+	const CALLABLE = "callable";
+
+	const STATUS = "status";
+
+	const ROUTE_PARAMETER = "param";
+
+	const ROUTE_STRATEGY = "strategy";
+
 	/** @var Router */
 	protected $router;
 
@@ -87,23 +95,23 @@ class RouteMiddleware implements MiddlewareInterface
 
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request = $request
-			->withAttribute('callable',$handle['callable'])
-			->withAttribute('status',$status)
-			->withAttribute('param',$param);
+			->withAttribute(self::CALLABLE,$handle[Router::CALLABLE])
+			->withAttribute(self::STATUS,$status)
+			->withAttribute(self::ROUTE_PARAMETER,$param);
 
 		//Bei Fehler, 404 oder 405
 		if($status!==200){
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
 		}
 
-		$routeid = $handle['routeid'];
-		$groupid = $handle['groupid'];
+		$routeid = $handle[Router::ROUTE_ID];
+		$groupid = $handle[Router::ROUTE_GROUP_ID];
 
 		$this->app->buildStack($request,$routeid,$groupid);
 
 		$strategy = $this->getStrategy($routeid,$groupid);
 
-		$request = $request->withAttribute('strategy',$strategy);
+		$request = $request->withAttribute(self::ROUTE_STRATEGY,$strategy);
 
 		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
 	}

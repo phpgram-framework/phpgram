@@ -91,8 +91,8 @@ class Router implements RouterInterface
 			$uri = \rtrim($uri,'/');	//entferne letzen / von der Url
 		}
 
-		//sollte der Dispatcher noch nicht erstellt sein
 		if(\is_string($this->dispatcher)) {
+			//sollte der Dispatcher noch nicht erstellt sein
 			$this->dispatcher = new $this->dispatcher($this->collector->getData());
 		}
 
@@ -111,26 +111,26 @@ class Router implements RouterInterface
 	 */
 	protected function getHandle(array $response)
 	{
-		if($response[0]===DispatcherInterface::FOUND) {
+		if($response[0] === DispatcherInterface::FOUND) {
 			$route = $this->collector->getRoute($response[1]);
 
-			if($route===null){
-				$handle['callable'] = $this->collector->get404();
+			if($route === null){
+				$handle[self::CALLABLE] = $this->collector->get404();
 			} else{
 				$handle = [
-					'groupid'=>$route->groupid,
-					'routeid'=>$route->routeid,
-					'callable'=>$route->handle
+					self::ROUTE_GROUP_ID=>$route->groupid,
+					self::ROUTE_ID=>$route->routeid,
+					self::CALLABLE=>$route->handle
 				];
 			}
 
 			return [$response[0],$handle,$response[2]];
 		}
 
-		if($response[0]===DispatcherInterface::NOT_ALLOWED){
-			 $handle['callable'] = $this->collector->get405();
+		if($response[0] === DispatcherInterface::NOT_ALLOWED){
+			 $handle[self::CALLABLE] = $this->collector->get405();
 		}else {
-			$handle['callable'] = $this->collector->get404();
+			$handle[self::CALLABLE] = $this->collector->get404();
 		}
 
 		return [$response[0],$handle,[]];
