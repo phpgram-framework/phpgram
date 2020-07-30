@@ -55,6 +55,8 @@ App::app()->group("/prefix",function (){
 
 ## QueueHandler
 
+### Queue
+
 ## System Middleware
 
 ### Route Middleware

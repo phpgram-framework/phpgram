@@ -46,18 +46,10 @@ App::app()->start($request);
 
 The App class mange all configurations
 
-It got this namespace:
-
-````php
-<?php
-
-use Gram\App\App;
-````
-
 The App class uses a Singleton like mechanism: `App::app` <br>
 This static function always returns the same App class. 
 
-Before the start:
+Before start:
 
 - define [middleware](2%20mw.md) if need
 
@@ -75,7 +67,6 @@ To configure the App see more information [here](0%20app.md)
 ### How the framework works
 
 The App class is a [Psr 15](https://www.php-fig.org/psr/psr-15/) RequestHandlerInterface. 
-It can easy be used as this Handler.
 
 #### App lifecycle
 

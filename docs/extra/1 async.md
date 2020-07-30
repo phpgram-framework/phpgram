@@ -1,7 +1,6 @@
-# Asynchronous Requests
+# Asynchronous Requests and long running php
 
-You can easily create async non blocking requests with phpgram. 
-function from the app.
+You can easily create async non blocking requests or long running php with phpgram. 
 
 1. Setup your App (e.g. routes, [Psr 11 Container](), [Psr 17 ResponseFactory]())
 2. Build the services e.g. ResponseCreator, Middleware, Routes (with `build()` function)
@@ -10,7 +9,7 @@ If its not available try to create one with the factory
 
 A new resolver will be created on every request. So you can use class variables.
 
-Maybe you need to call `gc_collect_cycles()` after 1000 requests.
+Maybe you need to call `gc_collect_cycles()` after 1000 requests but phpgram itself doesn't leak memory.
 
 
 ````php
