@@ -301,4 +301,4 @@ App::app()->group("/prefix",function (){
 
 The order for middleware is: 1st group, 2nd route
 
-and for strategies: 1st route, only if there is not route strategy -> group
+and for strategies: 1st route, only if there is no route strategy -> group

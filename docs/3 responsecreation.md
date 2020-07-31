@@ -5,7 +5,7 @@ phpgram use [Psr 7](https://www.php-fig.org/psr/psr-7/) ServerRequest and Respon
 At least the app needs to return a Psr 7 ResponseInterface.
 
 The Response will be created in ResponseCreator.
-This is the last handler in the [QueueHandler](2%20mw.md#queuehandler) and will be called when there are not middleware left.
+This is the last handler in the [QueueHandler](2%20mw.md#queuehandler) and will be called when there is no middleware left.
 
 The Creator will be completely configure in the [App Class](0%20app.md) at the beginning
 

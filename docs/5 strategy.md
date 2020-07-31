@@ -35,6 +35,8 @@ App::app()->group("/prefix",function (){
 
 ## Standard Strategy
 
+It is possible to create own strategies for different use cases. Phpgram comes with three default strategies.
+
 ### StdAppStrategy
 
 The StdAppStrategy just invoke the route handle and expect a string.

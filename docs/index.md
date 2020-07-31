@@ -46,8 +46,8 @@ App::app()->start($request);
 
 The App class mange all configurations
 
-The App class uses a Singleton like mechanism: `App::app` <br>
-This static function always returns the same App class. 
+The App class uses a singleton like mechanism: `App::app` <br>
+This static function always returns the same App instance. 
 
 Before start:
 
