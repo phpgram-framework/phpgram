@@ -13,8 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ClassResolverTest extends TestCase
 {
-	/** @var ClassResolver */
-	private $resolver;
+
 	/** @var ServerRequestInterface */
 	private $request;
 	/** @var ResponseInterface */
@@ -26,7 +25,6 @@ class ClassResolverTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->resolver = new ClassResolver();
 		$factory = new Psr17Factory();
 		$requestCreator = new ServerRequestCreator($factory,$factory,$factory,$factory);
 
@@ -50,45 +48,49 @@ class ClassResolverTest extends TestCase
 		self::assertEquals("doSmth",$resolver->getFunction());
 	}
 
-	private function initResolve($resolve,$param=[])
+	private function initResolve(ClassResolver $resolver,$resolve,$param=[])
 	{
 		try{
-			$this->resolver->set($resolve);
+			$resolver->set($resolve);
 		}catch (\Exception $e){
 			echo $e;
 		}
 
-		$this->resolver->setRequest($this->request);
-		$this->resolver->setResponse($this->response);
+		$resolver->setRequest($this->request);
+		$resolver->setResponse($this->response);
 
 		try{
-			$this->body = $this->resolver->resolve($param);
+			$this->body = $resolver->resolve($param);
 		}catch (\Exception $e){
 			echo $e;
 			$this->body=null;
 		}
 
-		$this->newResponse = $this->resolver->getResponse();
+		$this->newResponse = $resolver->getResponse();
 	}
 
 	public function testResolveClass()
 	{
+		$resolver = new ClassResolver();
+
 		$resolve = TestClass::class."@doSmth";
 
-		$this->initResolve($resolve);
+		$this->initResolve($resolver,$resolve);
 
 		self::assertEquals(TestClass::class." right Testresult",$this->body);
 	}
 
 	public function testResolvePsrReturn()
 	{
+		$resolver = new ClassResolver();
+
 		$requestAttribut = 12;
 
 		$this->request = $this->request->withAttribute('testCall',$requestAttribut);
 
 		$resolve = TestClass::class."@doPsr";
 
-		$this->initResolve($resolve);
+		$this->initResolve($resolver,$resolve);
 
 		$newStatus = $this->newResponse->getStatusCode();
 
@@ -98,6 +100,8 @@ class ClassResolverTest extends TestCase
 
 	public function testWithParam()
 	{
+		$resolver = new ClassResolver();
+
 		$resolve = TestClass::class."@testWithParam";
 
 		$param = [
@@ -106,7 +110,7 @@ class ClassResolverTest extends TestCase
 			'pw'=>'12345'
 		];
 
-		$this->initResolve($resolve,$param);
+		$this->initResolve($resolver,$resolve,$param);
 
 		$expect ="1 2 3 4 Max Mustermann 12345";
 
@@ -115,6 +119,8 @@ class ClassResolverTest extends TestCase
 
 	public function testResolveDI()
 	{
+		$resolver = new ClassResolver();
+
 		$resolve = TestClassDi::class."@testDi";
 
 		$container = new Container();
@@ -125,18 +131,20 @@ class ClassResolverTest extends TestCase
 
 		$psr11 = new \Pimple\Psr11\Container($container);
 
-		$this->resolver->setContainer($psr11);
+		$resolver->setContainer($psr11);
 
-		$this->initResolve($resolve);
+		$this->initResolve($resolver,$resolve);
 
 		self::assertEquals(TestClass::class." right Testresult",$this->body);
 	}
 
 	public function testWithoutReturn()
 	{
+		$resolver = new ClassResolver();
+
 		$resolve = TestClass::class."@testWithoutReturn";
 
-		$this->initResolve($resolve);
+		$this->initResolve($resolver,$resolve);
 
 		self::assertEquals('',$this->body);
 	}
