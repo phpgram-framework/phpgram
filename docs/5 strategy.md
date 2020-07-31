@@ -80,6 +80,9 @@ class JsonAppStrategy implements StrategyInterface
 	{
 		//first of all the resolver can be prepared like: set the right content-type into the response
 
+		$resolver->setRequest($request);
+		$resolver->setResponse($response);
+
 		//the resolver will be executed. e.g. in try catch block
 		try {
 			$content = $resolver->resolve($param);
@@ -93,7 +96,7 @@ class JsonAppStrategy implements StrategyInterface
 			return $response;
 		}
 		
-		//after the return must be placed inside the response body
+		//the return must be placed inside the response body
 		
 		$response = $resolver->getResponse(); //maybe the handle changed the response e.g. other status
 		
