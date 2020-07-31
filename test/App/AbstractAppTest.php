@@ -21,10 +21,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 abstract class AbstractAppTest extends TestCase
 {
-	protected $map, $routes, $routehandler;
-
-	/** @var App */
-	protected $app;
+	protected $routes, $routehandler;
 
 	/** @var Psr17Factory */
 	protected $psr17;
@@ -34,17 +31,17 @@ abstract class AbstractAppTest extends TestCase
 
 	abstract protected function getApp():App;
 
-	protected function initApp()
+	protected function initApp(): App
 	{
-		$this->app = $this->getApp();
+		$app = $this->getApp();
 
-		$this->map = new RouteMap();
-		$this->routes = $this->map->map();
-		$this->routehandler = $this->map->realHandler();
+		$map = new RouteMap();
+		$this->routes = $map->map();
+		$this->routehandler = $map->realHandler();
 
-		$this->app->addMiddleware(new TestMw1());
+		$app->addMiddleware(new TestMw1());
 
-		$this->initRoutes();
+		$this->initRoutes($app);
 
 		$container = new Container();
 
@@ -54,7 +51,7 @@ abstract class AbstractAppTest extends TestCase
 
 		$psr11 = new \Pimple\Psr11\Container($container);
 
-		$this->app->setContainer($psr11);
+		$app->setContainer($psr11);
 
 		$this->psr17 = new Psr17Factory();
 
@@ -62,19 +59,21 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->request = $creator->fromGlobals();
 
-		$this->app->setFactory($this->psr17);
+		$app->setFactory($this->psr17);
 
-		$this->app->build();
+		$app->build();
+
+		return $app;
 	}
 
-	protected function initRoutes($method='get',$basepath ='')
+	protected function initRoutes(App $app, $method='get',$basepath ='')
 	{
-		$this->app->setBase($basepath);
+		$app->setBase($basepath);
 
-		$this->app->group("",function () use($method){
+		$app->group("",function () use($app,$method){
 			//init Collector
 			foreach ($this->routes as $key=>$route) {
-				$this->app->{$method}($route,$this->routehandler[$key])
+				$app->{$method}($route,$this->routehandler[$key])
 					->addMiddleware(new TestMw3());
 			}
 		})
@@ -84,11 +83,13 @@ abstract class AbstractAppTest extends TestCase
 
 	public function testGeneral()
 	{
+		$app = $this->initApp();
+
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/tester');
 
 		$this->request = $this->request->withUri($uri);
 
-		$response = $this->app->handle($this->request);
+		$response = $app->handle($this->request);
 
 		$body = $response->getBody()->__toString();
 		$status = $response->getStatusCode();
@@ -99,11 +100,13 @@ abstract class AbstractAppTest extends TestCase
 
 	public function testGeneralWithDi()
 	{
+		$app = $this->initApp();
+
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 		$this->request = $this->request->withUri($uri);
 
-		$response = $this->app->handle($this->request);
+		$response = $app->handle($this->request);
 
 		$body = $response->getBody()->__toString();
 		$status = $response->getStatusCode();
@@ -121,9 +124,11 @@ abstract class AbstractAppTest extends TestCase
 
 	public function testWithException()
 	{
+		$app = $this->initApp();
+
 		$this->initWithException();
 
-		$response = $this->app->handle($this->request);
+		$response = $app->handle($this->request);
 
 		$body = $response->getBody()->__toString();
 		$status = $response->getStatusCode();
@@ -134,11 +139,13 @@ abstract class AbstractAppTest extends TestCase
 
 	public function testNoException()
 	{
-		$this->app->debugMode(false);
+		$app = $this->initApp();
+
+		$app->debugMode(false);
 
 		$this->initWithException();
 
-		$response = $this->app->handle($this->request);
+		$response = $app->handle($this->request);
 
 		$body = $response->getBody()->__toString();
 
@@ -150,11 +157,13 @@ abstract class AbstractAppTest extends TestCase
 
 	public function testNotFoundException()
 	{
+		$app = $this->initApp();
+
 		$uri = $this->psr17->createUri('https://jo.com/notFound');
 
 		$this->request = $this->request->withUri($uri);
 
-		$response = $this->app->handle($this->request);
+		$response = $app->handle($this->request);
 
 		$status = $response->getStatusCode();
 		self::assertEquals(404,$status);
@@ -162,11 +171,13 @@ abstract class AbstractAppTest extends TestCase
 
 	public function testNotAllowedException()
 	{
+		$app = $this->initApp();
+
 		$uri = $this->psr17->createUri('https://jo.com/exception');
 
 		$this->request = $this->request->withUri($uri)->withMethod('POST');
 
-		$response = $this->app->handle($this->request);
+		$response = $app->handle($this->request);
 
 		$status = $response->getStatusCode();
 		self::assertEquals(405,$status);

@@ -20,13 +20,15 @@ class AppTest extends AbstractAppTest
 	{
 		$request = $this->request;
 
+		$app = $this->initApp();
+
 		//teste 100 requests mit der selben instance
 		for($i = 0; $i < 100; $i++) {
 			$uri = $this->psr17->createUri('https://jo.com/test/vars/123@/async');
 
 			$request = $request->withUri($uri);
 
-			$response = $this->app->handle($request);
+			$response = $app->handle($request);
 
 			$body = $response->getBody()->__toString();
 			$status = $response->getStatusCode();
@@ -46,13 +48,15 @@ class AppTest extends AbstractAppTest
 	{
 		$request = $this->request;
 
+		$app = $this->initApp();
+
 		//teste 100 requests mit der selben instance
 		for($i = 0; $i < 100; $i++) {
 			$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
 			$request = $request->withUri($uri);
 
-			$response = $this->app->handle($request);
+			$response = $app->handle($request);
 
 			$body = $response->getBody()->__toString();
 			$status = $response->getStatusCode();
