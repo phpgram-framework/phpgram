@@ -2,7 +2,7 @@
 
 # 1.8.x
 
-##1.8.0
+## 1.8.0
 
 - since 
 - Std middleware werden nun direkt in der App class gesammelt und nicht mehr im Collector
