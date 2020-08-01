@@ -24,9 +24,7 @@
 		"psr 7",
 		"psr 15",
 		"psr 17",
-		"psr 11",
-		"async",
-		"asynchronous"
+		"psr 11"
 	],
 	"support": {
 		"issues": "https://gitlab.com/grammm/php-gram/phpgram/issues",
