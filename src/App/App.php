@@ -53,6 +53,9 @@ class App implements RequestHandlerInterface
 
 	protected $router_options = [], $debug_mode = true;
 
+	/** @var array */
+	protected $middleware = [];
+
 	/** @var StrategyInterface */
 	protected $stdStrategy;
 
@@ -262,7 +265,7 @@ class App implements RequestHandlerInterface
 		$queue = new $this->queueClass;
 
 		//Erstelle Middleware Stack
-		foreach ($this->middlewareCollector->getStdMiddleware() as $item) {
+		foreach ($this->middleware as $item) {
 			$queue->add($item);
 		}
 
@@ -529,7 +532,7 @@ class App implements RequestHandlerInterface
 	 */
 	public function addMiddleware($middleware)
 	{
-		$this->getMWCollector()->addStd($middleware);
+		$this->middleware[] = $middleware;
 		return $this;
 	}
 

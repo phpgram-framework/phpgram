@@ -30,22 +30,10 @@ use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 class MiddlewareCollector implements MiddlewareCollectorInterface
 {
 	/** @var array */
-	private $std = [];
-
-	/** @var array */
 	private $route = [];
 
 	/** @var array */
 	private $group = [];
-
-	/**
-	 * @inheritdoc
-	 */
-	public function addStd($middleware)
-	{
-		$this->std[] = $middleware;
-		return $this;
-	}
 
 	/**
 	 * @inheritdoc
@@ -61,14 +49,6 @@ class MiddlewareCollector implements MiddlewareCollectorInterface
 	public function addGroup($groupid, $middleware)
 	{
 		$this->group[$groupid][] = $middleware;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function getStdMiddleware()
-	{
-		return $this->std;
 	}
 
 	/**

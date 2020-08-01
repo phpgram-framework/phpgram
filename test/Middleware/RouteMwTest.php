@@ -66,7 +66,7 @@ class RouteMwTest extends TestCase
 		})
 			->addMiddleware(new TestMw2());
 
-		$this->mwCollector->addStd(new TestMw1());
+		$app->addMiddleware(new TestMw1());
 
 		$this->routemw = new RouteMiddleware(
 			$this->router,

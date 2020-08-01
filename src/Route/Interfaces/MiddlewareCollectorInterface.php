@@ -21,14 +21,6 @@ namespace Gram\Route\Interfaces;
  */
 interface MiddlewareCollectorInterface
 {
-	/**
-	 * Fügt eine Middleware hinzu die unabhänig der Route
-	 * ausgeführt wird
-	 *
-	 * @param $middleware
-	 * @return $this
-	 */
-	public function addStd($middleware);
 
 	/**
 	 * Fügt eine Middleware hinzu die nur bei dieser Route getriggert wird
@@ -47,14 +39,6 @@ interface MiddlewareCollectorInterface
 	 * @return void
 	 */
 	public function addGroup($groupid,$middleware);
-
-	/**
-	 * Gibt die Middleware zurück die immer ausgeführt werden
-	 * @see addStd()
-	 *
-	 * @return array
-	 */
-	public function getStdMiddleware();
 
 	/**
 	 * Gibt die Middleware für die Route Group zurück
