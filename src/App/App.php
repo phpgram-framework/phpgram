@@ -490,7 +490,7 @@ class App implements RequestHandlerInterface
 	 * @inheritdoc
 	 * @return RouteGroup|RouteGroupInterface
 	 */
-	public function group($prefix,callable $groupcollector): Route
+	public function group($prefix,callable $groupcollector): RouteGroup
 	{
 		return $this->getRouter()->getCollector()->group($prefix,$groupcollector);
 	}
