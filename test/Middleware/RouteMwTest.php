@@ -2,16 +2,15 @@
 namespace Gram\Test\Middleware;
 
 use Gram\App\App;
+use Gram\App\Route\RouteCollector;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
-use Gram\Route\Collector\RouteCollector;
-use Gram\Route\Router;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
 use Gram\Test\Middleware\Handler\DummyLastHandler;
-use Gram\Test\Router\RouteMap;
+use Gram\Test\AppRouter\RouteMap;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +19,7 @@ use Gram\Exceptions\PageNotFoundException;
 
 class RouteMwTest extends TestCase
 {
-	private $router, $notFundHandler, $lastHandler, $mwCollector, $strategyCollector, $map;
+	private $router, $notFundHandler, $lastHandler , $map;
 
 	/** @var Psr17Factory */
 	private $psr17;
@@ -30,6 +29,7 @@ class RouteMwTest extends TestCase
 	private $routemw;
 	/** @var QueueHandler */
 	private $queue;
+
 	/** @var RouteCollector */
 	private $routeCollector;
 
@@ -37,14 +37,9 @@ class RouteMwTest extends TestCase
 	{
 		$app = new App();
 
-		$this->mwCollector = $app->getMWCollector();
-		$this->strategyCollector = $app->getStrategyCollector();
+		$strategyCollector = $app->getStrategyCollector();
 
-		$this->router = new Router(
-			[],
-			$this->mwCollector,
-			$this->strategyCollector
-		);
+		$this->router = $app->getRouter();
 		$this->routeCollector = $this->router->getCollector();
 
 		$this->lastHandler = new DummyLastHandler();
@@ -57,10 +52,10 @@ class RouteMwTest extends TestCase
 
 		$method = 'GET';
 
-		$this->routeCollector->group("",function () use($method,$routehandler,$routes){
+		$app->group("",function () use($method,$routehandler,$routes,$app){
 			//init Collector
 			foreach ($routes as $key=>$route) {
-				$this->routeCollector->any($route,$routehandler[$key])
+				$app->any($route,$routehandler[$key])
 					->addMiddleware(new TestMw3());
 			}
 		})
@@ -72,7 +67,7 @@ class RouteMwTest extends TestCase
 			$this->router,
 			$this->notFundHandler,
 			$app,
-			$this->strategyCollector
+			$strategyCollector
 		);
 
 		$app->setQueueHandler($this->queue);

@@ -15,6 +15,11 @@
 
 namespace Gram\App;
 
+use Gram\App\Route\MiddlewareCollector;
+use Gram\App\Route\MiddlewareCollectorInterface;
+use Gram\App\Route\RouteGroup;
+use Gram\App\Route\StrategyCollector;
+use Gram\App\Route\StrategyCollectorInterface;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Queue\QueueInterface;
 use Gram\Middleware\QueueHandlerInterface;
@@ -23,14 +28,10 @@ use Gram\Middleware\RouteMiddleware;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
-use Gram\Route\Collector\RouteCollectorTrait;
-use Gram\Route\Collector\MiddlewareCollector;
-use Gram\Route\Collector\StrategyCollector;
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\RouteGroupInterface;
+use Gram\Route\Interfaces\RouteInterface;
 use Gram\Route\Interfaces\RouterInterface;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
-use Gram\Route\Route;
-use Gram\Route\RouteGroup;
+use Gram\App\Route\Route;
 use Gram\Route\Router;
 use Gram\Strategy\StdAppStrategy;
 use Gram\Strategy\StrategyInterface;
@@ -49,8 +50,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class App implements RequestHandlerInterface
 {
-	use RouteCollectorTrait;
-
 	protected $router_options = [], $debug_mode = true;
 
 	/** @var array */
@@ -99,15 +98,31 @@ class App implements RequestHandlerInterface
 	/**
 	 * Erstellt ein Routerobjekt zurück wenn es noch nicht erstellt wurde
 	 *
+	 * Erstelle den Router mit einem anderen Collector, der andere Route und Groups erzeugt
+	 *
 	 * @return RouterInterface
 	 */
 	public function getRouter()
 	{
 		if(!isset($this->router)){
-			$this->router = new Router(
-				$this->router_options,
+			$options = $this->router_options;
+
+			//default options aus dem Router, nur der collector wurde geändert
+			$options +=[
+				'generator'=>'Gram\\Route\\Generator\\MarkBased',
+				'parser'=>'Gram\\Route\\Parser\\StdParser',
+				'collector'=>'Gram\\App\\Route\\RouteCollector'
+			];
+
+			$routeCollector = new $options['collector'](
+				new $options['generator'](new $options['parser']),
 				$this->getMWCollector(),
 				$this->getStrategyCollector()
+			);
+
+			$this->router = new Router(
+				$options,
+				$routeCollector
 			);
 		}
 
@@ -464,6 +479,7 @@ class App implements RequestHandlerInterface
 
 	/**
 	 * @inheritdoc
+	 * @return Route|RouteInterface
 	 */
 	public function add(string $path,$handler,array $method): Route
 	{
@@ -472,10 +488,119 @@ class App implements RequestHandlerInterface
 
 	/**
 	 * @inheritdoc
+	 * @return RouteGroup|RouteGroupInterface
 	 */
-	public function group($prefix,callable $groupcollector): RouteGroup
+	public function group($prefix,callable $groupcollector): Route
 	{
 		return $this->getRouter()->getCollector()->group($prefix,$groupcollector);
+	}
+
+	/**
+	 * GET Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function get(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['GET']);
+	}
+
+	/**
+	 * POST Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function post(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['POST']);
+	}
+
+	/**
+	 * GET or POST Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function getpost(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['GET','POST']);
+	}
+
+	/**
+	 * DELETE Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function delete(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['DELETE']);
+	}
+
+	/**
+	 * PUT Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function put(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['PUT']);
+	}
+
+	/**
+	 * PATCH Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function patch(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['PATCH']);
+	}
+
+	/**
+	 * HEAD Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function head(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['HEAD']);
+	}
+
+	/**
+	 * OPTIONS Route
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function options(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['OPTIONS']);
+	}
+
+	/**
+	 * Route with every method
+	 *
+	 * @param string $route
+	 * @param $handler
+	 * @return Route
+	 */
+	public function any(string $route,$handler): Route
+	{
+		return $this->add($route,$handler,['GET','POST','DELETE','PUT','PATCH','HEAD','OPTIONS']);
 	}
 
 	//Spezielle Routes

@@ -14,7 +14,8 @@
 namespace Gram\Middleware;
 
 use Gram\App\App;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
+use Gram\App\Route\StrategyCollectorInterface;
+use Gram\Route\Interfaces\RouteInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -70,10 +71,10 @@ class RouteMiddleware implements MiddlewareInterface
 		App $app,
 		StrategyCollectorInterface $strategyCollector
 	){
-		$this->router=$router;
-		$this->notFoundHandler=$notFoundHandler;	//der handler der im errorfall getriggert werden soll
-		$this->strategyCollector=$strategyCollector;
-		$this->app=$app;
+		$this->router = $router;
+		$this->notFoundHandler = $notFoundHandler;	//der handler der im errorfall getriggert werden soll
+		$this->strategyCollector = $strategyCollector;
+		$this->app = $app;
 	}
 
 	/**
@@ -91,21 +92,25 @@ class RouteMiddleware implements MiddlewareInterface
 		$uri = $request->getUri()->getPath();
 		$method = $request->getMethod();
 
+		/** @var RouteInterface $handle */
 		[$status,$handle,$param] = $this->router->run($uri,$method);
 
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request = $request
-			->withAttribute(self::CALLABLE,$handle[Router::CALLABLE])
 			->withAttribute(self::STATUS,$status)
 			->withAttribute(self::ROUTE_PARAMETER,$param);
 
 		//Bei Fehler, 404 oder 405
 		if($status !== 200){
+			$request = $request->withAttribute(self::CALLABLE,$handle);
+
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
+		} else {
+			$request = $request->withAttribute(self::CALLABLE,$handle->getHandle());
 		}
 
-		$routeid = $handle[Router::ROUTE_ID];
-		$groupid = $handle[Router::ROUTE_GROUP_ID];
+		$routeid = $handle->getRouteId();
+		$groupid = $handle->getGroupId();
 
 		$this->app->buildStack($request,$routeid,$groupid);
 

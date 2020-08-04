@@ -10,6 +10,7 @@
 - [#7](https://gitlab.com/grammm/php-gram/phpgram/-/issues/7) Bei einem aufruf von Route group wird der collector mitgegeben
 - [#9](https://gitlab.com/grammm/php-gram/phpgram/-/issues/9) Alle Attribute im Request werden nun durch const's repräsentiert
 - [#6](https://gitlab.com/grammm/php-gram/phpgram/-/issues/6) Der QueueHandler lässt sich nun auch als callable aufrufen
+- neue Route und RouteGroup zum sammeln von Middleware und strategy
 
 # 1.7.x
 
