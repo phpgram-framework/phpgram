@@ -97,16 +97,13 @@ class RouteMiddleware implements MiddlewareInterface
 
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request = $request
+			->withAttribute(self::CALLABLE,$handle->getHandle())
 			->withAttribute(self::STATUS,$status)
 			->withAttribute(self::ROUTE_PARAMETER,$param);
 
 		//Bei Fehler, 404 oder 405
 		if($status !== 200){
-			$request = $request->withAttribute(self::CALLABLE,$handle);
-
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
-		} else {
-			$request = $request->withAttribute(self::CALLABLE,$handle->getHandle());
 		}
 
 		$routeid = $handle->getRouteId();
