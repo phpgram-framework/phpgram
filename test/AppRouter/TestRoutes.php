@@ -3,8 +3,8 @@ namespace Gram\Test\AppRouter;
 
 use Gram\App\App;
 use Gram\App\Route\MiddlewareCollector;
+use Gram\Route\Interfaces\RouterInterface;
 use PHPUnit\Framework\TestCase;
-use Gram\Route\Interfaces\RouteInterface;
 
 abstract class TestRoutes extends TestCase
 {
@@ -83,11 +83,10 @@ abstract class TestRoutes extends TestCase
 
 		$router = App::app()->getRouter();
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
-		$routeid=$handler->getRouteId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
+		$routeid=$handler[RouterInterface::ROUTE_ID];
 
 		$mwRoute = $this->mwCollector->getRoute($routeid);
 		$mwGroup = $this->mwCollector->getGroup($groupid[1]);
@@ -127,24 +126,23 @@ abstract class TestRoutes extends TestCase
 
 		$router = App::app()->getRouter();
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('test',$handler->getHandle());
+		self::assertEquals('test',$handler[RouterInterface::ROUTE_HANDLER]);
 
 		$uri = '/group1/21/';
 
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('testid1',$handler->getHandle());
+		self::assertEquals('testid1',$handler[RouterInterface::ROUTE_HANDLER]);
 	}
 
 	public function testExtendedGroup2()
@@ -154,24 +152,23 @@ abstract class TestRoutes extends TestCase
 
 		$router = App::app()->getRouter();
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('test3',$handler->getHandle());
+		self::assertEquals('test3',$handler[RouterInterface::ROUTE_HANDLER]);
 
 		$uri = '/group1/group2/21/';
 
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('testid2',$handler->getHandle());
+		self::assertEquals('testid2',$handler[RouterInterface::ROUTE_HANDLER]);
 	}
 
 	public function testExtendedGroup3()
@@ -181,25 +178,23 @@ abstract class TestRoutes extends TestCase
 
 		$router = App::app()->getRouter();
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('test5',$handler->getHandle());
+		self::assertEquals('test5',$handler[RouterInterface::ROUTE_HANDLER]);
 
 		$uri = '/group1/group2/group3/21/';
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('testid3',$handler->getHandle());
+		self::assertEquals('testid3',$handler[RouterInterface::ROUTE_HANDLER]);
 	}
 
 	public function testExtendedGroup4()
@@ -209,24 +204,22 @@ abstract class TestRoutes extends TestCase
 
 		$router = App::app()->getRouter();
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('test7',$handler->getHandle());
+		self::assertEquals('test7',$handler[RouterInterface::ROUTE_HANDLER]);
 
 		$uri = '/group1/group2/group3/group4/21/';
 
-		/** @var RouteInterface $handler */
 		[$status,$handler,$param] = $router->run($uri,'GET');
 
-		$groupid=$handler->getGroupId();
+		$groupid=$handler[RouterInterface::ROUTE_GROUP_ID];
 
 		$this->evaluateExtendedGroups($groupid);
 
-		self::assertEquals('testid4',$handler->getHandle());
+		self::assertEquals('testid4',$handler[RouterInterface::ROUTE_HANDLER]);
 	}
 }

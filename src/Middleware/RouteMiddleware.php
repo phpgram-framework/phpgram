@@ -15,7 +15,6 @@ namespace Gram\Middleware;
 
 use Gram\App\App;
 use Gram\App\Route\StrategyCollectorInterface;
-use Gram\Route\Interfaces\RouteInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -92,12 +91,11 @@ class RouteMiddleware implements MiddlewareInterface
 		$uri = $request->getUri()->getPath();
 		$method = $request->getMethod();
 
-		/** @var RouteInterface $handle */
 		[$status,$handle,$param] = $this->router->run($uri,$method);
 
 		//handle kann z. b. der controller als auch der 404 handle sein
 		$request = $request
-			->withAttribute(self::CALLABLE,$handle->getHandle())
+			->withAttribute(self::CALLABLE,$handle[Router::ROUTE_HANDLER])
 			->withAttribute(self::STATUS,$status)
 			->withAttribute(self::ROUTE_PARAMETER,$param);
 
@@ -106,8 +104,8 @@ class RouteMiddleware implements MiddlewareInterface
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
 		}
 
-		$routeid = $handle->getRouteId();
-		$groupid = $handle->getGroupId();
+		$routeid = $handle[Router::ROUTE_ID];
+		$groupid = $handle[Router::ROUTE_GROUP_ID];
 
 		$this->app->buildStack($request,$routeid,$groupid);
 
