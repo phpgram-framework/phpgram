@@ -21,13 +21,10 @@ namespace Gram\App\Route;
  */
 class Route extends \Gram\Route\Route
 {
-	/**
-	 * @var MiddlewareCollectorInterface|null
-	 */
+	/** @var MiddlewareCollectorInterface|null */
 	private $stack;
-	/**
-	 * @var StrategyCollectorInterface|null
-	 */
+
+	/** @var StrategyCollectorInterface|null */
 	private $strategyCollector;
 
 	/**
@@ -64,6 +61,10 @@ class Route extends \Gram\Route\Route
 		return $this;
 	}
 
+	/**
+	 * @param $strategy
+	 * @return $this
+	 */
 	public function addStrategy($strategy)
 	{
 		$this->strategyCollector->addRoute($this->routeid,$strategy);

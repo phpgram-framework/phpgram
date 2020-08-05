@@ -103,15 +103,13 @@ $request = $creator->fromGlobals();
 //App needs a Psr 17 Response Factory
 App::app()->setFactory($psr17Factory);
 
-//let the App emit the Response
-App::app()->start($request);
+//get the response with the content
+$response = App::app()->start($request);
+
+//simple emit:
+echo $response->getBody(); 	// don't do this in production use an psr 7 emitter!
 ````
 
 ## License
 
 phpgram is open source and under [MIT License](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
-
-## Credits
-
-### Emitter
-- Based on [zend-httphandlerrunner](https://github.com/zendframework/zend-httphandlerrunner). Copyright [Zend Technologies USA, Inc. All rights reserved](https://github.com/zendframework/zend-httphandlerrunner/blob/master/LICENSE.md)

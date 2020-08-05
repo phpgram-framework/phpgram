@@ -29,8 +29,11 @@ $request = $creator->fromGlobals();
 //Psr 17 Response Factory
 App::app()->setFactory($psr17Factory);
 
-//emit the Response
-App::app()->start($request);
+//get the response with the content
+$response = App::app()->start($request);
+
+//simple emit:
+echo $response->getBody(); 	// don't do this in production use an psr 7 emitter!
 ````
 
 - if `/` is matched its print out "Hello World"
@@ -60,7 +63,7 @@ Before start:
 - create a [Psr 7](https://www.php-fig.org/psr/psr-7/) ServerRequest
 
 
-After calling the function `start()` a Psr 7 Response will be emitted
+After calling the function `start()` a Psr 7 Response will be returned. This response can emit with every prs 7 emitter.
 
 To configure the App see more information [here](0%20app.md)
 
@@ -77,4 +80,4 @@ The App class is a [Psr 15](https://www.php-fig.org/psr/psr-15/) RequestHandlerI
 5. call the standard middleware and after the route middleware (incl the [routing](1%20routes.md))
 6. call the new mw from the route
 7. call the [route handle](1%20routes.md#route-handle) (e.g. a class) with the [strategy](5%20strategy.md) in the response creator
-8. emit the response
+8. send back the response

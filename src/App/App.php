@@ -17,6 +17,7 @@ namespace Gram\App;
 
 use Gram\App\Route\MiddlewareCollector;
 use Gram\App\Route\MiddlewareCollectorInterface;
+use Gram\App\Route\Route;
 use Gram\App\Route\RouteGroup;
 use Gram\App\Route\StrategyCollector;
 use Gram\App\Route\StrategyCollectorInterface;
@@ -31,7 +32,6 @@ use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Route\Interfaces\RouteGroupInterface;
 use Gram\Route\Interfaces\RouteInterface;
 use Gram\Route\Interfaces\RouterInterface;
-use Gram\App\Route\Route;
 use Gram\Route\Router;
 use Gram\Strategy\StdAppStrategy;
 use Gram\Strategy\StrategyInterface;
@@ -183,23 +183,20 @@ class App implements RequestHandlerInterface
 	}
 
 	/**
-	 * Start der Seite
+	 * Start der Seite, führe build aus um das framework zu initialisieren
 	 *
 	 * Erhält den Request
 	 *
-	 * erstellt den Response und emittet ihn
+	 * erstellt den Response und gibt diesen zurück
 	 *
 	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
 	 */
 	public function start(ServerRequestInterface $request)
 	{
 		$this->build();
 
-		$response = $this->handle($request);
-
-		$emitter = new Emitter();
-
-		$emitter->emit($response);	//Gebe Header und Body vom Response aus
+		return $this->handle($request);
 	}
 
 	/**

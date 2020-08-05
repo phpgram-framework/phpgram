@@ -21,16 +21,18 @@ namespace Gram\App\Route;
  */
 class RouteGroup extends \Gram\Route\RouteGroup
 {
-	/**
-	 * @var MiddlewareCollectorInterface|null
-	 */
+	/** @var MiddlewareCollectorInterface|null */
 	private $stack;
 
-	/**
-	 * @var StrategyCollectorInterface|null
-	 */
+	/** @var StrategyCollectorInterface|null */
 	private $strategyCollector;
 
+	/**
+	 * RouteGroup constructor.
+	 * @param $groupid
+	 * @param MiddlewareCollectorInterface|null $stack
+	 * @param StrategyCollectorInterface|null $strategyCollector
+	 */
 	public function __construct(
 		$groupid,
 		?MiddlewareCollectorInterface $stack,
@@ -41,6 +43,10 @@ class RouteGroup extends \Gram\Route\RouteGroup
 		$this->strategyCollector = $strategyCollector;
 	}
 
+	/**
+	 * @param $middleware
+	 * @return $this
+	 */
 	public function addMiddleware($middleware)
 	{
 		$this->stack->addGroup($this->groupid,$middleware);
@@ -48,6 +54,10 @@ class RouteGroup extends \Gram\Route\RouteGroup
 		return $this;
 	}
 
+	/**
+	 * @param $strategy
+	 * @return $this
+	 */
 	public function addStrategy($strategy)
 	{
 		$this->strategyCollector->addGroup($this->groupid,$strategy);
