@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77ace117f295bde55de604b85d1b9fee",
+    "content-hash": "2eeacc5913ae77268cf9f06e798e5ba6",
     "packages": [
         {
             "name": "phpgram/route",
-            "version": "1.7.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/grammm/php-gram/phpgram-route.git",
-                "reference": "8d0b6e81c33c27d680edf943ec1f542ef8a65e42"
+                "reference": "c1951a94b3ce34b98f35cd47387b8996bc885e63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/grammm%2Fphp-gram%2Fphpgram-route/repository/archive.zip?sha=8d0b6e81c33c27d680edf943ec1f542ef8a65e42",
-                "reference": "8d0b6e81c33c27d680edf943ec1f542ef8a65e42",
+                "url": "https://gitlab.com/api/v4/projects/grammm%2Fphp-gram%2Fphpgram-route/repository/archive.zip?sha=c1951a94b3ce34b98f35cd47387b8996bc885e63",
+                "reference": "c1951a94b3ce34b98f35cd47387b8996bc885e63",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "router",
                 "routing"
             ],
-            "time": "2020-08-01T14:13:18+00:00"
+            "time": "2020-08-04T16:29:30+00:00"
         },
         {
             "name": "psr/container",
@@ -1897,7 +1897,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.18.0",
+            "version": "v1.18.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -2049,7 +2049,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "phpgram/route": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
