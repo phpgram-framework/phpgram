@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1077690c2b86b50903e076584453ae3d",
+    "content-hash": "2eeacc5913ae77268cf9f06e798e5ba6",
     "packages": [
         {
             "name": "phpgram/route",
-            "version": "1.8.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/grammm/php-gram/phpgram-route.git",
-                "reference": "3499813aa121680fe7ee0662519d0fc214700952"
+                "reference": "e24c4b59fd2ecd42bce3b24dc5beb112fd45bb9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/grammm%2Fphp-gram%2Fphpgram-route/repository/archive.zip?sha=3499813aa121680fe7ee0662519d0fc214700952",
-                "reference": "3499813aa121680fe7ee0662519d0fc214700952",
+                "url": "https://gitlab.com/api/v4/projects/grammm%2Fphp-gram%2Fphpgram-route/repository/archive.zip?sha=e24c4b59fd2ecd42bce3b24dc5beb112fd45bb9b",
+                "reference": "e24c4b59fd2ecd42bce3b24dc5beb112fd45bb9b",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "router",
                 "routing"
             ],
-            "time": "2020-08-06T16:20:37+00:00"
+            "time": "2020-08-06T22:06:59+00:00"
         },
         {
             "name": "psr/container",
@@ -2049,7 +2049,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "phpgram/route": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

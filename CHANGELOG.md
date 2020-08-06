@@ -4,7 +4,7 @@
 
 ## 1.8.0
 
-- since 2020/08/06
+- since 
 - Std middleware werden nun direkt in der App class gesammelt und nicht mehr im Collector
 - [#10](https://gitlab.com/grammm/php-gram/phpgram/-/issues/10) Route wurde in ein eigenes Repo ausgelagert: https://gitlab.com/grammm/php-gram/phpgram-route
 - neue Route und RouteGroup zum sammeln von Middleware und strategy
