@@ -2,9 +2,9 @@ test:
   image: php:latest
   
   # cache between builds
-  #cache:
-   # paths:
-    #  - vendor/
+  cache:
+    paths:
+      - vendor/
   
   before_script:
     - apt-get update -yqq
