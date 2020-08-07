@@ -29,8 +29,6 @@ use Gram\Middleware\RouteMiddleware;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
-use Gram\Route\Interfaces\RouteGroupInterface;
-use Gram\Route\Interfaces\RouteInterface;
 use Gram\Route\Interfaces\RouterInterface;
 use Gram\Route\Router;
 use Gram\Strategy\StdAppStrategy;
@@ -476,7 +474,7 @@ class App implements RequestHandlerInterface
 
 	/**
 	 * @inheritdoc
-	 * @return Route|RouteInterface
+	 * @return Route|\Gram\Route\Route
 	 */
 	public function add(string $path,$handler,array $method): Route
 	{
@@ -485,7 +483,7 @@ class App implements RequestHandlerInterface
 
 	/**
 	 * @inheritdoc
-	 * @return RouteGroup|RouteGroupInterface
+	 * @return RouteGroup|\Gram\Route\RouteGroup
 	 */
 	public function group($prefix,callable $groupcollector): RouteGroup
 	{
