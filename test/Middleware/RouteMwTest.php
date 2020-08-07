@@ -2,15 +2,15 @@
 namespace Gram\Test\Middleware;
 
 use Gram\App\App;
-use Gram\App\Route\RouteCollector;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Handler\NotFoundHandler;
 use Gram\Middleware\RouteMiddleware;
+use Gram\Route\Collector\RouteCollector;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
 use Gram\Test\Middleware\Handler\DummyLastHandler;
-use Gram\Test\AppRouter\RouteMap;
+use Gram\Test\Router\RouteMap;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;

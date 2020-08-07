@@ -14,7 +14,7 @@
 namespace Gram\Middleware;
 
 use Gram\App\App;
-use Gram\App\Route\StrategyCollectorInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;

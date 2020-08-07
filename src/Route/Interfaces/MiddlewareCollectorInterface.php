@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\App\Route;
+namespace Gram\Route\Interfaces;
 
 /**
  * Interface MiddlewareCollectorInterface

@@ -1,5 +1,5 @@
 <?php
-namespace Gram\Test\AppRouter;
+namespace Gram\Test\Router;
 
 use Gram\Test\TestClasses\ControllerTestClass;
 use Gram\Test\TestClasses\TestClassDi;

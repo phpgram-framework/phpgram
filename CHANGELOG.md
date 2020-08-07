@@ -6,8 +6,6 @@
 
 - since 2020/08/07
 - Std middleware werden nun direkt in der App class gesammelt und nicht mehr im Collector
-- [#10](https://gitlab.com/grammm/php-gram/phpgram/-/issues/10) Route wurde in ein eigenes Repo ausgelagert: https://gitlab.com/grammm/php-gram/phpgram-route
-- neue Route und RouteGroup zum sammeln von Middleware und strategy
 - [#7](https://gitlab.com/grammm/php-gram/phpgram/-/issues/7) Bei einem aufruf von Route group wird der collector mitgegeben
 - [#9](https://gitlab.com/grammm/php-gram/phpgram/-/issues/9) Alle Attribute im Request werden nun durch const's repräsentiert
 - [#6](https://gitlab.com/grammm/php-gram/phpgram/-/issues/6) Der QueueHandler lässt sich nun auch als callable aufrufen

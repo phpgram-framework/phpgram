@@ -11,42 +11,44 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-namespace Gram\App\Route;
+namespace Gram\Route;
+
+use Gram\Route\Interfaces\MiddlewareCollectorInterface;
+use Gram\Route\Interfaces\StrategyCollectorInterface;
 
 /**
  * Class RouteGroup
- * @package Gram\App\Route
+ * @package Gram\Route
  *
- * Eine Group bei der Middleware und Strategies hinzugefügt werden können
+ * Ein Route Group Objekt um Middleware und Strategy für die Gruppe hinzu zufügen
  */
-class RouteGroup extends \Gram\Route\RouteGroup
+class RouteGroup
 {
-	/** @var MiddlewareCollectorInterface|null */
+	/** @var array */
+	private $groupid;
+
+	/** @var MiddlewareCollectorInterface */
 	private $stack;
 
-	/** @var StrategyCollectorInterface|null */
+	/** @var StrategyCollectorInterface */
 	private $strategyCollector;
 
 	/**
 	 * RouteGroup constructor.
 	 * @param $groupid
-	 * @param MiddlewareCollectorInterface|null $stack
-	 * @param StrategyCollectorInterface|null $strategyCollector
+	 * @param MiddlewareCollectorInterface $stack
+	 * @param StrategyCollectorInterface $strategyCollector
 	 */
 	public function __construct(
 		$groupid,
 		?MiddlewareCollectorInterface $stack,
 		?StrategyCollectorInterface $strategyCollector
-	) {
-		parent::__construct($groupid);
+	){
+		$this->groupid = $groupid;
 		$this->stack = $stack;
 		$this->strategyCollector = $strategyCollector;
 	}
 
-	/**
-	 * @param $middleware
-	 * @return $this
-	 */
 	public function addMiddleware($middleware)
 	{
 		$this->stack->addGroup($this->groupid,$middleware);
@@ -54,10 +56,6 @@ class RouteGroup extends \Gram\Route\RouteGroup
 		return $this;
 	}
 
-	/**
-	 * @param $strategy
-	 * @return $this
-	 */
 	public function addStrategy($strategy)
 	{
 		$this->strategyCollector->addGroup($this->groupid,$strategy);

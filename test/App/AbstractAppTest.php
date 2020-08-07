@@ -5,7 +5,7 @@ use Gram\App\App;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
-use Gram\Test\AppRouter\RouteMap;
+use Gram\Test\Router\RouteMap;
 use Gram\Test\TestClasses\TestClass;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
