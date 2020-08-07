@@ -4,58 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1077690c2b86b50903e076584453ae3d",
+    "content-hash": "0a6e86adfb07ea3dd5c78f80796b6b1e",
     "packages": [
-        {
-            "name": "phpgram/route",
-            "version": "1.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://gitlab.com/grammm/php-gram/phpgram-route.git",
-                "reference": "f7c42f8d73619c949c220677c29bd4eac7a285ef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/grammm%2Fphp-gram%2Fphpgram-route/repository/archive.zip?sha=f7c42f8d73619c949c220677c29bd4eac7a285ef",
-                "reference": "f7c42f8d73619c949c220677c29bd4eac7a285ef",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "8.3.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.8.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Gram\\Route\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jörn Heinemann",
-                    "email": "joernheinemann@gmx.de"
-                }
-            ],
-            "description": "A very fast, extendable and lightweight router",
-            "keywords": [
-                "gram",
-                "phpgram",
-                "router",
-                "routing"
-            ],
-            "time": "2020-08-07T09:05:14+00:00"
-        },
         {
             "name": "psr/container",
             "version": "1.0.0",
