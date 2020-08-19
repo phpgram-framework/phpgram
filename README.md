@@ -113,3 +113,11 @@ echo $response->getBody(); 	// don't do this in production use an psr 7 emitter!
 ## License
 
 phpgram is open source and under [MIT License](https://gitlab.com/grammm/php-gram/phpgram/blob/master/LICENSE)
+
+## Credits
+
+### Router
+
+- Algorithm and Core Implementation: Copyright by Nikita Popov. ([FastRoute](https://github.com/nikic/FastRoute))
+
+- Parser: Copyright by Nikita Popov and Phil Bennett ([thephpleague](https://github.com/thephpleague/route))
