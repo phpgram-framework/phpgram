@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.8.0 */
+/** @version 1.8.1 */
 
 namespace Gram\App;
 
@@ -23,12 +23,8 @@ use Gram\Middleware\RouteMiddleware;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\ResolverCreator\ResolverCreatorInterface;
 use Gram\Middleware\Handler\NotFoundHandler;
-use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\RouteCollectorTrait;
-use Gram\Route\Collector\StrategyCollector;
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
 use Gram\Route\Interfaces\RouterInterface;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\Route;
 use Gram\Route\RouteGroup;
 use Gram\Route\Router;
@@ -80,12 +76,6 @@ class App implements RequestHandlerInterface
 	/** @var ResponseFactoryInterface */
 	protected $responseFactory;
 
-	/** @var MiddlewareCollectorInterface */
-	protected $middlewareCollector;
-
-	/** @var StrategyCollectorInterface */
-	protected $strategyCollector;
-
 	/**
 	 * Welche Queue erstellt werden soll bei jedem Request
 	 *
@@ -104,42 +94,10 @@ class App implements RequestHandlerInterface
 	public function getRouter()
 	{
 		if(!isset($this->router)){
-			$this->router = new Router(
-				$this->router_options,
-				$this->getMWCollector(),
-				$this->getStrategyCollector()
-			);
+			$this->router = new Router($this->router_options);
 		}
 
 		return $this->router;
-	}
-
-	/**
-	 * Gibt einen Middlewarecollector zurück
-	 *
-	 * @return MiddlewareCollectorInterface
-	 */
-	public function getMWCollector()
-	{
-		if(!isset($this->middlewareCollector)){
-			$this->middlewareCollector = new MiddlewareCollector();
-		}
-
-		return $this->middlewareCollector;
-	}
-
-	/**
-	 * Gibt ein Strategy Collector zurück
-	 *
-	 * @return StrategyCollectorInterface
-	 */
-	public function getStrategyCollector()
-	{
-		if(!isset($this->strategyCollector)){
-			$this->strategyCollector = new StrategyCollector();
-		}
-
-		return $this->strategyCollector;
 	}
 
 	/**
@@ -238,8 +196,7 @@ class App implements RequestHandlerInterface
 		$this->routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
 				$this->getRouter(),		//router für den request
 				new NotFoundHandler($this->getResponseCreator()),	//error handler
-				$this,
-				$this->getStrategyCollector()
+				$this
 			);
 	}
 
@@ -291,16 +248,16 @@ class App implements RequestHandlerInterface
 		$queue = $this->queueHandler->getQueue($request);
 
 		foreach ($groupid as $item) {
-			$grouMw = $this->middlewareCollector->getGroup($item);
+			$groupMw = RouteGroup::getMiddleware($item);
 			//Füge Routegroup Mw hinzu
-			if ($grouMw !== null){
-				foreach ($grouMw as $item2) {
+			if ($groupMw !== null){
+				foreach ($groupMw as $item2) {
 					$queue->add($item2);
 				}
 			}
 		}
 
-		$routeMw = $this->middlewareCollector->getRoute($routeid);
+		$routeMw = Route::getMiddleware($routeid);
 		//Füge Route MW hinzu
 		if($routeMw !== null){
 			foreach ($routeMw as $item) {

@@ -16,8 +16,6 @@ namespace Gram\Route\Collector;
 use Gram\Route\Route;
 use Gram\Route\Interfaces\CollectorInterface;
 use Gram\Route\Interfaces\GeneratorInterface;
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
 use Gram\Route\RouteGroup;
 
 /**
@@ -63,26 +61,13 @@ class RouteCollector implements CollectorInterface
 	/** @var GeneratorInterface */
 	protected $generator;
 
-	/** @var MiddlewareCollectorInterface */
-	protected $stack;
-
-	/** @var StrategyCollectorInterface */
-	protected $strategyCollector;
-
 	/**
 	 * RouteCollector constructor.
 	 * @param GeneratorInterface $generator
-	 * @param MiddlewareCollectorInterface $stack
-	 * @param StrategyCollectorInterface $strategyCollector
 	 */
-	public function __construct(
-		GeneratorInterface $generator,
-		?MiddlewareCollectorInterface $stack,
-		?StrategyCollectorInterface $strategyCollector
-	){
+	public function __construct(GeneratorInterface $generator)
+	{
 		$this->generator = $generator;
-		$this->stack = $stack;
-		$this->strategyCollector = $strategyCollector;
 	}
 
 	/**
@@ -97,9 +82,7 @@ class RouteCollector implements CollectorInterface
 			$handler,
 			$method,
 			$this->routegroupsids,
-			$this->routeid,
-			$this->stack,
-			$this->strategyCollector
+			$this->routeid
 		);
 
 		$this->routes[$this->routeid] = $route;
@@ -121,7 +104,7 @@ class RouteCollector implements CollectorInterface
 		++$this->routegroupid;
 		$this->routegroupsids[] = $this->routegroupid;	//Für diese Gruppe werden allen Routes die hier drin sind die gruppenid zugeteilt
 
-		$group = new RouteGroup($this->routegroupid,$this->stack,$this->strategyCollector);
+		$group = new RouteGroup($this->routegroupid);
 
 		\call_user_func($groupCollector,$this);
 
