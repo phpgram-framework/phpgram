@@ -1,10 +1,11 @@
 <?php
 namespace Gram\Test\Router;
 
-use Gram\Route\Collector\MiddlewareCollector;
 use Gram\Route\Collector\RouteCollector;
 use Gram\Route\Interfaces\RouterInterface;
 use Gram\Route\Parser\StdParser;
+use Gram\Route\Route;
+use Gram\Route\RouteGroup;
 use Gram\Route\Router;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
@@ -19,8 +20,43 @@ abstract class TestRoutes extends TestCase
 	protected $collector;
 	/** @var Psr17Factory */
 	protected $psr17;
-	/** @var MiddlewareCollector */
-	protected $mwCollector;
+
+	/**
+	 * Setze Middleware und strategy zurück, da diese als static gesammelt werden
+	 * und somit über alle tests aktiv wären
+	 *
+	 * @throws \ReflectionException
+	 */
+	public static function prepareTearDown()
+	{
+		//setze route group zurück
+		$reflectedClass = new \ReflectionClass(RouteGroup::class);
+		$reflectedProperty = $reflectedClass->getProperty('middleware');
+		$reflectedProperty->setAccessible(true);
+		$reflectedProperty->setValue([]);
+
+		$reflectedProperty = $reflectedClass->getProperty('strategy');
+		$reflectedProperty->setAccessible(true);
+		$reflectedProperty->setValue([]);
+
+		//setze route zurück
+		$reflectedClass = new \ReflectionClass(Route::class);
+		$reflectedProperty = $reflectedClass->getProperty('middleware');
+		$reflectedProperty->setAccessible(true);
+		$reflectedProperty->setValue([]);
+
+		$reflectedProperty = $reflectedClass->getProperty('strategy');
+		$reflectedProperty->setAccessible(true);
+		$reflectedProperty->setValue([]);
+	}
+
+	/**
+	 * @throws \ReflectionException
+	 */
+	protected function tearDown(): void
+	{
+		self::prepareTearDown();
+	}
 
 	protected function initRoutes($method='get',$basepath ='')
 	{
@@ -186,8 +222,8 @@ abstract class TestRoutes extends TestCase
 		$groupid=$handler['groupid'];
 		$routeid=$handler['routeid'];
 
-		$mwRoute = $this->mwCollector->getRoute($routeid);
-		$mwGroup = $this->mwCollector->getGroup($groupid[1]);
+		$mwRoute = Route::getMiddleware($routeid);
+		$mwGroup = RouteGroup::getMiddleware($groupid[1]);
 
 		self::assertEquals('Middleware 0',$mwRoute[0]);
 		self::assertEquals('Middleware 2 0',$mwRoute[1]);
@@ -299,7 +335,7 @@ abstract class TestRoutes extends TestCase
 				continue;
 			}
 
-			$mwGroup = $this->mwCollector->getGroup($item);
+			$mwGroup = RouteGroup::getMiddleware($item);
 
 			self::assertEquals("mwGroup".$i."1",$mwGroup[0]);
 			self::assertEquals("mwGroup".$i."2",$mwGroup[1]);

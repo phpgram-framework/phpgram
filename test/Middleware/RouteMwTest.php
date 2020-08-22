@@ -37,8 +37,6 @@ class RouteMwTest extends TestCase
 	{
 		$app = new App();
 
-		$strategyCollector = $app->getStrategyCollector();
-
 		$this->router = $app->getRouter();
 		$this->routeCollector = $this->router->getCollector();
 
@@ -66,8 +64,7 @@ class RouteMwTest extends TestCase
 		$this->routemw = new RouteMiddleware(
 			$this->router,
 			$this->notFundHandler,
-			$app,
-			$strategyCollector
+			$app
 		);
 
 		$app->setQueueHandler($this->queue);

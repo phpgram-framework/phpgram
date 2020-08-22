@@ -6,6 +6,7 @@ use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
 use Gram\Test\Router\RouteMap;
+use Gram\Test\Router\TestRoutes;
 use Gram\Test\TestClasses\TestClass;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
@@ -33,6 +34,11 @@ abstract class AbstractAppTest extends TestCase
 
 	protected function initApp(): App
 	{
+		try {
+			TestRoutes::prepareTearDown();
+		} catch (\ReflectionException $e) {
+		}
+
 		$app = $this->getApp();
 
 		$map = new RouteMap();
@@ -64,6 +70,14 @@ abstract class AbstractAppTest extends TestCase
 		$app->build();
 
 		return $app;
+	}
+
+	/**
+	 * @throws \ReflectionException
+	 */
+	protected function tearDown(): void
+	{
+		TestRoutes::prepareTearDown();
 	}
 
 	protected function initRoutes(App $app, $method='get',$basepath ='')
