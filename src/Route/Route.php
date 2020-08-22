@@ -13,9 +13,6 @@
 
 namespace Gram\Route;
 
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
-
 /**
  * Class Route
  * @package Gram\Route
@@ -30,11 +27,11 @@ class Route
 {
 	public $path, $handle, $vars = [], $groupid = [], $routeid, $method;
 
-	/** @var MiddlewareCollectorInterface */
-	private $stack;
+	/** @var array */
+	private static $middleware = [];
 
-	/** @var StrategyCollectorInterface */
-	private $strategyCollector;
+	/** @var array  */
+	private static $strategy = [];
 
 	/**
 	 * Route constructor.
@@ -43,25 +40,19 @@ class Route
 	 * @param $method
 	 * @param $routegroupid
 	 * @param $routeid
-	 * @param MiddlewareCollectorInterface $stack
-	 * @param StrategyCollectorInterface $strategyCollector
 	 */
 	public function __construct(
 		string $path,
 		$handle,
 		$method,
 		$routegroupid,
-		$routeid,
-		?MiddlewareCollectorInterface $stack = null,
-		?StrategyCollectorInterface $strategyCollector = null
+		$routeid
 	){
 		$this->method = $method;	//speichere Method für Dispatcher
 		$this->path = $path;
 		$this->handle = $handle;
 		$this->groupid = $routegroupid;
 		$this->routeid = $routeid;
-		$this->stack = $stack;
-		$this->strategyCollector = $strategyCollector;
 	}
 
 	/**
@@ -83,23 +74,35 @@ class Route
 		);
 	}
 
-	/**
-	 * Kann nach dem definieren einer Route aufgerufen werden um mehre Middleware hinzu zufügen
-	 *
-	 * @param $middleware
-	 * @return $this
-	 */
 	public function addMiddleware($middleware)
 	{
-		$this->stack->addRoute($this->routeid,$middleware);
+		self::$middleware[$this->routeid][] = $middleware;
 
 		return $this;
 	}
 
 	public function addStrategy($strategy)
 	{
-		$this->strategyCollector->addRoute($this->routeid,$strategy);
+		self::$strategy[$this->routeid] = $strategy;
 
 		return $this;
+	}
+
+	/**
+	 * @param int $routeId
+	 * @return array
+	 */
+	public static function getMiddleware(int $routeId): array
+	{
+		return self::$middleware[$routeId] ?? [];
+	}
+
+	/**
+	 * @param int $routeId
+	 * @return mixed|null
+	 */
+	public static function getStrategy(int $routeId)
+	{
+		return self::$strategy[$routeId] ?? null;
 	}
 }

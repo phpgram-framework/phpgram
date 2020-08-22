@@ -13,9 +13,6 @@
 
 namespace Gram\Route;
 
-use Gram\Route\Interfaces\MiddlewareCollectorInterface;
-use Gram\Route\Interfaces\StrategyCollectorInterface;
-
 /**
  * Class RouteGroup
  * @package Gram\Route
@@ -24,42 +21,45 @@ use Gram\Route\Interfaces\StrategyCollectorInterface;
  */
 class RouteGroup
 {
-	/** @var array */
+	/** @var int */
 	private $groupid;
 
-	/** @var MiddlewareCollectorInterface */
-	private $stack;
+	/** @var array */
+	private static $middleware = [];
 
-	/** @var StrategyCollectorInterface */
-	private $strategyCollector;
+	/** @var array  */
+	private static $strategy = [];
 
 	/**
 	 * RouteGroup constructor.
 	 * @param $groupid
-	 * @param MiddlewareCollectorInterface $stack
-	 * @param StrategyCollectorInterface $strategyCollector
 	 */
-	public function __construct(
-		$groupid,
-		?MiddlewareCollectorInterface $stack,
-		?StrategyCollectorInterface $strategyCollector
-	){
+	public function __construct($groupid)
+	{
 		$this->groupid = $groupid;
-		$this->stack = $stack;
-		$this->strategyCollector = $strategyCollector;
 	}
 
 	public function addMiddleware($middleware)
 	{
-		$this->stack->addGroup($this->groupid,$middleware);
+		self::$middleware[$this->groupid][] = $middleware;
 
 		return $this;
 	}
 
 	public function addStrategy($strategy)
 	{
-		$this->strategyCollector->addGroup($this->groupid,$strategy);
+		self::$strategy[$this->groupid] = $strategy;
 
 		return $this;
+	}
+
+	public static function getMiddleware(int $groupId): array
+	{
+		return self::$middleware[$groupId] ?? [];
+	}
+
+	public static function getStrategy(int $groupId)
+	{
+		return self::$strategy[$groupId] ?? null;
 	}
 }
