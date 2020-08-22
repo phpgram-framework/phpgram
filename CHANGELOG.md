@@ -2,6 +2,12 @@
 
 # 1.8.x
 
+## 1.8.1
+
+- since 2020/08/
+- ReadMe Credits wieder hinzugefügt
+- [#11](https://gitlab.com/grammm/php-gram/phpgram/-/issues/11) Middleware und Strategy werden mit einem static Array gesammelt und nicht mehr mit einem extra Collector
+
 ## 1.8.0
 
 - since 2020/08/07
