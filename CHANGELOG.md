@@ -4,8 +4,9 @@
 
 ## 1.8.1
 
-- since 2020/08/22
+- since 2020/08/24
 - ReadMe Credits wieder hinzugefügt
+- GeneratorInterface hat nur die die method generate (internal bc break)
 - [#11](https://gitlab.com/grammm/php-gram/phpgram/-/issues/11) Middleware und Strategy werden mit einem static Array gesammelt und nicht mehr mit einem extra Collector
 
 ## 1.8.0
