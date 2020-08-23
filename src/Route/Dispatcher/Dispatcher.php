@@ -27,7 +27,7 @@ abstract class Dispatcher implements DispatcherInterface
 	 * Die Static Routes und ihre Handler
 	 * (ohne Parameter)
 	 *
-	 * @var array
+	 * @var array<string, array<string,int>>
 	 */
 	protected $staticRoutes;
 
@@ -35,7 +35,7 @@ abstract class Dispatcher implements DispatcherInterface
 	 * Regex der dynamischen Routes
 	 * (mit Parametern)
 	 *
-	 * @var array
+	 * @var array<string, array<string|mixed>>
 	 */
 	protected $dynamicRoutesRegex;
 
@@ -49,7 +49,9 @@ abstract class Dispatcher implements DispatcherInterface
 	/**
 	 * Dispatcher constructor.
 	 *
-	 * @param array $routes		Array mit allen geparsten Routes
+	 * @param array<string, array<mixed>> $routes
+	 *
+	 * Array mit allen geparsten Routes
 	 */
 	public function __construct(array $routes)
 	{
