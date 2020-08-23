@@ -31,10 +31,10 @@ use Gram\Route\Route;
  */
 abstract class Generator implements GeneratorInterface
 {
-	/** @var array */
+	/** @var array<string, array<Gram\Route\Route>> */
 	protected $dynamic = [];
 
-	/** @var array */
+	/** @var array<string, array<string,int>> */
 	protected $static = [];
 
 	/** @var ParserInterface */
@@ -46,9 +46,18 @@ abstract class Generator implements GeneratorInterface
 	}
 
 	/**
+	 * Generiert die Route map für die Dynamic Routes
+	 *
+	 * @param array $routes
+	 * @return array<string, array<string, array<string|mixed>>
+	 * Gebe Route und Handlerliste zurück
+	 */
+	abstract protected function generateDynamic(array $routes): array;
+
+	/**
 	 * @inheritdoc
 	 */
-	public function generate(array $routes):array
+	public function generate(array $routes): array
 	{
 		foreach ($routes as $route) {
 			$this->mapRoute($route);

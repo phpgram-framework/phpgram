@@ -21,7 +21,11 @@ namespace Gram\Route\Generator;
  */
 trait DynamicGeneratorTrait
 {
-	protected $routeList,$handlerList;
+	/** @var array<string, array<string|mixed>> */
+	protected $routeList = [];
+
+	/** @var array  */
+	protected $handlerList = [];
 
 	/**
 	 * Gibt die jeweilige angepeilte chunksize zurück
@@ -33,11 +37,11 @@ trait DynamicGeneratorTrait
 	/**
 	 * Erstellt Regex für den jeweiligen Chunk
 	 *
-	 * @param array $chunk
-	 * @param $method
-	 * @return mixed
+	 * @param array<Gram\Route\Route> $chunk
+	 * @param string $method
+	 * @return void
 	 */
-	abstract protected function chunkRoutes(array $chunk,$method);
+	abstract protected function chunkRoutes(array $chunk, string $method);
 
 	/**
 	 * @inheritdoc
@@ -47,16 +51,13 @@ trait DynamicGeneratorTrait
 	 * Wenn diese erreicht ist fasse die Routes zu einer Regex zusammen ( @see DynamicGenerator::chunkRoutes() )
 	 *
 	 * @param array $routes
-	 *
 	 * Die zu chunkenden Routes. Array muss die Route, den Handler und die Anzahl an erwarteten Vartaiblen beinhalten und
 	 * wie folgt aufgebaut sein:
 	 *
 	 * $routes[1-n]=array("route"=>$route,"handle"=>$handle,"vars"=>$varcount);
 	 *
-	 * @return array
-	 * Gebe Route und Handlerliste zurück
 	 */
-	public function generateDynamic(array $routes):array
+	protected function generateDynamic(array $routes): array
 	{
 		foreach ($routes as $method=>$route) {
 			if($this->getChunkSize() <= 0) {

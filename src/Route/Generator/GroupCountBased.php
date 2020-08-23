@@ -33,7 +33,7 @@ class GroupCountBased extends Generator
 		return 10;
 	}
 
-	protected function chunkRoutes(array $chunk,$method)
+	protected function chunkRoutes(array $chunk,string $method)
 	{
 		$number = 0;
 		$routeCollector = [];
