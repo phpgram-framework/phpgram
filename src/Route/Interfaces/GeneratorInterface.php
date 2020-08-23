@@ -25,16 +25,8 @@ interface GeneratorInterface
 	 * Bereitet die Routes vor
 	 * und unterteilt diese in Static und Dynamic Routes
 	 *
-	 * @param array $routes
-	 * @return array
+	 * @param array<> $routes
+	 * @return array<<string, array<string,int>>, array<string, array<string, array<string|mixed>>>
 	 */
-	public function generate(array $routes):array;
-
-	/**
-	 * Generiert die Route map für die Dynamic Routes
-	 *
-	 * @param array $routes
-	 * @return array
-	 */
-	public function generateDynamic(array $routes):array;
+	public function generate(array $routes): array;
 }
