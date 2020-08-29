@@ -20,6 +20,9 @@ test:
 
   script:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
+  artifacts:
+    paths:
+      - coverage
   except:
   - trigger
 
