@@ -26,9 +26,17 @@ class Queue implements QueueInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function add($middleware)
+	public function add($middleware): void
 	{
 		$this->stack[] = $middleware;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function addMultiple(array $middleware): void
+	{
+		$this->stack = \array_merge($this->stack,$middleware);
 	}
 
 	/**

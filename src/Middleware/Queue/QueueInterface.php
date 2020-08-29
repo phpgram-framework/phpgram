@@ -29,7 +29,14 @@ interface QueueInterface
 	 * @param $middleware
 	 * @return void
 	 */
-	public function add($middleware);
+	public function add($middleware): void;
+
+	/**
+	 * Adds middleware to the queue
+	 *
+	 * @param array $middleware
+	 */
+	public function addMultiple(array $middleware): void;
 
 	/**
 	 * Gibt die nächste Middleware zurück die für diesen Request dran ist
