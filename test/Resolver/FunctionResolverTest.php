@@ -39,7 +39,8 @@ class FunctionResolverTest extends TestCase
 		try{
 			$this->resolver->set($resolve);
 		}catch (\Exception $e){
-			echo $e;
+			//echo $e;
+			return;
 		}
 
 		$this->resolver->setRequest($this->request);
@@ -140,5 +141,14 @@ class FunctionResolverTest extends TestCase
 		$this->initResolve($function);
 
 		self::assertEquals('',$this->body);
+	}
+
+	public function testWithoutFunction()
+	{
+		$function = null;
+
+		$this->initResolve($function);
+
+		self::assertEquals(null,$this->body);
 	}
 }
