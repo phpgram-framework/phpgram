@@ -1,10 +1,15 @@
 <?php
 namespace Gram\Test\Resolver;
 
+use Gram\Exceptions\ClassNotAllowedException;
+use Gram\Exceptions\DependencyNotFoundException;
 use Gram\Resolver\ClassResolver;
+use Gram\Test\TestClasses\CallableClass;
 use Gram\Test\TestClasses\TestClass;
+use Gram\Test\TestClasses\TestClassAbstractClassForResolver;
 use Gram\Test\TestClasses\TestClassDi;
 use Gram\Test\TestClasses\TestClassDiDirectAccess;
+use Gram\Test\TestClasses\TestClassWithDefaultDependency;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
@@ -61,12 +66,7 @@ class ClassResolverTest extends TestCase
 		$resolver->setRequest($this->request);
 		$resolver->setResponse($this->response);
 
-		try{
-			$this->body = $resolver->resolve($param);
-		}catch (\Exception $e){
-			echo $e;
-			$this->body=null;
-		}
+		$this->body = $resolver->resolve($param);
 
 		$this->newResponse = $resolver->getResponse();
 	}
@@ -172,6 +172,81 @@ class ClassResolverTest extends TestCase
 		self::assertEquals(null,$this->body);
 	}
 
+	public function testWithClassInContainer()
+	{
+		$resolver = new ClassResolver();
+
+		$container = new Container();
+
+		$resolve = TestClass::class."@doSmth";
+
+		$container[TestClass::class]=function (){
+			return new TestClass();
+		};
+
+		$psr11 = new \Pimple\Psr11\Container($container);
+
+		$resolver->setContainer($psr11);
+
+		$this->initResolve($resolver,$resolve);
+
+		self::assertEquals(TestClass::class." right Testresult",$this->body);
+	}
+
+	public function testWithShortNameDependencyInContainer()
+	{
+		$resolver = new ClassResolver();
+
+		$container = new Container();
+
+		$resolve = TestClassDi::class."@testDi";
+
+		$container['TestClass']=function (){
+			return new TestClass();
+		};
+
+		$psr11 = new \Pimple\Psr11\Container($container);
+
+		$resolver->setContainer($psr11);
+
+		$this->initResolve($resolver,$resolve);
+
+		self::assertEquals(TestClass::class." right Testresult",$this->body);
+	}
+
+	public function testWithDefaultDependencyInWithoutContainer()
+	{
+		$resolver = new ClassResolver();
+
+		$resolve = TestClassWithDefaultDependency::class."@doing";
+
+		$container = new Container();
+
+		$psr11 = new \Pimple\Psr11\Container($container);
+
+		$resolver->setContainer($psr11);
+
+		$this->initResolve($resolver,$resolve);
+
+		self::assertEquals(null,$this->body);
+	}
+
+	public function testWithoutRequiredDependency()
+	{
+		$resolver = new ClassResolver();
+
+		$container = new Container();
+
+		$resolve = TestClassDi::class."@testDi";
+
+		$psr11 = new \Pimple\Psr11\Container($container);
+
+		$resolver->setContainer($psr11);
+
+		self::expectException(DependencyNotFoundException::class);
+		$this->initResolve($resolver,$resolve);
+	}
+
 	public function testWithoutReturn()
 	{
 		$resolver = new ClassResolver();
@@ -198,5 +273,25 @@ class ClassResolverTest extends TestCase
 		$this->initResolve($resolver,"");
 
 		self::assertEquals(null,$this->body);
+	}
+
+	public function testWithAbstractClass()
+	{
+		$resolver = new ClassResolver();
+
+		$resolve = TestClassAbstractClassForResolver::class."@doIt";
+
+		self::expectException(ClassNotAllowedException::class);
+		$this->initResolve($resolver,$resolve);
+	}
+
+	public function testWithClassWithoutClassInterface()
+	{
+		$resolver = new ClassResolver();
+
+		$resolve = CallableClass::class."@__invoke";
+
+		self::expectException(ClassNotAllowedException::class);
+		$this->initResolve($resolver,$resolve);
 	}
 }
