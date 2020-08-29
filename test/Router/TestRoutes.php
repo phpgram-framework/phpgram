@@ -2,6 +2,7 @@
 namespace Gram\Test\Router;
 
 use Gram\Route\Collector\RouteCollector;
+use Gram\Route\Interfaces\CollectorInterface;
 use Gram\Route\Interfaces\RouterInterface;
 use Gram\Route\Parser\StdParser;
 use Gram\Route\Route;
@@ -20,6 +21,32 @@ abstract class TestRoutes extends TestCase
 	protected $collector;
 	/** @var Psr17Factory */
 	protected $psr17;
+
+	abstract protected function getRouterOptions(): array;
+
+	protected function setUp(): void
+	{
+		$this->psr17 = new Psr17Factory();
+
+		$this->router = $this->createRouter();
+
+		$this->collector = $this->router->getCollector();
+
+		$this->map = new RouteMap();
+		$this->routes = $this->map->map();
+		$this->routehandler = $this->map->handler();
+	}
+
+	protected function createRouter(array $options = [])
+	{
+		$router = new Router(array_merge($this->getRouterOptions(),$options));
+
+		$collector = $router->getCollector();
+		$collector->set404("404");
+		$collector->set405("405");
+
+		return $router;
+	}
 
 	/**
 	 * Setze Middleware und strategy zurück, da diese als static gesammelt werden
@@ -48,14 +75,18 @@ abstract class TestRoutes extends TestCase
 		self::prepareTearDown();
 	}
 
-	protected function initRoutes($method='get',$basepath ='')
+	protected function initRoutes($method='get',$basepath ='', ?CollectorInterface $collector = null)
 	{
-		$this->collector->setBase($basepath);
+		if(!isset($collector)) {
+			$collector = $this->collector;
+		}
 
-		$this->collector->group("",function () use($method){
+		$collector->setBase($basepath);
+
+		$collector->group("",function () use($method,$collector){
 			//init Collector
 			foreach ($this->routes as $key=>$route) {
-				$this->collector->{$method}($route,$this->routehandler[$key])
+				$collector->{$method}($route,$this->routehandler[$key])
 					->addMiddleware("Middleware $key")
 					->addMiddleware("Middleware 2 $key");
 			}
@@ -170,6 +201,26 @@ abstract class TestRoutes extends TestCase
 		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
+	public function testSimpleRoutesWithGetPost()
+	{
+		$this->initRoutes('getpost');
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
+
+		//Teste mit POST
+
+		/** @var Route $handler */
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'POST');
+
+		self::assertEquals($this->routehandler[1],$handler->handle);
+
+		//teste mit GET
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[1],$handler->handle);
+	}
+
 	public function testSimpleRoutesWithPut()
 	{
 		$this->initRoutes('put');
@@ -202,6 +253,39 @@ abstract class TestRoutes extends TestCase
 
 		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'PATCH');
+
+		self::assertEquals($this->routehandler[1],$handler->handle);
+	}
+
+	public function testSimpleRoutesWithHead()
+	{
+		$this->initRoutes('head');
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'HEAD');
+
+		self::assertEquals($this->routehandler[1],$handler->handle);
+	}
+
+	public function testSimpleRoutesWithOptions()
+	{
+		$this->initRoutes('options');
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'OPTIONS');
+
+		self::assertEquals($this->routehandler[1],$handler->handle);
+	}
+
+	public function testSimpleRoutesWithHeadAtGetRoutes()
+	{
+		$this->initRoutes('get');
+
+		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
+
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'HEAD');
 
 		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
@@ -276,17 +360,6 @@ abstract class TestRoutes extends TestCase
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
 		self::assertEquals($this->routehandler[3],$handler->handle);
-	}
-
-	public function testSimpleRoutesWithHead()
-	{
-		$this->initRoutes();
-
-		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
-
-		[$status,$handler,$param] = $this->router->run($uri->getPath(),'HEAD');
-
-		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
 	public function test404()
@@ -493,5 +566,36 @@ abstract class TestRoutes extends TestCase
 		self::assertEquals($this->routehandler[7],$handler->handle);
 		self::assertEquals(123,$param["id"]);
 		self::assertEquals(321,$param["id1"]);
+	}
+
+	public function testCachedRoutes()
+	{
+		$router = $this->createRouter([
+			'caching'=>true,
+			'cache'=>"routes.php",
+		]);
+
+		$this->initRoutes('GET', '',$router->getCollector());
+
+		$uri = $this->psr17->createUri('https://jo.com/test/optional');
+
+		/** @var Route $handler */
+		[$status,$handler,$param] = $router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[7],$handler->handle);
+
+		$router = $this->createRouter([
+			'caching'=>true,
+			'cache'=>"routes.php",
+		]);
+
+		$this->initRoutes('GET', '',$router->getCollector());
+
+		/** @var Route $handler */
+		[$status,$handler,$param] = $router->run($uri->getPath(),'GET');
+
+		self::assertEquals($this->routehandler[7],$handler->handle);
+
+		unlink("routes.php");
 	}
 }
