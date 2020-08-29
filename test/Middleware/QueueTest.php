@@ -1,6 +1,7 @@
 <?php
 namespace Gram\Test\Middleware;
 
+use Gram\Exceptions\MiddlewareNotAllowedException;
 use Gram\Middleware\Queue\Queue;
 use Gram\Middleware\QueueHandler;
 use Gram\Middleware\Queue\QueueInterface;
@@ -119,6 +120,17 @@ class QueueTest extends TestCase
 		};
 
 		return $container;
+	}
+
+	/**
+	 * @throws MiddlewareNotAllowedException
+	 */
+	public function testQueueHandlerWithoutQueue()
+	{
+		$queue = new QueueHandler(new DummyLastHandler());
+
+		self::expectException(MiddlewareNotAllowedException::class);
+		$queue->getQueue($this->request->withoutAttribute(QueueInterface::class));
 	}
 
 	/**
