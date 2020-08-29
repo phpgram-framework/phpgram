@@ -42,7 +42,8 @@ class CallableResolverTest extends TestCase
 		try{
 			$this->resolver->set($resolve);
 		}catch (\Exception $e){
-			echo $e;
+			//echo $e;
+			return;
 		}
 
 		$this->resolver->setRequest($this->request);
@@ -113,5 +114,14 @@ class CallableResolverTest extends TestCase
 		$this->initResolve($function);
 
 		self::assertEquals('',$this->body);
+	}
+
+	public function testWithoutCallable()
+	{
+		$function = null;
+
+		$this->initResolve($function);
+
+		self::assertEquals(null,$this->body);
 	}
 }
