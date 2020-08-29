@@ -15,7 +15,6 @@ namespace Gram\Middleware;
 
 use Gram\App\App;
 use Gram\Route\Route;
-use Gram\Route\RouteGroup;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -86,11 +85,16 @@ class RouteMiddleware implements MiddlewareInterface
 		$uri = $request->getUri()->getPath();
 		$method = $request->getMethod();
 
-		[$status,$handle,$param] = $this->router->run($uri,$method);
+		/**
+		 * @var int $status
+		 * @var Route|mixed $route
+		 * @var array $param
+		 */
+		[$status,$route,$param] = $this->router->run($uri,$method);
 
-		//handle kann z. b. der controller als auch der 404 handle sein
+		//$route kann z. b. Route sein als auch der 404 handle sein
 		$request = $request
-			->withAttribute(self::CALLABLE,$handle[Router::ROUTE_HANDLER])
+			->withAttribute(self::CALLABLE, $status !== 200 ? $route : $route->handle)
 			->withAttribute(self::STATUS,$status)
 			->withAttribute(self::ROUTE_PARAMETER,$param);
 
@@ -99,40 +103,10 @@ class RouteMiddleware implements MiddlewareInterface
 			return $this->notFoundHandler->handle($request);	//erstelle response mit dem notfound handler
 		}
 
-		$routeid = $handle[Router::ROUTE_ID];
-		$groupid = $handle[Router::ROUTE_GROUP_ID];
+		$this->app->buildStack($request,$route);
 
-		$this->app->buildStack($request,$routeid,$groupid);
-
-		$strategy = $this->getStrategy($routeid,$groupid);
-
-		$request = $request->withAttribute(self::ROUTE_STRATEGY,$strategy);
+		$request = $request->withAttribute(self::ROUTE_STRATEGY,$route->getStrategy());
 
 		return $handler->handle($request);	//wenn alles ok handle nochmal aufrufen für die nächste middleware
-	}
-
-	/**
-	 * Hole Strategy von Collector für die Route
-	 *
-	 * @param $routeid
-	 * @param $groupid
-	 * @return mixed
-	 */
-	protected function getStrategy($routeid,$groupid)
-	{
-		//Prüfe ob es eine Route Strategie gibt
-		$strategy = Route::getStrategy($routeid);
-
-		//Wenn nicht dann ob es eine für die Gruppe gibt, die letzte Gruppenstrategie wird genommen
-		if($strategy === null){
-			foreach ($groupid as $item) {
-				$check = RouteGroup::getStrategy($item);
-				if($check !== null){
-					$strategy = $check;
-				}
-			}
-		}
-
-		return $strategy;
 	}
 }
