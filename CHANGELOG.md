@@ -2,6 +2,18 @@
 
 # 1.8.x
 
+## 1.8.2
+
+- since 2020/
+- DispatcherInterface hat nur noch die function dispatch() (internal bc break)
+- Route Object baut nun ihre Middleware von route und von group selber zusammen, das aber nur einmal
+- Route Object ermittelt selbstständig die strategy
+- router gibt nun immer das route object und nicht mehr nur den handler zurück
+- generator trait chunkt nun immer routes, egal was die chunk size zurück gibt.
+- In der App wird die Route Middleware direkt bei build() dem middleware array hinzugefügt
+- queue class hat eine neue function: addMultiple() bei der mehrere mw auf einaml hinzugefügt werden können
+ 
+
 ## 1.8.1
 
 - since 2020/08/24
