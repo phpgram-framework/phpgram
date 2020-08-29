@@ -61,6 +61,21 @@ abstract class Dispatcher implements DispatcherInterface
 	}
 
 	/**
+	 * Suche jede Gruppenregex ab
+	 *
+	 * Wenn die richtige Routeregex gefunden wird der Handler
+	 * und die Matches zurück gegeben
+	 *
+	 * Sonst gebe Not_Found Fehler zurück
+	 *
+	 * @param $method
+	 * @param string $uri
+	 * Die Uri die geprüft werden soll (hier als Url behandelt)
+	 * @return array
+	 */
+	abstract protected function dispatchDynamic($method, $uri);
+
+	/**
 	 * @inheritdoc
 	 *
 	 * Sucht auch noch die Http Method für 405

@@ -35,19 +35,4 @@ interface DispatcherInterface
 	 * @return array
 	 */
 	public function dispatch($method,$uri);
-
-	/**
-	 * Suche jede Gruppenregex ab
-	 *
-	 * Wenn die richtige Routeregex gefunden wird der Handler
-	 * und die Matches zurück gegeben
-	 *
-	 * Sonst gebe Not_Found Fehler zurück
-	 *
-	 * @param $method
-	 * @param string $uri
-	 * Die Uri die geprüft werden soll (hier als Url behandelt)
-	 * @return array
-	 */
-	public function dispatchDynamic($method, $uri);
 }
