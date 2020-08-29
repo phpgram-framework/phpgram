@@ -38,7 +38,8 @@ class HandlerResolverTest extends TestCase
 		try{
 			$this->resolver->set($resolve);
 		}catch (\Exception $e){
-			echo $e;
+			//echo $e;
+			return;
 		}
 
 		$this->resolver->setRequest($this->request);
@@ -68,5 +69,13 @@ class HandlerResolverTest extends TestCase
 
 		self::assertEquals($requestAttribut,$this->body);
 		self::assertEquals(404,$newStatus);
+	}
+
+	public function testWithoutHandler()
+	{
+		$handler = null;
+
+		$this->initResolve($handler);
+		self::assertEquals(null,$this->body);
 	}
 }
