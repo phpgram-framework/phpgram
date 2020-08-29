@@ -108,6 +108,26 @@ class ResponseCreatorTest extends TestCase
 	 * @throws \Gram\Exceptions\CallableNotFoundException
 	 * @throws \Gram\Exceptions\StrategyNotAllowedException
 	 */
+	public function testWithResponseReturned()
+	{
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request->withAttribute('callable',ControllerTestClass::class."@returnResponse")
+			->withAttribute('status',200);
+
+		$response = $responseCreator->handle($request);
+
+		$body = $response->getBody()->__toString();
+		$head = $response->getHeader('Content-Type');
+
+		self::assertEquals('text/html',$head[0]);
+		self::assertEquals('hello',$body);
+	}
+
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
 	public function testWithBufferStrategy()
 	{
 		$responseCreator = $this->getResponseCreator();
