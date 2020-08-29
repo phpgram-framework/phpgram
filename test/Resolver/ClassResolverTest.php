@@ -4,6 +4,7 @@ namespace Gram\Test\Resolver;
 use Gram\Resolver\ClassResolver;
 use Gram\Test\TestClasses\TestClass;
 use Gram\Test\TestClasses\TestClassDi;
+use Gram\Test\TestClasses\TestClassDiDirectAccess;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +54,8 @@ class ClassResolverTest extends TestCase
 		try{
 			$resolver->set($resolve);
 		}catch (\Exception $e){
-			echo $e;
+			//echo $e;
+			return;
 		}
 
 		$resolver->setRequest($this->request);
@@ -138,6 +140,38 @@ class ClassResolverTest extends TestCase
 		self::assertEquals(TestClass::class." right Testresult",$this->body);
 	}
 
+	public function testResolveDIWithDirectAccess()
+	{
+		$resolver = new ClassResolver();
+
+		$resolve = TestClassDiDirectAccess::class."@getAccess";
+
+		$container = new Container();
+
+		$container[TestClass::class]=function (){
+			return new TestClass();
+		};
+
+		$psr11 = new \Pimple\Psr11\Container($container);
+
+		$resolver->setContainer($psr11);
+
+		$this->initResolve($resolver,$resolve);
+
+		self::assertEquals(TestClass::class." right Testresult",$this->body);
+	}
+
+	public function testResolveDIWithoutDirectAccess()
+	{
+		$resolver = new ClassResolver();
+
+		$resolve = TestClassDiDirectAccess::class."@getAccess";
+
+		$this->initResolve($resolver,$resolve);
+
+		self::assertEquals(null,$this->body);
+	}
+
 	public function testWithoutReturn()
 	{
 		$resolver = new ClassResolver();
@@ -147,5 +181,22 @@ class ClassResolverTest extends TestCase
 		$this->initResolve($resolver,$resolve);
 
 		self::assertEquals('',$this->body);
+	}
+
+	public function testWithoutClass()
+	{
+		$resolver = new ClassResolver();
+
+		$resolve = "@testWithoutReturn";
+
+		$this->initResolve($resolver,$resolve);
+
+		self::assertEquals(null,$this->body);
+
+		$resolver = new ClassResolver();
+
+		$this->initResolve($resolver,"");
+
+		self::assertEquals(null,$this->body);
 	}
 }
