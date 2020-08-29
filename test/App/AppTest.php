@@ -11,16 +11,13 @@ class AppTest extends AbstractAppTest
 		return new App();
 	}
 
-	protected function setUp(): void
-	{
-		$this->initApp();
-	}
-
 	public function testAsyncRequests()
 	{
+		$app = $this->initApp();
+
 		$request = $this->request;
 
-		$app = $this->initApp();
+		$app->build();
 
 		//teste 100 requests mit der selben instance
 		for($i = 0; $i < 100; $i++) {
@@ -46,9 +43,11 @@ class AppTest extends AbstractAppTest
 
 	public function testAsyncRequestsWithDi()
 	{
+		$app = $this->initApp();
+
 		$request = $this->request;
 
-		$app = $this->initApp();
+		$app->build();
 
 		//teste 100 requests mit der selben instance
 		for($i = 0; $i < 100; $i++) {

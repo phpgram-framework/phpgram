@@ -2,6 +2,7 @@
 namespace Gram\Test\App;
 
 use Gram\App\App;
+use Gram\Strategy\BufferAppStrategy;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
 use Gram\Test\Middleware\DummyMw\TestMw3;
@@ -67,8 +68,6 @@ abstract class AbstractAppTest extends TestCase
 
 		$app->setFactory($this->psr17);
 
-		$app->build();
-
 		return $app;
 	}
 
@@ -103,7 +102,7 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->request = $this->request->withUri($uri);
 
-		$response = $app->handle($this->request);
+		$response = $app->start($this->request);
 
 		$body = $response->getBody()->__toString();
 		$status = $response->getStatusCode();
@@ -120,7 +119,7 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->request = $this->request->withUri($uri);
 
-		$response = $app->handle($this->request);
+		$response = $app->start($this->request);
 
 		$body = $response->getBody()->__toString();
 		$status = $response->getStatusCode();
@@ -142,7 +141,7 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->initWithException();
 
-		$response = $app->handle($this->request);
+		$response = $app->start($this->request);
 
 		$body = $response->getBody()->__toString();
 		$status = $response->getStatusCode();
@@ -159,7 +158,7 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->initWithException();
 
-		$response = $app->handle($this->request);
+		$response = $app->start($this->request);
 
 		$body = $response->getBody()->__toString();
 
@@ -177,7 +176,7 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->request = $this->request->withUri($uri);
 
-		$response = $app->handle($this->request);
+		$response = $app->start($this->request);
 
 		$status = $response->getStatusCode();
 		self::assertEquals(404,$status);
@@ -191,9 +190,37 @@ abstract class AbstractAppTest extends TestCase
 
 		$this->request = $this->request->withUri($uri)->withMethod('POST');
 
-		$response = $app->handle($this->request);
+		$response = $app->start($this->request);
 
 		$status = $response->getStatusCode();
 		self::assertEquals(405,$status);
+	}
+
+	public function testWithOhterStrategy()
+	{
+		$app = $this->initApp();
+
+		$app->setStrategy(new BufferAppStrategy());
+
+		$app->get('/test/buffer',function (){
+			echo "buffer Test";
+		});
+
+		$uri = $this->psr17->createUri('https://jo.com/test/buffer');
+
+		$request = $this->request->withUri($uri);
+
+		$response = $app->start($request);
+
+		$body = $response->getBody()->__toString();
+		$status = $response->getStatusCode();
+
+		self::assertEquals("buffer Test",$body);
+		self::assertEquals(200,$status);
+	}
+
+	public function testAppOptions()
+	{
+
 	}
 }
