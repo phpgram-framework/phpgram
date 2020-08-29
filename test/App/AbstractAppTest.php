@@ -2,6 +2,7 @@
 namespace Gram\Test\App;
 
 use Gram\App\App;
+use Gram\Middleware\Queue\Queue;
 use Gram\Strategy\BufferAppStrategy;
 use Gram\Test\Middleware\DummyMw\TestMw1;
 use Gram\Test\Middleware\DummyMw\TestMw2;
@@ -13,6 +14,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -33,7 +35,7 @@ abstract class AbstractAppTest extends TestCase
 
 	abstract protected function getApp():App;
 
-	protected function initApp(): App
+	protected function initApp(array $routerOptions = [], string $basePath = "", string $method = "get"): App
 	{
 		try {
 			TestRoutes::prepareTearDown();
@@ -48,7 +50,9 @@ abstract class AbstractAppTest extends TestCase
 
 		$app->addMiddleware(new TestMw1());
 
-		$this->initRoutes($app);
+		$app->setRouterOptions($routerOptions);
+
+		$this->initRoutes($app,$method,$basePath);
 
 		$container = new Container();
 
@@ -196,15 +200,26 @@ abstract class AbstractAppTest extends TestCase
 		self::assertEquals(405,$status);
 	}
 
-	public function testWithOhterStrategy()
+	public function testWithOtherStrategy()
 	{
 		$app = $this->initApp();
 
 		$app->setStrategy(new BufferAppStrategy());
 
+		$app->setQueueClass(Queue::class);
+
+		$app->set404("404");
+		$app->set405("405");
+
 		$app->get('/test/buffer',function (){
 			echo "buffer Test";
 		});
+
+		$container = $app->getContainer();
+
+		self::assertInstanceOf(ContainerInterface::class,$container);
+
+		self::assertEquals("",$app->getBase());
 
 		$uri = $this->psr17->createUri('https://jo.com/test/buffer');
 
@@ -219,8 +234,8 @@ abstract class AbstractAppTest extends TestCase
 		self::assertEquals(200,$status);
 	}
 
-	public function testAppOptions()
+	public function testAppSingleton()
 	{
-
+		self::assertInstanceOf(App::class,App::app());
 	}
 }
