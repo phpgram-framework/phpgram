@@ -1,6 +1,7 @@
 <?php
 namespace Gram\Test\Middleware;
 
+use Gram\Exceptions\CallableNotFoundException;
 use Gram\Middleware\ResponseCreator;
 use Gram\ResolverCreator\ResolverCreator;
 use Gram\Strategy\BufferAppStrategy;
@@ -249,5 +250,21 @@ class ResponseCreatorTest extends TestCase
 
 		self::assertEquals('text/html',$head[0]);
 		self::assertEquals("hello",$body);
+	}
+
+	/**
+	 * @throws \Gram\Exceptions\CallableNotFoundException
+	 * @throws \Gram\Exceptions\StrategyNotAllowedException
+	 */
+	public function testWithoutCallable()
+	{
+		$responseCreator = $this->getResponseCreator();
+
+		$request = $this->request
+			->withAttribute('status',200)
+			->withAttribute('strategy',BufferAppStrategy::class);
+
+		self::expectException(CallableNotFoundException::class);
+		$responseCreator->handle($request);
 	}
 }
