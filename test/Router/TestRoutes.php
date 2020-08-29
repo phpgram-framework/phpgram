@@ -598,4 +598,35 @@ abstract class TestRoutes extends TestCase
 
 		unlink("routes.php");
 	}
+
+	public function testRouteStrategy()
+	{
+		$this->initExtendedGroups();
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/21');
+
+		/** @var Route $handler */
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$str = $handler->getStrategy();
+
+		self::assertEquals("testid1",$handler->handle);
+		self::assertEquals("strRoute1",$str);
+	}
+
+	public function testGroupStrategy()
+	{
+		$this->initExtendedGroups();
+
+		$uri = $this->psr17->createUri('https://jo.com/group1/two');
+
+		/** @var Route $handler */
+		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+
+		$str = $handler->getStrategy();
+
+		self::assertEquals("test2",$handler->handle);
+		self::assertEquals("strGroup1",$str);
+
+	}
 }
