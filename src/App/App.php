@@ -11,7 +11,7 @@
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  */
 
-/** @version 1.8.1 */
+/** @version 1.8.2 */
 
 namespace Gram\App;
 
@@ -193,7 +193,8 @@ class App implements RequestHandlerInterface
 			$this->container
 			);
 
-		$this->routeMiddleware = $this->routeMiddleware ?? new RouteMiddleware(
+		//füge die route middleware als letztes hinzu
+		$this->middleware[] = $this->routeMiddleware ?? new RouteMiddleware(
 				$this->getRouter(),		//router für den request
 				new NotFoundHandler($this->getResponseCreator()),	//error handler
 				$this
@@ -218,13 +219,7 @@ class App implements RequestHandlerInterface
 		/** @var QueueInterface $queue */
 		$queue = new $this->queueClass;
 
-		//Erstelle Middleware Stack
-		foreach ($this->middleware as $item) {
-			$queue->add($item);
-		}
-
-		//füge Route in der mitte hinzu
-		$queue->add($this->routeMiddleware);
+		$queue->addMultiple($this->middleware);
 
 		return $request->withAttribute(QueueInterface::class,$queue);
 	}
@@ -235,35 +230,17 @@ class App implements RequestHandlerInterface
 	 * wenn eine routeid und groupid gegeben sind für diese die Mw hinzufügen
 	 *
 	 * @param ServerRequestInterface $request
-	 * @param int|null $routeid
-	 * @param array|null $groupid
+	 * @param Route $route
 	 */
-	public function buildStack(ServerRequestInterface $request, int $routeid = null, array $groupid = null)
+	public function buildStack(ServerRequestInterface $request, Route $route)
 	{
-		if($routeid === null || $groupid === null){
-			return;
-		}
+		$routeMiddleware = $route->getRouteMiddleware();
 
 		/** @var QueueInterface $queue */
 		$queue = $this->queueHandler->getQueue($request);
 
-		foreach ($groupid as $item) {
-			$groupMw = RouteGroup::getMiddleware($item);
-			//Füge Routegroup Mw hinzu
-			if ($groupMw !== null){
-				foreach ($groupMw as $item2) {
-					$queue->add($item2);
-				}
-			}
-		}
-
-		$routeMw = Route::getMiddleware($routeid);
-		//Füge Route MW hinzu
-		if($routeMw !== null){
-			foreach ($routeMw as $item) {
-				$queue->add($item);
-			}
-		}
+		//Füge die route Middleware für diesen request hinzu
+		$queue->addMultiple($routeMiddleware);
 	}
 
 	//Optionen
