@@ -138,23 +138,13 @@ class Router implements RouterInterface
 		if($response[0] === DispatcherInterface::FOUND) {
 			$route = $this->collector->getRoute($response[1]);
 
-			if($route === null){
-				$handle[self::ROUTE_HANDLER] = $this->collector->get404();
-			} else{
-				$handle = [
-					self::ROUTE_GROUP_ID=>$route->groupid,
-					self::ROUTE_ID=>$route->routeid,
-					self::ROUTE_HANDLER=>$route->handle
-				];
-			}
-
-			return [$response[0],$handle,$response[2]];
+			return [$response[0],$route,$response[2]];
 		}
 
 		if($response[0] === DispatcherInterface::NOT_ALLOWED){
-			 $handle[self::ROUTE_HANDLER] = $this->collector->get405();
+			 $handle = $this->collector->get405();
 		}else {
-			$handle[self::ROUTE_HANDLER] = $this->collector->get404();
+			$handle = $this->collector->get404();
 		}
 
 		return [$response[0],$handle,[]];
