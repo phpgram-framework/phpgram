@@ -38,16 +38,6 @@ abstract class TestRoutes extends TestCase
 		$reflectedProperty = $reflectedClass->getProperty('strategy');
 		$reflectedProperty->setAccessible(true);
 		$reflectedProperty->setValue([]);
-
-		//setze route zurück
-		$reflectedClass = new \ReflectionClass(Route::class);
-		$reflectedProperty = $reflectedClass->getProperty('middleware');
-		$reflectedProperty->setAccessible(true);
-		$reflectedProperty->setValue([]);
-
-		$reflectedProperty = $reflectedClass->getProperty('strategy');
-		$reflectedProperty->setAccessible(true);
-		$reflectedProperty->setValue([]);
 	}
 
 	/**
@@ -87,7 +77,7 @@ abstract class TestRoutes extends TestCase
 		$this->collector->group("/group1",function (RouteCollector $r) use($method){
 			$r->{$method}("","test");
 			$r->{$method}("/two","test2");
-			$r->{$method}("/{id}","testid1");
+			$r->{$method}("/{id}","testid1")->addStrategy("strRoute1");
 
 			$r->group("/group2",function (RouteCollector $r) use($method){
 				$r->{$method}("","test3");
@@ -138,8 +128,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-
-		self::assertEquals($this->routehandler[2],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[2],$handler->handle);
 		self::assertEquals(['var'=>'123@a'],$param);
 	}
 
@@ -149,9 +138,10 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123/tester');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[0],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[0],$handler->handle);
 		self::assertEquals(['var'=>'123'],$param);
 	}
 
@@ -161,9 +151,10 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[1],$handler->handle);
 		self::assertEquals(['var'=>'123a'],$param);
 	}
 
@@ -173,9 +164,10 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'POST');
 
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
 	public function testSimpleRoutesWithPut()
@@ -184,9 +176,10 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'PUT');
 
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
 	public function testSimpleRoutesWithDelete()
@@ -195,9 +188,10 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'DELETE');
 
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
 	public function testSimpleRoutesWithPatch()
@@ -206,29 +200,27 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123a/tester');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'PATCH');
 
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
-	public function testRoutesWithMiddelware()
+	public function testRoutesWithMiddleware()
 	{
 		$this->initRoutes();
 
 		$uri = $this->psr17->createUri('https://jo.com/test/vars/123/tester');
 
-		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
+		/** @var Route $route */
+		[$status,$route,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
-		$routeid=$handler['routeid'];
+		$mwRoute = $route->getRouteMiddleware();
 
-		$mwRoute = Route::getMiddleware($routeid);
-		$mwGroup = RouteGroup::getMiddleware($groupid[1]);
-
-		self::assertEquals('Middleware 0',$mwRoute[0]);
-		self::assertEquals('Middleware 2 0',$mwRoute[1]);
-		self::assertEquals('Group 1',$mwGroup[0]);
-		self::assertEquals('Group 1 1',$mwGroup[1]);
+		self::assertEquals('Middleware 0',$mwRoute[2]);
+		self::assertEquals('Middleware 2 0',$mwRoute[3]);
+		self::assertEquals('Group 1',$mwRoute[0]);
+		self::assertEquals('Group 1 1',$mwRoute[1]);
 	}
 
 	public function testStartPage()
@@ -239,7 +231,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[3],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[3],$handler->handle);
 	}
 
 	public function testStaticPage()
@@ -250,7 +242,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[4],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[4],$handler->handle);
 	}
 
 	public function testBasePath()
@@ -261,7 +253,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[4],$handler['callable']);
+		self::assertEquals($this->routehandler[4],$handler->handle);
 	}
 
 	public function testBasePathWithFileEnding()
@@ -272,7 +264,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[4],$handler['callable']);
+		self::assertEquals($this->routehandler[4],$handler->handle);
 	}
 
 	public function testBasePathWithStartPage()
@@ -283,7 +275,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[3],$handler['callable']);
+		self::assertEquals($this->routehandler[3],$handler->handle);
 	}
 
 	public function testSimpleRoutesWithHead()
@@ -294,7 +286,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'HEAD');
 
-		self::assertEquals($this->routehandler[1],$handler['callable'],"Handler = ".$handler['callable']);
+		self::assertEquals($this->routehandler[1],$handler->handle);
 	}
 
 	public function test404()
@@ -306,7 +298,7 @@ abstract class TestRoutes extends TestCase
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
 		self::assertEquals('404',$status);
-		self::assertEquals('404',$handler['callable']);
+		self::assertEquals('404',$handler);
 	}
 
 	public function test405()
@@ -318,7 +310,7 @@ abstract class TestRoutes extends TestCase
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'POST');
 
 		self::assertEquals('405',$status);
-		self::assertEquals('405',$handler['callable']);
+		self::assertEquals('405',$handler);
 	}
 
 	/**
@@ -348,23 +340,20 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('test',$handler['callable']);
+		self::assertEquals('test',$handler->handle);
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/21/');
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('testid1',$handler['callable']);
+		self::assertEquals('testid1',$handler->handle);
 	}
 
 	public function testExtendedGroup2()
@@ -373,23 +362,20 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/group2/');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('test3',$handler['callable']);
+		self::assertEquals('test3',$handler->handle);
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/group2/21/');
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('testid2',$handler['callable']);
+		self::assertEquals('testid2',$handler->handle);
 	}
 
 	public function testExtendedGroup3()
@@ -398,23 +384,20 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('test5',$handler['callable']);
+		self::assertEquals('test5',$handler->handle);
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/21/');
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('testid3',$handler['callable']);
+		self::assertEquals('testid3',$handler->handle);
 	}
 
 	public function testExtendedGroup4()
@@ -423,23 +406,20 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/group4/');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('test7',$handler['callable']);
+		self::assertEquals('test7',$handler->handle);
 
 		$uri = $this->psr17->createUri('https://jo.com/group1/group2/group3/group4/21/');
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		$groupid=$handler['groupid'];
+		$this->evaluateExtendedGroups($handler->groupid);
 
-		$this->evaluateExtendedGroups($groupid);
-
-		self::assertEquals('testid4',$handler['callable']);
+		self::assertEquals('testid4',$handler->handle);
 	}
 
 	public function testCustomPlaceHolders()
@@ -451,10 +431,11 @@ abstract class TestRoutes extends TestCase
 
 		$uri = $this->psr17->createUri('https://test.de/test/de/fr/');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
 		self::assertEquals(200,$status);
-		self::assertEquals("testWithPlaceholder",$handler['callable']);
+		self::assertEquals("testWithPlaceholder",$handler->handle);
 		self::assertEquals("de",$param['l']);
 		self::assertEquals("fr",$param['ls']);
 	}
@@ -491,16 +472,17 @@ abstract class TestRoutes extends TestCase
 		//optinal ohne Param
 		$uri = $this->psr17->createUri('https://jo.com/test/optional');
 
+		/** @var Route $handler */
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[7],$handler['callable']);
+		self::assertEquals($this->routehandler[7],$handler->handle);
 
 		//optional mit einem param
 		$uri = $this->psr17->createUri('https://jo.com/test/optional/123');
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[7],$handler['callable']);
+		self::assertEquals($this->routehandler[7],$handler->handle);
 		self::assertEquals(123,$param["id"]);
 
 		//optional mit zwei param
@@ -508,7 +490,7 @@ abstract class TestRoutes extends TestCase
 
 		[$status,$handler,$param] = $this->router->run($uri->getPath(),'GET');
 
-		self::assertEquals($this->routehandler[7],$handler['callable']);
+		self::assertEquals($this->routehandler[7],$handler->handle);
 		self::assertEquals(123,$param["id"]);
 		self::assertEquals(321,$param["id1"]);
 	}
