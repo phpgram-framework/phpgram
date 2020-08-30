@@ -19,7 +19,7 @@ test:
     - php composer.phar install
 
   script:
-    - phpunit --coverage-text --colors=never --configuration phpunit.xml
+    - vendor/bin/phpunit --coverage-text --colors=never --configuration phpunit.xml
   except:
   - trigger
 
