@@ -4,7 +4,7 @@
 
 ## 1.8.2
 
-- since 2020/
+- since 2020/09/23
 - DispatcherInterface hat nur noch die function dispatch() (internal bc break)
 - Route Object baut nun ihre Middleware von route und von group selber zusammen, das aber nur einmal (internal)
 - Route Object ermittelt selbstständig die strategy (internal)
