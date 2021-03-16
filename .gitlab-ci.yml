@@ -12,7 +12,7 @@ test:
     # Install PHP extensions
     - docker-php-ext-install curl
     # Install & enable Xdebug for code coverage reports
-    - pecl install xdebug
+    - pecl install xdebug-2.9.7
     - docker-php-ext-enable xdebug
     # Install and run Composer
     - curl -sS https://getcomposer.org/installer | php
