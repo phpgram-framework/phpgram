@@ -2,6 +2,11 @@
 
 # 1.8.x
 
+## 1.8.3
+- since 2021/03/16
+- added php 8 support
+- updated dependencies
+
 ## 1.8.2
 
 - since 2020/09/23
