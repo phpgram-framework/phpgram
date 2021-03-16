@@ -1,5 +1,5 @@
 test:
-  image: php:latest
+  image: php:7.4
   
   # cache between builds
   cache:
